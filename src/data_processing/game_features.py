@@ -114,7 +114,7 @@ class GameFeatureEngineer:
             (df["date"] < date)
         ].tail(n_games)
 
-        if len(team_games) == 0:
+        if team_games.empty:
             return {
                 "games_played": 0,
                 "win_pct": 0.0,
@@ -123,26 +123,36 @@ class GameFeatureEngineer:
                 "avg_point_differential": 0.0
             }
 
-        wins = 0
-        points_scored = []
-        points_allowed = []
+        # Vectorized calculation
+        is_home = team_games["home_team_id"] == team_id
+        is_away = ~is_home
 
-        for _, game in team_games.iterrows():
-            is_home = game["home_team_id"] == team_id
+        team_scores = pd.Series(dtype=float)
+        opp_scores = pd.Series(dtype=float)
 
-            if is_home:
-                team_score = game["home_team_score"]
-                opp_score = game["visitor_team_score"]
-                if team_score > opp_score:
-                    wins += 1
-            else:
-                team_score = game["visitor_team_score"]
-                opp_score = game["home_team_score"]
-                if team_score > opp_score:
-                    wins += 1
+        # Home games
+        team_scores = pd.concat([
+            team_games.loc[is_home, "home_team_score"],
+            team_scores
+        ])
+        opp_scores = pd.concat([
+            team_games.loc[is_home, "visitor_team_score"],
+            opp_scores
+        ])
 
-            points_scored.append(team_score)
-            points_allowed.append(opp_score)
+        # Away games
+        team_scores = pd.concat([
+            team_scores,
+            team_games.loc[is_away, "visitor_team_score"]
+        ])
+        opp_scores = pd.concat([
+            opp_scores,
+            team_games.loc[is_away, "home_team_score"]
+        ])
+
+        wins = (team_scores > opp_scores).sum()
+        points_scored = team_scores.tolist()
+        points_allowed = opp_scores.tolist()
 
         return {
             "games_played": len(team_games),
@@ -182,7 +192,7 @@ class GameFeatureEngineer:
             (df["date"] < before_date)
         ].tail(n_games)
 
-        if len(h2h_games) == 0:
+        if h2h_games.empty:
             return {
                 "h2h_games": 0,
                 "team1_wins": 0,
@@ -190,14 +200,12 @@ class GameFeatureEngineer:
                 "team1_win_pct": 0.0
             }
 
-        team1_wins = 0
-        for _, game in h2h_games.iterrows():
-            if game["home_team_id"] == team1_id:
-                if game["home_team_score"] > game["visitor_team_score"]:
-                    team1_wins += 1
-            else:
-                if game["visitor_team_score"] > game["home_team_score"]:
-                    team1_wins += 1
+        # Vectorized calculation
+        team1_home = h2h_games["home_team_id"] == team1_id
+        team1_away = ~team1_home
+        home_won = h2h_games["home_team_score"] > h2h_games["visitor_team_score"]
+
+        team1_wins = ((team1_home & home_won) | (team1_away & ~home_won)).sum()
 
         return {
             "h2h_games": len(h2h_games),
@@ -229,7 +237,7 @@ class GameFeatureEngineer:
             (df["date"] < game_date)
         ]
 
-        if len(prev_games) == 0:
+        if prev_games.empty:
             return 999  # No previous game
 
         last_game_date = prev_games["date"].max()
@@ -260,25 +268,26 @@ class GameFeatureEngineer:
             (df["date"] < before_date)
         ].sort_values("date", ascending=False)
 
-        if len(team_games) == 0:
+        if team_games.empty:
             return 0
 
+        # Vectorized win/loss calculation
+        is_home = team_games["home_team_id"] == team_id
+        won = pd.Series(False, index=team_games.index)
+        won[is_home] = team_games.loc[is_home, "home_team_score"] > team_games.loc[is_home, "visitor_team_score"]
+        won[~is_home] = team_games.loc[~is_home, "visitor_team_score"] > team_games.loc[~is_home, "home_team_score"]
+
+        # Calculate streak (stop at first change)
+        if len(won) == 0:
+            return 0
+
+        results = won.tolist()
+        first_result = results[0]
         streak = 0
-        last_result = None
 
-        for _, game in team_games.iterrows():
-            is_home = game["home_team_id"] == team_id
-
-            if is_home:
-                won = game["home_team_score"] > game["visitor_team_score"]
-            else:
-                won = game["visitor_team_score"] > game["home_team_score"]
-
-            if last_result is None:
-                last_result = won
-                streak = 1 if won else -1
-            elif won == last_result:
-                streak = streak + 1 if won else streak - 1
+        for result in results:
+            if result == first_result:
+                streak += 1 if first_result else -1
             else:
                 break
 
@@ -368,10 +377,11 @@ class GameFeatureEngineer:
         df = df.copy()
         features = []
 
-        for idx, game in df.iterrows():
-            game_date = game["date"]
-            home_team = game["home_team_id"]
-            away_team = game["visitor_team_id"]
+        # Use itertuples() for better performance (10-100x faster than iterrows)
+        for game in df.itertuples():
+            game_date = game.date
+            home_team = game.home_team_id
+            away_team = game.visitor_team_id
 
             # Team form features
             home_form = self.calculate_team_form(df, home_team, game_date, n_games=10)
@@ -397,7 +407,7 @@ class GameFeatureEngineer:
             away_b2b = self.is_back_to_back(df, away_team, game_date)
 
             feature_dict = {
-                "game_id": game["id"],
+                "game_id": game.id,
                 "date": game_date,
                 "home_team_id": home_team,
                 "away_team_id": away_team,
@@ -435,13 +445,13 @@ class GameFeatureEngineer:
 
             # Add target variable if requested
             if include_future_target:
-                if game["home_team_score"] > game["visitor_team_score"]:
+                if game.home_team_score > game.visitor_team_score:
                     feature_dict["home_win"] = 1
                 else:
                     feature_dict["home_win"] = 0
 
-                feature_dict["home_score"] = game["home_team_score"]
-                feature_dict["away_score"] = game["visitor_team_score"]
+                feature_dict["home_score"] = game.home_team_score
+                feature_dict["away_score"] = game.visitor_team_score
 
             features.append(feature_dict)
 

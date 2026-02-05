@@ -346,7 +346,7 @@ class PlayerDataCollector:
 
             player_games[player_id] += 1
 
-            for key in player_totals[player_id].keys():
+            for key in player_totals[player_id]:
                 value = stat.get(key, 0)
                 if value is not None:
                     player_totals[player_id][key] += value

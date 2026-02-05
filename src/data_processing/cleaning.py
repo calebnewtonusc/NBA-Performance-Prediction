@@ -64,15 +64,15 @@ class DataCleaner:
             logger.info(f"Column '{col}': {missing_count} missing values")
 
             if strategy == "mean":
-                df[col].fillna(df[col].mean(), inplace=True)
+                df[col] = df[col].fillna(df[col].mean())
             elif strategy == "median":
-                df[col].fillna(df[col].median(), inplace=True)
+                df[col] = df[col].fillna(df[col].median())
             elif strategy == "mode":
-                df[col].fillna(df[col].mode()[0] if not df[col].mode().empty else 0, inplace=True)
+                df[col] = df[col].fillna(df[col].mode()[0] if not df[col].mode().empty else 0)
             elif strategy == "zero":
-                df[col].fillna(0, inplace=True)
+                df[col] = df[col].fillna(0)
             elif strategy == "drop":
-                df.dropna(subset=[col], inplace=True)
+                df = df.dropna(subset=[col])
 
         return df
 
@@ -383,7 +383,7 @@ class DataCleaner:
 
         # Numeric column statistics
         numeric_cols = df.select_dtypes(include=[np.number]).columns
-        if len(numeric_cols) > 0:
+        if not numeric_cols.empty:
             report["numeric_summary"] = df[numeric_cols].describe().to_dict()
 
         return report
