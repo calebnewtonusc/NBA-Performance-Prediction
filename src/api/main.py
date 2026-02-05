@@ -453,6 +453,7 @@ class SimplePredictionRequest(BaseModel):
     """Simplified prediction request - just team names"""
     home_team: str = Field(..., description="Home team abbreviation (e.g., 'BOS')")
     away_team: str = Field(..., description="Away team abbreviation (e.g., 'LAL')")
+    model_type: str = Field(default="logistic", description="Model type: 'logistic', 'tree', or 'forest'")
 
 # Initialize NBA data fetcher
 nba_fetcher = NBADataFetcher()
@@ -474,8 +475,16 @@ async def predict_game_simple(
             prediction_request.away_team
         )
 
+        # Map model type to model name
+        model_map = {
+            "logistic": "game_logistic",
+            "tree": "game_tree",
+            "forest": "game_forest"
+        }
+        model_name = model_map.get(prediction_request.model_type, "game_logistic")
+
         # Load model and scaler
-        model_data = load_model("game_logistic", "v1")
+        model_data = load_model(model_name, "v1")
         model = model_data["model"]
         scaler = model_data["scaler"]
 
@@ -507,7 +516,7 @@ async def predict_game_simple(
             "away_win_probability": float(probabilities[0]),
             "home_team": prediction_request.home_team,
             "away_team": prediction_request.away_team,
-            "model_used": "game_logistic:v1",
+            "model_used": f"{model_name}:v1",
             "timestamp": datetime.now(timezone.utc).isoformat(),
         }
     
@@ -713,3 +722,85 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8000, log_level="info")
+
+@app.post("/api/predict/compare", tags=["Predictions"])
+@limiter.limit("50/minute")
+async def predict_compare_models(
+    request: Request, prediction_request: SimplePredictionRequest, token: dict = Depends(verify_token)
+):
+    """
+    Compare predictions from all three models
+    
+    Returns predictions from Logistic Regression, Decision Tree, and Random Forest
+    """
+    try:
+        # Fetch live team stats
+        features = nba_fetcher.get_game_features(
+            prediction_request.home_team,
+            prediction_request.away_team
+        )
+        
+        features_df = pd.DataFrame([features])
+        
+        models_to_compare = {
+            "logistic_regression": "game_logistic",
+            "decision_tree": "game_tree",
+            "random_forest": "game_forest"
+        }
+        
+        results = {}
+        
+        for model_name_display, model_name in models_to_compare.items():
+            try:
+                # Load model and scaler
+                model_data = load_model(model_name, "v1")
+                model = model_data["model"]
+                scaler = model_data["scaler"]
+                
+                # Scale features
+                if scaler is not None:
+                    features_scaled = scaler.transform(features_df)
+                else:
+                    features_scaled = features_df
+                
+                # Make prediction
+                prediction = model.predict(features_scaled)[0]
+                probabilities = model.predict_proba(features_scaled)[0]
+                
+                winner = "home" if prediction == 1 else "away"
+                confidence = probabilities[1] if prediction == 1 else probabilities[0]
+                
+                results[model_name_display] = {
+                    "prediction": winner,
+                    "confidence": float(confidence),
+                    "home_win_probability": float(probabilities[1]),
+                    "away_win_probability": float(probabilities[0])
+                }
+            except Exception as e:
+                results[model_name_display] = {
+                    "error": str(e)
+                }
+        
+        # Calculate consensus
+        home_votes = sum(1 for r in results.values() if r.get("prediction") == "home")
+        away_votes = sum(1 for r in results.values() if r.get("prediction") == "away")
+        consensus = "home" if home_votes > away_votes else "away"
+        
+        avg_confidence = np.mean([r.get("confidence", 0) for r in results.values()])
+        
+        return {
+            "home_team": prediction_request.home_team,
+            "away_team": prediction_request.away_team,
+            "models": results,
+            "consensus": {
+                "prediction": consensus,
+                "votes": {"home": home_votes, "away": away_votes},
+                "average_confidence": float(avg_confidence)
+            },
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+        
+    except Exception as e:
+        with metrics_lock:
+            api_metrics["errors_total"] += 1
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))

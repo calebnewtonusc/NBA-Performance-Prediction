@@ -1,0 +1,7 @@
+{
+  "model_type": "RandomForest",
+  "test_accuracy": 0.6730401529636711,
+  "trained_at": "2026-02-05T15:18:28.988324",
+  "n_train": 2089,
+  "n_test": 523
+}
