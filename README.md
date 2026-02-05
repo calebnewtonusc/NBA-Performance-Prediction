@@ -55,13 +55,21 @@ NBA-Performance-Prediction/
 
 ## Getting Started
 
+### 🚀 Quick Start (1 Command!)
+
+```bash
+./scripts/quickstart.sh
+```
+
+This automated script will set up everything! See [QUICKSTART.md](QUICKSTART.md) for full details.
+
 ### Prerequisites
 
 - Python 3.8+
 - pip
 - Git
 
-### Installation
+### Manual Installation
 
 1. Clone the repository:
 ```bash
@@ -78,9 +86,18 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 3. Install dependencies:
 ```bash
 pip install -r requirements.txt
+# or use make
+make install
 ```
 
-### Quick Start
+4. Generate sample data and train models:
+```bash
+make sample-data  # Generate test data
+make train        # Train all models
+make dashboard    # Run dashboard
+```
+
+### Detailed Quick Start
 
 See [PROJECT_PLAN.md](docs/PROJECT_PLAN.md) for a detailed breakdown of milestones and tasks.
 
