@@ -1,0 +1,18 @@
+{
+  "trained_at": "2026-02-05T15:18:28.988494",
+  "models": {
+    "logistic_regression": {
+      "accuracy": 0.6959847036328872,
+      "path": "game_logistic/v1"
+    },
+    "decision_tree": {
+      "accuracy": 0.615678776290631,
+      "path": "game_tree/v1"
+    },
+    "random_forest": {
+      "accuracy": 0.6730401529636711,
+      "path": "game_forest/v1"
+    }
+  },
+  "best_model": "logistic_regression"
+}
