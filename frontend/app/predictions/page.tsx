@@ -52,12 +52,35 @@ export default function Predictions() {
     setError(null)
 
     try {
+      // Calculate estimated stats based on win percentages
+      const homeAvgPoints = 105 + (homeWinPct - 0.5) * 20
+      const awayAvgPoints = 105 + (awayWinPct - 0.5) * 20
+      const homeAvgAllowed = 105 - (homeWinPct - 0.5) * 20
+      const awayAvgAllowed = 105 - (awayWinPct - 0.5) * 20
+
       const result = await apiClient.predict({
         home_team: homeTeam,
         away_team: awayTeam,
-        home_win_pct: homeWinPct,
-        away_win_pct: awayWinPct,
-        season: 2024,
+        features: {
+          home_win_pct: homeWinPct,
+          away_win_pct: awayWinPct,
+          home_avg_points: homeAvgPoints,
+          away_avg_points: awayAvgPoints,
+          home_avg_allowed: homeAvgAllowed,
+          away_avg_allowed: awayAvgAllowed,
+          home_point_diff: homeAvgPoints - homeAvgAllowed,
+          away_point_diff: awayAvgPoints - awayAvgAllowed,
+          h2h_games: 4,
+          home_h2h_win_pct: 0.5,
+          home_rest_days: 1,
+          away_rest_days: 1,
+          home_b2b: 0,
+          away_b2b: 0,
+          home_streak: 0,
+          away_streak: 0,
+          home_home_win_pct: homeWinPct,
+          away_away_win_pct: awayWinPct,
+        },
       })
       setPrediction(result)
     } catch (err: any) {
@@ -166,14 +189,14 @@ export default function Predictions() {
             <div className="space-y-6">
               <div className="text-center space-y-4">
                 <div className="text-6xl font-bold text-primary">
-                  {prediction.predicted_winner}
+                  {prediction.prediction === 'home' ? homeTeam : awayTeam}
                 </div>
                 <div className="text-2xl text-gray-300">
-                  Wins with {(prediction.probability * 100).toFixed(1)}% confidence
+                  Wins with {(prediction.confidence * 100).toFixed(1)}% confidence
                 </div>
                 <div className="inline-block px-4 py-2 bg-primary/20 rounded-lg">
                   <span className="text-lg font-medium">
-                    Confidence: {prediction.confidence}
+                    {prediction.prediction === 'home' ? 'Home' : 'Away'} Victory Predicted
                   </span>
                 </div>
               </div>
@@ -184,12 +207,12 @@ export default function Predictions() {
                   <BarChart
                     data={[
                       {
-                        team: prediction.home_team,
-                        probability: prediction.prediction === 1 ? prediction.probability : 1 - prediction.probability,
+                        team: homeTeam,
+                        probability: prediction.home_win_probability,
                       },
                       {
-                        team: prediction.away_team,
-                        probability: prediction.prediction === 0 ? prediction.probability : 1 - prediction.probability,
+                        team: awayTeam,
+                        probability: prediction.away_win_probability,
                       },
                     ]}
                   >
@@ -211,13 +234,15 @@ export default function Predictions() {
               <div className="grid grid-cols-2 gap-4 pt-6 border-t border-gray-700">
                 <div>
                   <div className="text-gray-400 text-sm">Home Team</div>
-                  <div className="text-xl font-bold">{prediction.home_team}</div>
+                  <div className="text-xl font-bold">{homeTeam}</div>
                   <div className="text-gray-400">{(homeWinPct * 100).toFixed(1)}% win rate</div>
+                  <div className="text-primary font-bold mt-1">{(prediction.home_win_probability * 100).toFixed(1)}% to win</div>
                 </div>
                 <div>
                   <div className="text-gray-400 text-sm">Away Team</div>
-                  <div className="text-xl font-bold">{prediction.away_team}</div>
+                  <div className="text-xl font-bold">{awayTeam}</div>
                   <div className="text-gray-400">{(awayWinPct * 100).toFixed(1)}% win rate</div>
+                  <div className="text-primary font-bold mt-1">{(prediction.away_win_probability * 100).toFixed(1)}% to win</div>
                 </div>
               </div>
             </div>

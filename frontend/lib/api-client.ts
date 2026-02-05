@@ -2,21 +2,40 @@ import axios, { AxiosInstance } from 'axios';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://nba-performance-prediction-production.up.railway.app';
 
+export interface GameFeatures {
+  home_win_pct: number;
+  away_win_pct: number;
+  home_avg_points: number;
+  away_avg_points: number;
+  home_avg_allowed: number;
+  away_avg_allowed: number;
+  home_point_diff: number;
+  away_point_diff: number;
+  h2h_games?: number;
+  home_h2h_win_pct?: number;
+  home_rest_days?: number;
+  away_rest_days?: number;
+  home_b2b?: number;
+  away_b2b?: number;
+  home_streak?: number;
+  away_streak?: number;
+  home_home_win_pct?: number;
+  away_away_win_pct?: number;
+}
+
 export interface PredictionRequest {
   home_team: string;
   away_team: string;
-  home_win_pct?: number;
-  away_win_pct?: number;
-  season?: number;
+  features: GameFeatures;
+  model_name?: string;
+  model_version?: string;
 }
 
 export interface PredictionResponse {
-  prediction: number;
-  probability: number;
-  home_team: string;
-  away_team: string;
-  predicted_winner: string;
-  confidence: string;
+  prediction: string;
+  confidence: number;
+  home_win_probability: number;
+  away_win_probability: number;
 }
 
 export interface HealthResponse {
