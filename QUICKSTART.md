@@ -42,25 +42,25 @@ pip install -r requirements.txt
 
 ```bash
 # Generate synthetic data for testing
-python scripts/generate_sample_data.py
+python3 scripts/generate_sample_data.py
 ```
 
 **OR** collect real NBA data:
 
 ```bash
 # Collect real data (requires API access)
-python scripts/collect_data.py --quick --seasons 2023
+python3 scripts/collect_data.py --quick --seasons 2023
 ```
 
 ### 3. Train Models
 
 ```bash
 # Train all models
-python scripts/train_models.py --all
+python3 scripts/train_models.py --all
 
 # Or train specific models
-python scripts/train_models.py --game-models
-python scripts/train_models.py --player-models
+python3 scripts/train_models.py --game-models
+python3 scripts/train_models.py --player-models
 ```
 
 ### 4. Run Dashboard
@@ -168,10 +168,10 @@ If collecting real data fails due to rate limits:
 
 ```bash
 # Use sample data instead
-python scripts/generate_sample_data.py
+python3 scripts/generate_sample_data.py
 
 # Or use quick mode
-python scripts/collect_data.py --quick
+python3 scripts/collect_data.py --quick
 ```
 
 ### Streamlit Port Already in Use

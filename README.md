@@ -73,13 +73,13 @@ This automated script will set up everything! See [QUICKSTART.md](QUICKSTART.md)
 
 1. Clone the repository:
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/joelnewton/NBA-Performance-Prediction.git
 cd NBA-Performance-Prediction
 ```
 
 2. Create a virtual environment:
 ```bash
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
@@ -119,7 +119,7 @@ Since this is a team project:
 
 ## Current Status
 
-✅ **ALL PHASES COMPLETE!** The project is fully functional with:
+✅ **CORE IMPLEMENTATION COMPLETE!** The project has a fully functional codebase with:
 - Complete data collection pipeline
 - Advanced feature engineering
 - Multiple ML models (classification and regression)
@@ -209,14 +209,17 @@ Check out the Jupyter notebooks in the `notebooks/` directory:
 
 ## Project Phases
 
-✅ **Phase 1**: Data Collection & API Integration
-✅ **Phase 2**: Data Processing & Feature Engineering
-✅ **Phase 3**: Game Prediction Models
-✅ **Phase 4**: Player Statistics Models
-✅ **Phase 5**: Live Data Integration & Retraining
-✅ **Phase 6**: Visualization & Reporting
+✅ **Phase 1**: Data Collection & API Integration - Code Complete
+✅ **Phase 2**: Data Processing & Feature Engineering - Code Complete
+✅ **Phase 3**: Game Prediction Models - Code Complete
+✅ **Phase 4**: Player Statistics Models - Code Complete
+✅ **Phase 5**: Live Data Integration & Retraining - Code Complete
+✅ **Phase 6**: Visualization & Reporting - Code Complete
 
-**Progress: 6/6 phases complete (100%)**
+**Code Implementation: 6/6 phases complete (100%)**
+
+📝 **Demonstration Notebooks**: 3/7+ notebooks created (see `notebooks/` directory)
+- Additional notebooks planned for model demonstrations (see `docs/PROJECT_PLAN.md`)
 
 ## License
 
