@@ -76,14 +76,18 @@ data/external/**/*.parquet
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/external/.gitkeep
+# Allow NBA games data for model training
+!data/raw/nba_games_real.csv
 
-# Model files (can be large)
-*.pkl
-*.pickle
+# Model files (can be large) - but we need them for deployment!
+# *.pkl
+# *.pickle
 *.h5
-*.model
-models/*.pkl
-models/*.pickle
+# models/*.pkl
+# models/*.pickle
+# Allow trained models in models/ directory for deployment
+!models/**/*.pkl
+!models/**/*.pickle
 
 # Logs
 *.log
