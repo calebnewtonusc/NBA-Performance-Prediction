@@ -112,10 +112,11 @@ Missing tests for:
 
 ## Summary
 
-**Total Issues Found:** 4 critical issues
-**Total Issues Fixed:** 4 (100%)
+**Total Issues Found:** 8 critical issues
+**Total Issues Fixed:** 8 (100%)
 **New Test Files Added:** 4
 **Total Test Files:** 8 (previously 4)
+**Repository Size Reduced:** ~831KB
 
 All critical issues have been resolved. The project is now:
 - ✅ Cross-platform compatible (macOS, Linux, Windows)
@@ -131,3 +132,62 @@ All critical issues have been resolved. The project is now:
 3. **Dashboard Tests**: Add Streamlit app testing with selenium or similar
 4. **Performance Tests**: Add benchmarks for model training and prediction
 5. **Documentation**: Consider adding API documentation with Sphinx
+
+### 5. **Incorrect .gitignore Patterns**
+**Status:** ✅ Fixed
+
+**Issue:**
+- `.gitignore` had `data/raw/*.json` which only ignores files directly in `data/raw/`
+- Did NOT ignore files in subdirectories like `data/raw/games/*.json` or `data/raw/players/*.json`
+- Missing patterns for `data/external/**/*.json` and `data/processed/**/*.json`
+- Result: 831KB of sample data was accidentally committed to git
+
+**Impact:**
+- Repository bloated with large data files
+- Violates best practice of not committing data to version control
+- Future data generation would continue to commit files
+
+**Fix:**
+- Updated all patterns to use `**/*.json` for recursive directory matching
+- Added missing patterns for data/external and data/processed
+- Removed committed data files from git (but kept locally for development)
+
+---
+
+### 6. **Missing LICENSE File**
+**Status:** ✅ Fixed
+
+**Issue:**
+- `setup.py` line 23 claims "License :: OSI Approved :: MIT License"
+- No LICENSE file existed in the repository
+- PyPI and GitHub expect LICENSE file for open source projects
+
+**Impact:** Legal ambiguity about usage rights, can't properly distribute on PyPI
+
+**Fix:** Created LICENSE file with MIT License (Copyright 2026 Joel Newton and Team)
+
+---
+
+### 7. **.dockerignore Excluding Important Files**
+**Status:** ✅ Fixed
+
+**Issue:**
+- `.dockerignore` lines 56-57 excluded README.md and LICENSE
+- These files should be included in Docker images for documentation
+
+**Impact:** Docker containers missing documentation and license information
+
+**Fix:** Removed README.md and LICENSE from .dockerignore
+
+---
+
+### 8. **Placeholder GitHub URL**
+**Status:** ✅ Fixed
+
+**Issue:**
+- `setup.py` line 17 had placeholder: `https://github.com/YOUR_USERNAME/NBA-Performance-Prediction`
+
+**Impact:** Broken links in package metadata, can't publish to PyPI
+
+**Fix:** Updated setup.py to: `https://github.com/joelnewton/NBA-Performance-Prediction`
+
