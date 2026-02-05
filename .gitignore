@@ -118,3 +118,14 @@ dmypy.json
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# Frontend
+node_modules/
+.next/
+out/
+.vercel/
+frontend/.env.local
+frontend/package-lock.json
+
+# Vercel
+.vercel
