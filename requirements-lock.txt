@@ -3,7 +3,7 @@
 # Use this file for reproducible builds
 
 # Core Data Science Libraries
-numpy==2.4.1
+numpy==1.26.4
 pandas==2.1.4
 scipy==1.11.4
 
