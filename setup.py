@@ -14,7 +14,7 @@ setup(
     description="Machine learning models for predicting NBA game outcomes and player statistics",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/YOUR_USERNAME/NBA-Performance-Prediction",
+    url="https://github.com/joelnewton/NBA-Performance-Prediction",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
