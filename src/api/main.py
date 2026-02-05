@@ -38,6 +38,8 @@ from dotenv import load_dotenv
 
 from src.models.model_manager import ModelManager
 
+from src.api.nba_data_fetcher import NBADataFetcher
+
 # Load environment variables
 load_dotenv()
 
@@ -423,6 +425,69 @@ async def predict_game(
             api_metrics["errors_total"] += 1
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
+
+
+
+class SimplePredictionRequest(BaseModel):
+    """Simplified prediction request - just team names"""
+    home_team: str = Field(..., description="Home team abbreviation (e.g., 'BOS')")
+    away_team: str = Field(..., description="Away team abbreviation (e.g., 'LAL')")
+
+# Initialize NBA data fetcher
+nba_fetcher = NBADataFetcher()
+
+@app.post("/api/predict/simple", response_model=PredictionResponse, tags=["Predictions"])
+@limiter.limit("100/minute")
+async def predict_game_simple(
+    request: Request, prediction_request: SimplePredictionRequest, token: dict = Depends(verify_token)
+):
+    """
+    Predict NBA game outcome using live team stats
+    
+    Automatically fetches current season statistics for both teams
+    """
+    try:
+        # Fetch live team stats
+        features = nba_fetcher.get_game_features(
+            prediction_request.home_team,
+            prediction_request.away_team
+        )
+        
+        # Load model
+        model = load_model("game_logistic", "v1")
+        
+        # Prepare features
+        features_df = pd.DataFrame([features])
+        
+        # Make prediction
+        prediction = model.predict(features_df)[0]
+        probabilities = model.predict_proba(features_df)[0]
+        
+        # Track metrics
+        with metrics_lock:
+            api_metrics["predictions_total"] += 1
+        
+        # Format response
+        winner = "home" if prediction == 1 else "away"
+        confidence = probabilities[1] if prediction == 1 else probabilities[0]
+        
+        return {
+            "prediction": winner,
+            "confidence": float(confidence),
+            "home_win_probability": float(probabilities[1]),
+            "away_win_probability": float(probabilities[0]),
+            "home_team": prediction_request.home_team,
+            "away_team": prediction_request.away_team,
+            "model_used": "game_logistic:v1",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+    
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        with metrics_lock:
+            api_metrics["errors_total"] += 1
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 @app.post("/api/predict/batch", tags=["Predictions"])
 @limiter.limit("20/minute")

@@ -40,8 +40,6 @@ const NBA_TEAMS = [
 export default function Predictions() {
   const [homeTeam, setHomeTeam] = useState('BOS')
   const [awayTeam, setAwayTeam] = useState('LAL')
-  const [homeWinPct, setHomeWinPct] = useState(0.650)
-  const [awayWinPct, setAwayWinPct] = useState(0.600)
   const [prediction, setPrediction] = useState<PredictionResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -52,36 +50,8 @@ export default function Predictions() {
     setError(null)
 
     try {
-      // Calculate estimated stats based on win percentages
-      const homeAvgPoints = 105 + (homeWinPct - 0.5) * 20
-      const awayAvgPoints = 105 + (awayWinPct - 0.5) * 20
-      const homeAvgAllowed = 105 - (homeWinPct - 0.5) * 20
-      const awayAvgAllowed = 105 - (awayWinPct - 0.5) * 20
-
-      const result = await apiClient.predict({
-        home_team: homeTeam,
-        away_team: awayTeam,
-        features: {
-          home_win_pct: homeWinPct,
-          away_win_pct: awayWinPct,
-          home_avg_points: homeAvgPoints,
-          away_avg_points: awayAvgPoints,
-          home_avg_allowed: homeAvgAllowed,
-          away_avg_allowed: awayAvgAllowed,
-          home_point_diff: homeAvgPoints - homeAvgAllowed,
-          away_point_diff: awayAvgPoints - awayAvgAllowed,
-          h2h_games: 4,
-          home_h2h_win_pct: 0.5,
-          home_rest_days: 1,
-          away_rest_days: 1,
-          home_b2b: 0,
-          away_b2b: 0,
-          home_streak: 0,
-          away_streak: 0,
-          home_home_win_pct: homeWinPct,
-          away_away_win_pct: awayWinPct,
-        },
-      })
+      // Call simplified endpoint - backend fetches live stats automatically
+      const result = await apiClient.predictSimple(homeTeam, awayTeam)
       setPrediction(result)
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Failed to get prediction')
@@ -95,13 +65,13 @@ export default function Predictions() {
       <div>
         <h1 className="text-4xl font-bold">Game Predictions</h1>
         <p className="text-gray-400 mt-2">
-          Predict NBA game outcomes using machine learning
+          Predict NBA game outcomes using live stats and machine learning
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="bg-secondary p-6 rounded-lg border border-gray-700">
-          <h2 className="text-2xl font-bold mb-6">Game Setup</h2>
+          <h2 className="text-2xl font-bold mb-6">Select Matchup</h2>
           <form onSubmit={handlePredict} className="space-y-6">
             <div>
               <label className="block text-sm font-medium mb-2">
@@ -122,21 +92,6 @@ export default function Predictions() {
 
             <div>
               <label className="block text-sm font-medium mb-2">
-                Home Win % (Current Season)
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="1"
-                step="0.001"
-                value={homeWinPct}
-                onChange={(e) => setHomeWinPct(parseFloat(e.target.value))}
-                className="w-full bg-background border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">
                 Away Team
               </label>
               <select
@@ -152,19 +107,10 @@ export default function Predictions() {
               </select>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2">
-                Away Win % (Current Season)
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="1"
-                step="0.001"
-                value={awayWinPct}
-                onChange={(e) => setAwayWinPct(parseFloat(e.target.value))}
-                className="w-full bg-background border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary"
-              />
+            <div className="bg-blue-500/10 border border-blue-500 rounded-lg p-4">
+              <p className="text-sm text-blue-400">
+                Stats are automatically fetched from live NBA data sources
+              </p>
             </div>
 
             <button
@@ -172,7 +118,7 @@ export default function Predictions() {
               disabled={loading}
               className="w-full bg-primary hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Predicting...' : 'Get Prediction'}
+              {loading ? 'Fetching stats and predicting...' : 'Get Prediction'}
             </button>
           </form>
 
@@ -235,13 +181,11 @@ export default function Predictions() {
                 <div>
                   <div className="text-gray-400 text-sm">Home Team</div>
                   <div className="text-xl font-bold">{homeTeam}</div>
-                  <div className="text-gray-400">{(homeWinPct * 100).toFixed(1)}% win rate</div>
                   <div className="text-primary font-bold mt-1">{(prediction.home_win_probability * 100).toFixed(1)}% to win</div>
                 </div>
                 <div>
                   <div className="text-gray-400 text-sm">Away Team</div>
                   <div className="text-xl font-bold">{awayTeam}</div>
-                  <div className="text-gray-400">{(awayWinPct * 100).toFixed(1)}% win rate</div>
                   <div className="text-primary font-bold mt-1">{(prediction.away_win_probability * 100).toFixed(1)}% to win</div>
                 </div>
               </div>
