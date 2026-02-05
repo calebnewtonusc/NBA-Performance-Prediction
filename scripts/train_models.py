@@ -45,8 +45,8 @@ def train_game_models():
     logger.info("Loading game data...")
     try:
         games_df = load_games_as_dataframe(season=2023)
-    except:
-        logger.warning("Could not load real data, using sample data...")
+    except Exception as e:
+        logger.warning(f"Could not load real data ({str(e)}), using sample data...")
         # Generate sample data if real data doesn't exist
         from scripts.generate_sample_data import generate_sample_games
         import pandas as pd
@@ -170,8 +170,8 @@ def train_player_models():
     logger.info("Loading player stats data...")
     try:
         stats_df = load_player_stats_as_dataframe(season=2023)
-    except:
-        logger.warning("Could not load real data, using sample data...")
+    except Exception as e:
+        logger.warning(f"Could not load real data ({str(e)}), using sample data...")
         # Generate sample data if real data doesn't exist
         from scripts.generate_sample_data import generate_sample_player_stats
         import pandas as pd
