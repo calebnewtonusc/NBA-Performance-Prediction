@@ -213,7 +213,7 @@ class RedisCache:
 
 
 class InMemoryCache:
-    """Fallback in-memory cache when Redis is unavailable"""
+    """Fallback in-memory cache when Redis is unavailable (thread-safe)"""
 
     def __init__(self, max_size: int = 1000):
         """
@@ -222,57 +222,65 @@ class InMemoryCache:
         Args:
             max_size: Maximum number of items to cache
         """
+        import threading
+
         self.cache: Dict[str, Any] = {}
         self.max_size = max_size
         self.hits = 0
         self.misses = 0
+        self.lock = threading.RLock()  # Thread-safe lock
 
     def health_check(self) -> bool:
         """Always healthy for in-memory cache"""
         return True
 
     def get(self, key: str) -> Optional[Any]:
-        """Get value from cache"""
-        if key in self.cache:
-            self.hits += 1
-            return self.cache[key]
-        self.misses += 1
-        return None
+        """Get value from cache (thread-safe)"""
+        with self.lock:
+            if key in self.cache:
+                self.hits += 1
+                return self.cache[key]
+            self.misses += 1
+            return None
 
     def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
-        """Set value in cache (ignores TTL for simplicity)"""
-        if len(self.cache) >= self.max_size:
-            # Remove oldest item (simple FIFO)
-            oldest_key = next(iter(self.cache))
-            del self.cache[oldest_key]
+        """Set value in cache (thread-safe, ignores TTL for simplicity)"""
+        with self.lock:
+            if len(self.cache) >= self.max_size:
+                # Remove oldest item (simple FIFO)
+                oldest_key = next(iter(self.cache))
+                del self.cache[oldest_key]
 
-        self.cache[key] = value
-        return True
+            self.cache[key] = value
+            return True
 
     def delete(self, key: str) -> bool:
-        """Delete key from cache"""
-        if key in self.cache:
-            del self.cache[key]
-            return True
-        return False
+        """Delete key from cache (thread-safe)"""
+        with self.lock:
+            if key in self.cache:
+                del self.cache[key]
+                return True
+            return False
 
     def clear_all(self) -> bool:
-        """Clear all keys"""
-        self.cache.clear()
-        return True
+        """Clear all keys (thread-safe)"""
+        with self.lock:
+            self.cache.clear()
+            return True
 
     def get_stats(self) -> Dict[str, Any]:
-        """Get cache statistics"""
-        total_requests = self.hits + self.misses
-        hit_rate = (self.hits / total_requests * 100) if total_requests > 0 else 0
+        """Get cache statistics (thread-safe)"""
+        with self.lock:
+            total_requests = self.hits + self.misses
+            hit_rate = (self.hits / total_requests * 100) if total_requests > 0 else 0
 
-        return {
-            "hits": self.hits,
-            "misses": self.misses,
-            "hit_rate_percent": round(hit_rate, 2),
-            "total_keys": len(self.cache),
-            "cache_type": "in-memory",
-        }
+            return {
+                "hits": self.hits,
+                "misses": self.misses,
+                "hit_rate_percent": round(hit_rate, 2),
+                "total_keys": len(self.cache),
+                "cache_type": "in-memory",
+            }
 
 
 def get_cache(use_redis: bool = True, **kwargs) -> Any:

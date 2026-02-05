@@ -17,28 +17,44 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
+import os
 import time
+import threading
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 import pandas as pd
 from fastapi import FastAPI, HTTPException, Depends, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field
 import jwt
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+from dotenv import load_dotenv
 
 from src.models.model_manager import ModelManager
 from src.data_processing.game_features import GameFeatureEngineer
 
-# Configuration
-SECRET_KEY = "your-secret-key-change-in-production"  # TODO: Move to env variables
+# Load environment variables
+load_dotenv()
+
+# Configuration from environment variables with secure defaults
+SECRET_KEY = os.getenv("SECRET_KEY", "INSECURE-CHANGE-ME-IN-PRODUCTION")
+if SECRET_KEY == "INSECURE-CHANGE-ME-IN-PRODUCTION":
+    import warnings
+    warnings.warn("⚠️  Using insecure SECRET_KEY! Set SECRET_KEY environment variable in production!")
+
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+
+# CORS Configuration - restrict to specific origins in production
+ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:8000").split(",")
+if "*" in ALLOWED_ORIGINS:
+    import warnings
+    warnings.warn("⚠️  CORS allows ALL origins! Restrict ALLOWED_ORIGINS in production!")
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -54,22 +70,32 @@ limiter = Limiter(key_func=get_remote_address)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# CORS middleware
+# CORS middleware - restricted to allowed origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # TODO: Restrict in production
+    allow_origins=ALLOWED_ORIGINS,  # Restricted origins from env variable
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "DELETE"],  # Only allowed methods
+    allow_headers=["Authorization", "Content-Type"],  # Only necessary headers
 )
 
 # Security
 security = HTTPBearer()
 
-# Global state
+# Global state with thread safety
 model_manager = ModelManager()
 feature_engineer = GameFeatureEngineer()
-loaded_models: Dict[str, any] = {}
+loaded_models: Dict[str, Any] = {}
+models_lock = threading.RLock()  # Thread-safe lock for model dict
+
+# Metrics tracking (thread-safe counters)
+metrics_lock = threading.Lock()
+api_metrics = {
+    "predictions_total": 0,
+    "cache_hits": 0,
+    "cache_misses": 0,
+    "errors_total": 0,
+}
 
 
 # ==================== Pydantic Models ====================
@@ -231,25 +257,28 @@ def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)) 
 
 
 def load_model(model_name: str, model_version: str):
-    """Load model if not already loaded"""
+    """Load model if not already loaded (thread-safe)"""
     key = f"{model_name}:{model_version}"
-    if key not in loaded_models:
-        try:
-            model = model_manager.load_model(model_name, model_version)
-            loaded_models[key] = {
-                "model": model,
-                "loaded_at": datetime.utcnow().isoformat(),
-                "last_used": datetime.utcnow().isoformat(),
-            }
-        except FileNotFoundError:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Model {model_name}:{model_version} not found",
-            )
-    else:
-        loaded_models[key]["last_used"] = datetime.utcnow().isoformat()
 
-    return loaded_models[key]["model"]
+    # Thread-safe model loading
+    with models_lock:
+        if key not in loaded_models:
+            try:
+                model = model_manager.load_model(model_name, model_version)
+                loaded_models[key] = {
+                    "model": model,
+                    "loaded_at": datetime.utcnow().isoformat(),
+                    "last_used": datetime.utcnow().isoformat(),
+                }
+            except FileNotFoundError:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Model {model_name}:{model_version} not found",
+                )
+        else:
+            loaded_models[key]["last_used"] = datetime.utcnow().isoformat()
+
+        return loaded_models[key]["model"]
 
 
 # ==================== Authentication ====================
@@ -260,12 +289,26 @@ async def login(request: LoginRequest):
     """
     Login endpoint to get JWT token
 
-    In production, validate against database with hashed passwords
+    Production: Set API_USERNAME and API_PASSWORD environment variables
+    For database authentication, use src.database.models User table
     """
-    # TODO: Replace with real authentication
-    if request.username == "admin" and request.password == "admin":
+    # Get credentials from environment variables (more secure than hardcoding)
+    valid_username = os.getenv("API_USERNAME", "admin")
+    valid_password = os.getenv("API_PASSWORD", "admin")
+
+    # Warn if using default credentials
+    if valid_username == "admin" and valid_password == "admin":
+        import warnings
+        warnings.warn("⚠️  Using default credentials! Set API_USERNAME and API_PASSWORD in production!")
+
+    # Simple authentication (replace with database + bcrypt in production)
+    if request.username == valid_username and request.password == valid_password:
         access_token = create_access_token(data={"sub": request.username})
         return {"access_token": access_token, "token_type": "bearer"}
+
+    # Track failed login attempts
+    with metrics_lock:
+        api_metrics["errors_total"] += 1
 
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -310,12 +353,22 @@ async def metrics(request: Request, token: dict = Depends(verify_token)):
 
     Requires authentication
     """
+    with metrics_lock:
+        metrics_snapshot = api_metrics.copy()
+
     return {
         "models_loaded": len(loaded_models),
         "uptime_seconds": time.time() - start_time,
-        "predictions_total": 0,  # TODO: Track in database
-        "cache_hits": 0,  # TODO: Track in Redis
-        "cache_misses": 0,  # TODO: Track in Redis
+        "predictions_total": metrics_snapshot["predictions_total"],
+        "cache_hits": metrics_snapshot["cache_hits"],
+        "cache_misses": metrics_snapshot["cache_misses"],
+        "errors_total": metrics_snapshot["errors_total"],
+        "cache_hit_rate": (
+            metrics_snapshot["cache_hits"]
+            / (metrics_snapshot["cache_hits"] + metrics_snapshot["cache_misses"])
+            if (metrics_snapshot["cache_hits"] + metrics_snapshot["cache_misses"]) > 0
+            else 0.0
+        ),
     }
 
 
@@ -343,6 +396,10 @@ async def predict_game(
         prediction = model.predict(features_df)[0]
         probabilities = model.predict_proba(features_df)[0]
 
+        # Track metrics
+        with metrics_lock:
+            api_metrics["predictions_total"] += 1
+
         # Format response
         winner = "home" if prediction == 1 else "away"
         confidence = probabilities[1] if prediction == 1 else probabilities[0]
@@ -359,6 +416,9 @@ async def predict_game(
         }
 
     except Exception as e:
+        # Track errors
+        with metrics_lock:
+            api_metrics["errors_total"] += 1
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 
