@@ -11,12 +11,30 @@
 
 A collaborative ML project featuring advanced performance optimizations (10-100x speedup), comprehensive testing, full CI/CD pipeline, and production deployment guides.
 
+## 🚀 Live Demo
+
+> **Status**: Ready for deployment! Follow the [Deployment Guide](docs/DEPLOYMENT.md) to deploy to Railway + Streamlit Cloud.
+
+Once deployed, your application will be available at:
+
+- **📊 Dashboard**: `https://your-app.streamlit.app` (Streamlit Cloud)
+- **🔌 API**: `https://your-app.up.railway.app` (Railway)
+- **📖 API Docs**: `https://your-app.up.railway.app/api/docs` (Swagger UI)
+- **💚 Health Check**: `https://your-app.up.railway.app/api/health`
+
+**Deployment Options**:
+- **Backend**: Railway (FastAPI + PostgreSQL + Redis) - ~$15/month
+- **Frontend**: Streamlit Cloud (Free tier available)
+- **CI/CD**: GitHub Actions (automated testing & deployment)
+
+See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for step-by-step deployment instructions.
+
 ## Key Features
 
 - **Performance Optimized**: 10-100x speedup through vectorized operations (see [Performance Guide](docs/PERFORMANCE_OPTIMIZATIONS.md))
 - **Enterprise Infrastructure**: Full CI/CD pipeline with multi-OS testing across Python 3.9-3.12
 - **Comprehensive Testing**: 90%+ test coverage with unit, integration, and performance benchmarks
-- **Production Ready**: Docker, Kubernetes, and cloud deployment guides (AWS, GCP, Azure)
+- **Production Ready**: Docker deployment with cloud-ready architecture (Kubernetes support planned)
 - **Memory Efficient**: Line-by-line memory profiling and optimization tools
 - **Modern Codebase**: Pandas 3.0 compatible, pre-commit hooks, automated quality checks
 - **Complete Documentation**: Testing guides, deployment guides, API references, and examples
@@ -84,7 +102,7 @@ This automated script will set up everything! See [QUICKSTART.md](QUICKSTART.md)
 
 ### Prerequisites
 
-- Python 3.8+
+- Python 3.9+ (tested on 3.9, 3.10, 3.11, 3.12)
 - pip
 - Git
 
@@ -165,8 +183,8 @@ Deploy to production environments:
 docker build -t nba-prediction:latest .
 docker run -p 8000:8000 nba-prediction:latest
 
-# Kubernetes
-kubectl apply -f deployment/kubernetes/
+# Kubernetes (Coming Soon)
+# Kubernetes deployment files planned for future release
 
 # Cloud platforms (AWS, GCP, Azure)
 # See deployment guide for detailed instructions
@@ -235,7 +253,7 @@ Explore interactive tutorials in the `notebooks/` directory:
 - ✅ Interactive dashboard with real-time predictions
 - ✅ Comprehensive testing (90%+ coverage)
 - ✅ Full CI/CD pipeline (multi-OS, multi-Python)
-- ✅ Production deployment guides (Docker, Kubernetes, cloud)
+- ✅ Production deployment with Docker (Kubernetes planned)
 - ✅ Memory profiling and performance optimization
 - ✅ Complete documentation and examples
 
@@ -336,7 +354,7 @@ Check out the Jupyter notebooks in the `notebooks/` directory:
 - **Security**: Dependency scanning, vulnerability checks
 - **Testing**: 90%+ coverage, unit + integration tests
 - **Performance**: Automated benchmarking and profiling
-- **Deployment**: Docker, Kubernetes, cloud-ready
+- **Deployment**: Docker Compose stack, cloud-ready architecture
 
 ### 📚 Documentation
 - [Testing Guide](docs/TESTING_GUIDE.md) - Comprehensive testing documentation

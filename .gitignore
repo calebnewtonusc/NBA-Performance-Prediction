@@ -49,6 +49,11 @@ venv.bak/
 .env
 .env.local
 .env.*.local
+.env.production
+.env.staging
+
+# Streamlit secrets
+.streamlit/secrets.toml
 
 # API Keys and Secrets
 secrets.json

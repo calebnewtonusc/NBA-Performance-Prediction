@@ -1,0 +1,55 @@
+name: Streamlit Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/visualization/**'
+      - 'requirements-streamlit.txt'
+      - '.streamlit/**'
+      - '.github/workflows/streamlit-test.yml'
+
+jobs:
+  test:
+    name: Test Streamlit Dashboard
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-streamlit.txt
+
+      - name: Verify Streamlit imports
+        run: |
+          python -c "import streamlit; print(f'✓ Streamlit {streamlit.__version__} imported successfully')"
+
+      - name: Check dashboard syntax
+        run: |
+          python -m py_compile src/visualization/dashboard.py
+          echo "✓ Dashboard syntax is valid"
+
+      - name: Verify dashboard imports
+        run: |
+          # Test that dashboard can import without errors (won't run main)
+          python -c "import sys; sys.argv = ['streamlit']; import src.visualization.dashboard; print('✓ Dashboard imports successful')"
+
+      - name: Test summary
+        run: |
+          echo "### ✅ Streamlit Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: Passed" >> $GITHUB_STEP_SUMMARY
+          echo "- **Checks**:" >> $GITHUB_STEP_SUMMARY
+          echo "  - ✓ Syntax validation" >> $GITHUB_STEP_SUMMARY
+          echo "  - ✓ Import verification" >> $GITHUB_STEP_SUMMARY
+          echo "  - ✓ Dependencies installed" >> $GITHUB_STEP_SUMMARY

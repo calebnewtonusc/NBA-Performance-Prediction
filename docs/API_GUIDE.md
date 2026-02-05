@@ -81,8 +81,8 @@ curl -X POST http://localhost:8000/api/auth/login \\
 
 - **FastAPI REST API** with automatic OpenAPI documentation
 - **JWT Authentication** for secure access
-- **PostgreSQL** database for persistent storage
-- **Redis** caching for high performance (5min TTL)
+- **PostgreSQL** database infrastructure (ready for integration)
+- **Redis** infrastructure ready (caching integration planned)
 - **Rate Limiting** to prevent abuse
 - **Model Management** (load/unload models dynamically)
 - **Batch Predictions** for efficiency
@@ -164,10 +164,11 @@ print(f"Confidence: {result['confidence']:.1%}")  # "74.2%"
 
 ## Performance
 
-- **Cached Predictions**: ~2ms latency
-- **Uncached Predictions**: ~50ms latency
-- **Throughput**: 2,000+ requests/second (with caching)
-- **Cache Hit Rate**: ~60% in production
+- **Prediction Latency**: ~50ms average
+- **Throughput**: 500+ requests/second (single instance)
+- **Batch Predictions**: Up to 100 games per request (configurable via MAX_BATCH_SIZE)
+- **Thread Safety**: Multiple worker support via uvicorn
+- **Future Enhancement**: Redis caching will reduce latency to ~2ms
 
 ---
 

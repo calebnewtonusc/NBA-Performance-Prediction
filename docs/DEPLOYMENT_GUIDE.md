@@ -264,16 +264,18 @@ gcloud run deploy nba-api \
   --allow-unauthenticated
 ```
 
-#### 2. Kubernetes (GKE)
+#### 2. Kubernetes (GKE) - Coming Soon
 ```bash
+# Kubernetes deployment files are planned for future release
+# For now, use Docker Compose deployment shown in Docker section
 # Create cluster
-gcloud container clusters create nba-cluster \
-  --num-nodes 3 \
-  --machine-type n1-standard-2
+# gcloud container clusters create nba-cluster \
+#   --num-nodes 3 \
+#   --machine-type n1-standard-2
 
-# Deploy
-kubectl apply -f k8s/deployment.yaml
-kubectl apply -f k8s/service.yaml
+# Deploy (files coming soon)
+# kubectl apply -f deployment/kubernetes/deployment.yaml
+# kubectl apply -f deployment/kubernetes/service.yaml
 ```
 
 ### Azure

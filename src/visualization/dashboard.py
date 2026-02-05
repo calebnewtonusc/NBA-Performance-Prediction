@@ -7,6 +7,7 @@ Usage:
     streamlit run src/visualization/dashboard.py
 """
 
+import os
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -20,6 +21,12 @@ sys.path.append(str(Path(__file__).parent.parent.parent))
 
 from src.models.model_manager import ModelManager
 from src.utils.data_loader import load_games_as_dataframe, load_all_teams
+
+# API Configuration for production deployment
+# When deployed to Streamlit Cloud, set API_BASE_URL to your Railway backend URL
+API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
+API_USERNAME = os.getenv("API_USERNAME", "admin")
+API_PASSWORD = os.getenv("API_PASSWORD", "admin")
 
 
 # Page configuration

@@ -492,14 +492,16 @@ docker-compose up -d
 **Pros**: Simple, all-in-one, easy to manage
 **Cons**: Single-host, manual scaling
 
-### 2. Kubernetes
+### 2. Kubernetes (Planned)
 
 ```bash
-kubectl apply -f deployment/kubernetes/
+# Kubernetes deployment files coming soon
+# kubectl apply -f deployment/kubernetes/
 ```
 
 **Pros**: Auto-scaling, high availability, cloud-native
 **Cons**: Complex setup, higher cost
+**Status**: Deployment manifests planned for future release
 
 ### 3. Cloud Platforms
 
