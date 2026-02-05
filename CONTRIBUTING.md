@@ -5,7 +5,7 @@ Thanks for contributing! This is a collaborative learning project.
 ## Getting Started
 
 1. Clone the repository
-2. Create a virtual environment: `python -m venv venv`
+2. Create a virtual environment: `python3 -m venv venv`
 3. Activate it: `source venv/bin/activate` (or `venv\Scripts\activate` on Windows)
 4. Install dependencies: `pip install -r requirements.txt`
 
