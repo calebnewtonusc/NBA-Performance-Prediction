@@ -1,0 +1,12 @@
+{
+  "model_type": "Lasso",
+  "target": "points",
+  "alpha": 0.1,
+  "mae": 2.498366151083555,
+  "rmse": 3.183858197447271,
+  "r2": 0.628348057425259,
+  "features_selected": 6,
+  "trained_at": "2026-02-05T15:26:03.859836",
+  "n_train": 800,
+  "n_test": 200
+}

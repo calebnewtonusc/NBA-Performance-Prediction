@@ -30,9 +30,13 @@ jobs:
         run: |
           python scripts/fetch_real_nba_data.py
 
-      - name: Train all models
+      - name: Train game prediction models
         run: |
           python scripts/train_all_models.py
+
+      - name: Train player prediction models
+        run: |
+          python scripts/train_player_models.py
 
       - name: Check if models changed
         id: check_changes
