@@ -45,9 +45,13 @@ class APIClient {
       username,
       password,
     });
-    this.token = response.data.access_token;
-    this.client.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
-    return this.token;
+    const token = response.data.access_token;
+    if (!token) {
+      throw new Error('Failed to get access token from API');
+    }
+    this.token = token;
+    this.client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    return token;
   }
 
   async getHealth(): Promise<HealthResponse> {
