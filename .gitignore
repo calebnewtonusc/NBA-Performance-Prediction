@@ -57,13 +57,15 @@ credentials.json
 *.pem
 
 # Data files (don't commit large datasets)
-data/raw/*.json
-data/raw/*.csv
-data/raw/*.parquet
-data/processed/*.csv
-data/processed/*.parquet
-data/external/*.csv
-data/external/*.parquet
+data/raw/**/*.json
+data/raw/**/*.csv
+data/raw/**/*.parquet
+data/processed/**/*.json
+data/processed/**/*.csv
+data/processed/**/*.parquet
+data/external/**/*.json
+data/external/**/*.csv
+data/external/**/*.parquet
 
 # But keep the directory structure
 !data/raw/.gitkeep
