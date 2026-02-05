@@ -49,16 +49,6 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
 MAX_BATCH_SIZE = int(os.getenv("MAX_BATCH_SIZE", "100"))
 
-# CORS Configuration - restrict to specific origins in production
-ALLOWED_ORIGINS = [
-    origin.strip()
-    for origin in os.getenv(
-        "ALLOWED_ORIGINS",
-        "https://nba-prediction-dashboard.streamlit.app,http://localhost:8501,http://localhost:8000"
-    ).split(",")
-    if origin.strip()  # Filter out empty strings
-]
-
 # Initialize FastAPI app
 app = FastAPI(
     title="NBA Performance Prediction API",
@@ -73,13 +63,13 @@ limiter = Limiter(key_func=get_remote_address)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# CORS middleware - restricted to allowed origins
+# CORS middleware - allows all Vercel preview URLs + localhost
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,  # Restricted origins from env variable
+    allow_origin_regex=r"(https://nba-performance-prediction(-[a-z0-9]+)?\.vercel\.app|http://localhost:[0-9]+)",
     allow_credentials=True,
-    allow_methods=["GET", "POST", "DELETE"],  # Only allowed methods
-    allow_headers=["Authorization", "Content-Type"],  # Only necessary headers
+    allow_methods=["GET", "POST", "DELETE"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 # Security
