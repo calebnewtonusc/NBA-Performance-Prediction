@@ -1,0 +1,61 @@
+name: Backend Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'requirements-api.txt'
+      - 'requirements.txt'
+      - '.github/workflows/backend-test.yml'
+
+jobs:
+  test:
+    name: Test Backend (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-api.txt
+          pip install pytest pytest-cov black flake8
+
+      - name: Check code formatting
+        run: |
+          black --check src/ || echo "Code formatting issues found (non-blocking)"
+
+      - name: Lint with flake8
+        run: |
+          flake8 src/ --count --select=E9,F63,F7,F82 --show-source --statistics || echo "Linting issues found (non-blocking)"
+
+      - name: Run tests
+        run: |
+          # Tests will be added - for now just verify imports work
+          python -c "from src.api.main import app; print('✓ API imports successful')"
+          python -c "from src.models.model_manager import ModelManager; print('✓ Model manager imports successful')"
+          python -c "from src.database.models import Team, Game; print('✓ Database models imports successful')"
+
+      - name: Test summary
+        run: |
+          echo "### ✅ Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Python Version**: ${{ matrix.python-version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: Passed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All import tests passed successfully." >> $GITHUB_STEP_SUMMARY

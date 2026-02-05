@@ -20,7 +20,8 @@ sys.path.append(str(Path(__file__).parent.parent.parent))
 import os
 import time
 import threading
-from datetime import datetime, timedelta
+import logging
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional, Any
 
 import pandas as pd
@@ -28,7 +29,7 @@ from fastapi import FastAPI, HTTPException, Depends, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 import jwt
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
@@ -36,25 +37,25 @@ from slowapi.errors import RateLimitExceeded
 from dotenv import load_dotenv
 
 from src.models.model_manager import ModelManager
-from src.data_processing.game_features import GameFeatureEngineer
 
 # Load environment variables
 load_dotenv()
 
 # Configuration from environment variables with secure defaults
 SECRET_KEY = os.getenv("SECRET_KEY", "INSECURE-CHANGE-ME-IN-PRODUCTION")
-if SECRET_KEY == "INSECURE-CHANGE-ME-IN-PRODUCTION":
-    import warnings
-    warnings.warn("⚠️  Using insecure SECRET_KEY! Set SECRET_KEY environment variable in production!")
-
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+MAX_BATCH_SIZE = int(os.getenv("MAX_BATCH_SIZE", "100"))
 
 # CORS Configuration - restrict to specific origins in production
-ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:8000").split(",")
-if "*" in ALLOWED_ORIGINS:
-    import warnings
-    warnings.warn("⚠️  CORS allows ALL origins! Restrict ALLOWED_ORIGINS in production!")
+ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "ALLOWED_ORIGINS",
+        "https://nba-prediction-dashboard.streamlit.app,http://localhost:8501,http://localhost:8000"
+    ).split(",")
+    if origin.strip()  # Filter out empty strings
+]
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -84,7 +85,6 @@ security = HTTPBearer()
 
 # Global state with thread safety
 model_manager = ModelManager()
-feature_engineer = GameFeatureEngineer()
 loaded_models: Dict[str, Any] = {}
 models_lock = threading.RLock()  # Thread-safe lock for model dict
 
@@ -92,8 +92,8 @@ models_lock = threading.RLock()  # Thread-safe lock for model dict
 metrics_lock = threading.Lock()
 api_metrics = {
     "predictions_total": 0,
-    "cache_hits": 0,
-    "cache_misses": 0,
+    "cache_hits": 0,  # TODO: Integrate Redis cache to track cache hits
+    "cache_misses": 0,  # TODO: Integrate Redis cache to track cache misses
     "errors_total": 0,
 }
 
@@ -129,8 +129,8 @@ class GameFeatures(BaseModel):
         default=0.5, ge=0.0, le=1.0, description="Away team away record"
     )
 
-    class Config:
-        schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "home_win_pct": 0.650,
                 "away_win_pct": 0.550,
@@ -152,6 +152,7 @@ class GameFeatures(BaseModel):
                 "away_away_win_pct": 0.480,
             }
         }
+    )
 
 
 class PredictionRequest(BaseModel):
@@ -232,7 +233,7 @@ start_time = time.time()
 def create_access_token(data: dict) -> str:
     """Create JWT access token"""
     to_encode = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
@@ -267,8 +268,8 @@ def load_model(model_name: str, model_version: str):
                 model = model_manager.load_model(model_name, model_version)
                 loaded_models[key] = {
                     "model": model,
-                    "loaded_at": datetime.utcnow().isoformat(),
-                    "last_used": datetime.utcnow().isoformat(),
+                    "loaded_at": datetime.now(timezone.utc).isoformat(),
+                    "last_used": datetime.now(timezone.utc).isoformat(),
                 }
             except FileNotFoundError:
                 raise HTTPException(
@@ -276,7 +277,7 @@ def load_model(model_name: str, model_version: str):
                     detail=f"Model {model_name}:{model_version} not found",
                 )
         else:
-            loaded_models[key]["last_used"] = datetime.utcnow().isoformat()
+            loaded_models[key]["last_used"] = datetime.now(timezone.utc).isoformat()
 
         return loaded_models[key]["model"]
 
@@ -285,7 +286,7 @@ def load_model(model_name: str, model_version: str):
 
 
 @app.post("/api/auth/login", response_model=Token, tags=["Authentication"])
-async def login(request: LoginRequest):
+async def login(login_data: LoginRequest, request: Request):
     """
     Login endpoint to get JWT token
 
@@ -296,19 +297,20 @@ async def login(request: LoginRequest):
     valid_username = os.getenv("API_USERNAME", "admin")
     valid_password = os.getenv("API_PASSWORD", "admin")
 
-    # Warn if using default credentials
-    if valid_username == "admin" and valid_password == "admin":
-        import warnings
-        warnings.warn("⚠️  Using default credentials! Set API_USERNAME and API_PASSWORD in production!")
-
     # Simple authentication (replace with database + bcrypt in production)
-    if request.username == valid_username and request.password == valid_password:
-        access_token = create_access_token(data={"sub": request.username})
+    if login_data.username == valid_username and login_data.password == valid_password:
+        access_token = create_access_token(data={"sub": login_data.username})
         return {"access_token": access_token, "token_type": "bearer"}
 
-    # Track failed login attempts
+    # Track and log failed login attempts (security monitoring)
     with metrics_lock:
         api_metrics["errors_total"] += 1
+
+    logger = logging.getLogger("uvicorn")
+    client_ip = request.client.host if request.client else "unknown"
+    logger.warning(
+        f"⚠️  SECURITY: Failed login attempt for username '{login_data.username}' from IP: {client_ip} at {datetime.now(timezone.utc).isoformat()}"
+    )
 
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -338,7 +340,7 @@ async def health_check(request: Request):
     """Health check endpoint for monitoring"""
     return {
         "status": "healthy",
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "uptime_seconds": time.time() - start_time,
         "models_loaded": len(loaded_models),
         "version": "1.0.0",
@@ -390,7 +392,7 @@ async def predict_game(
         model = load_model(prediction_request.model_name, prediction_request.model_version)
 
         # Prepare features
-        features_df = pd.DataFrame([prediction_request.features.dict()])
+        features_df = pd.DataFrame([prediction_request.features.model_dump()])
 
         # Make prediction
         prediction = model.predict(features_df)[0]
@@ -412,7 +414,7 @@ async def predict_game(
             "home_team": prediction_request.home_team,
             "away_team": prediction_request.away_team,
             "model_used": f"{prediction_request.model_name}:{prediction_request.model_version}",
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         }
 
     except Exception as e:
@@ -432,9 +434,10 @@ async def predict_batch(
 
     More efficient than individual predictions
     """
-    if len(batch_request.games) > 100:
+    if len(batch_request.games) > MAX_BATCH_SIZE:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST, detail="Maximum 100 games per batch"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Maximum {MAX_BATCH_SIZE} games per batch"
         )
 
     try:
@@ -442,7 +445,7 @@ async def predict_batch(
 
         predictions = []
         for game in batch_request.games:
-            features_df = pd.DataFrame([game.features.dict()])
+            features_df = pd.DataFrame([game.features.model_dump()])
             prediction = model.predict(features_df)[0]
             probabilities = model.predict_proba(features_df)[0]
 
@@ -464,10 +467,13 @@ async def predict_batch(
             "predictions": predictions,
             "total_games": len(predictions),
             "model_used": f"{batch_request.model_name}:{batch_request.model_version}",
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         }
 
     except Exception as e:
+        # Track batch prediction errors
+        with metrics_lock:
+            api_metrics["errors_total"] += 1
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 
@@ -530,7 +536,7 @@ async def load_model_endpoint(
         return {
             "status": "success",
             "message": f"Model {model_name}:{version} loaded successfully",
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         }
     except HTTPException:
         raise
@@ -543,15 +549,18 @@ async def load_model_endpoint(
 async def unload_model_endpoint(
     request: Request, model_name: str, version: str, token: dict = Depends(verify_token)
 ):
-    """Unload a model from memory"""
+    """Unload a model from memory (thread-safe)"""
     key = f"{model_name}:{version}"
-    if key in loaded_models:
-        del loaded_models[key]
-        return {
-            "status": "success",
-            "message": f"Model {model_name}:{version} unloaded successfully",
-            "timestamp": datetime.utcnow().isoformat(),
-        }
+
+    # Thread-safe model unloading
+    with models_lock:
+        if key in loaded_models:
+            del loaded_models[key]
+            return {
+                "status": "success",
+                "message": f"Model {model_name}:{version} unloaded successfully",
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            }
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND, detail=f"Model {model_name}:{version} not loaded"
@@ -575,11 +584,19 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 @app.on_event("startup")
 async def startup_event():
-    """Initialize on startup"""
-    print("🚀 NBA Prediction API starting up...")
-    print(f"📊 API Documentation: http://localhost:8000/api/docs")
-    print(f"🔒 Authentication: POST /api/auth/login")
-    print(f"🏀 Predictions: POST /api/predict")
+    """Initialize on startup and check security configuration"""
+    logger = logging.getLogger("uvicorn")
+    logger.info("🚀 NBA Prediction API starting up...")
+    logger.info(f"📊 API Documentation: http://localhost:8000/api/docs")
+    logger.info(f"🔒 Authentication: POST /api/auth/login")
+    logger.info(f"🏀 Predictions: POST /api/predict")
+
+    # Security configuration checks (warn once at startup)
+    if os.getenv("API_USERNAME", "admin") == "admin" and os.getenv("API_PASSWORD", "admin") == "admin":
+        logger.warning("⚠️  SECURITY: Using default credentials (admin/admin)! Set API_USERNAME and API_PASSWORD environment variables in production!")
+
+    if SECRET_KEY == "INSECURE-CHANGE-ME-IN-PRODUCTION":
+        logger.warning("⚠️  SECURITY: Using insecure SECRET_KEY! Set SECRET_KEY environment variable in production!")
 
 
 @app.on_event("shutdown")

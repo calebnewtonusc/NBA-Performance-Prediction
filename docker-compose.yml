@@ -34,7 +34,7 @@ services:
     ports:
       - "6379:6379"
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ["CMD", "redis-cli", "-a", "redis_password_change_in_production", "--raw", "incr", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -59,6 +59,15 @@ services:
       SECRET_KEY: your-secret-key-change-in-production-use-long-random-string
       API_HOST: 0.0.0.0
       API_PORT: 8000
+      # Authentication
+      API_USERNAME: admin
+      API_PASSWORD: change-this-secure-password
+      # CORS
+      ALLOWED_ORIGINS: http://localhost:3000,http://localhost:8000
+      # JWT
+      ACCESS_TOKEN_EXPIRE_MINUTES: 30
+      # API Limits
+      MAX_BATCH_SIZE: 100
       # Monitoring
       ENABLE_MONITORING: "true"
       LOG_LEVEL: INFO

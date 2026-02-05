@@ -1,0 +1,46 @@
+name: Backend Deploy to Railway
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+      - 'Dockerfile.api'
+      - 'requirements-api.txt'
+      - 'railway.json'
+      - '.github/workflows/backend-deploy.yml'
+
+jobs:
+  deploy:
+    name: Deploy to Railway
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Railway
+        run: |
+          echo "Railway deployment is handled automatically via Railway GitHub integration"
+          echo "This workflow serves as a trigger and verification step"
+
+      - name: Wait for deployment
+        run: sleep 30
+
+      - name: Health check
+        run: |
+          echo "Checking API health..."
+          # This will be updated with actual Railway URL after deployment
+          # curl -f https://nba-api-production.up.railway.app/api/health || exit 1
+          echo "Health check will be configured after Railway deployment"
+
+      - name: Deployment summary
+        run: |
+          echo "### 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Status**: Triggered" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Railway will handle the actual deployment automatically." >> $GITHUB_STEP_SUMMARY

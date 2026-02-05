@@ -4,7 +4,7 @@ Database Models for NBA Prediction System
 SQLAlchemy models for PostgreSQL database
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from sqlalchemy import (
@@ -41,8 +41,8 @@ class Team(Base):
     city = Column(String(50))
     conference = Column(String(10))  # East/West
     division = Column(String(20))
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     # Relationships
     home_games = relationship("Game", foreign_keys="Game.home_team_id", back_populates="home_team")
@@ -76,8 +76,8 @@ class Game(Base):
     venue = Column(String(100))
     attendance = Column(Integer)
 
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     # Relationships
     home_team = relationship("Team", foreign_keys=[home_team_id], back_populates="home_games")
@@ -120,7 +120,7 @@ class Prediction(Base):
     correct = Column(Boolean)  # True if prediction was correct
 
     # Metadata
-    predicted_at = Column(DateTime, default=datetime.utcnow, index=True)
+    predicted_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), index=True)
     user_id = Column(String(50))  # API user who made the prediction
 
     # Relationships
@@ -150,7 +150,7 @@ class ModelMetadata(Base):
     framework = Column(String(20))  # sklearn, pytorch, xgboost, etc.
 
     # Training info
-    trained_at = Column(DateTime, default=datetime.utcnow)
+    trained_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     training_samples = Column(Integer)
     training_duration_seconds = Column(Float)
 
@@ -173,8 +173,8 @@ class ModelMetadata(Base):
     drift_score = Column(Float)
     last_drift_check = Column(DateTime)
 
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
     # Indexes
     __table_args__ = (Index("ix_model_name_version", "name", "version", unique=True),)
@@ -206,7 +206,7 @@ class APIUsage(Base):
     ip_address = Column(String(45))
     user_agent = Column(String(200))
 
-    timestamp = Column(DateTime, default=datetime.utcnow, index=True)
+    timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc), index=True)
 
     # Indexes
     __table_args__ = (
@@ -236,10 +236,10 @@ class CachedPrediction(Base):
     prediction_result = Column(JSON, nullable=False)
 
     # Cache metadata
-    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), index=True)
     expires_at = Column(DateTime, nullable=False, index=True)
     hit_count = Column(Integer, default=0)
-    last_accessed = Column(DateTime, default=datetime.utcnow)
+    last_accessed = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     def __repr__(self):
         return f"<CachedPrediction(cache_key='{self.cache_key}', hits={self.hit_count})>"
@@ -354,7 +354,7 @@ def get_model_accuracy(session, model_name: str, model_version: str, days: int =
     """Calculate model accuracy over recent predictions"""
     from sqlalchemy import func
 
-    cutoff_date = datetime.utcnow() - timedelta(days=days)
+    cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
 
     total = (
         session.query(func.count(Prediction.id))

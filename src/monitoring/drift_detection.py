@@ -11,7 +11,7 @@ sys.path.append(str(Path(__file__).parent.parent.parent))
 
 import numpy as np
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Optional, Tuple, List
 from dataclasses import dataclass, asdict
 
@@ -104,7 +104,7 @@ class DataDriftDetector:
             recommendation = "✅ No significant data drift detected. Model is stable."
 
         return DriftReport(
-            timestamp=datetime.utcnow().isoformat(),
+            timestamp=datetime.now(timezone.utc).isoformat(),
             drift_detected=drift_detected,
             drift_score=overall_drift_score,
             drift_threshold=self.threshold,
@@ -175,7 +175,7 @@ class ModelPerformanceMonitor:
             timestamp: Timestamp of prediction
         """
         if timestamp is None:
-            timestamp = datetime.utcnow().isoformat()
+            timestamp = datetime.now(timezone.utc).isoformat()
 
         self.predictions_history.append(
             {
@@ -329,7 +329,7 @@ class AlertManager:
             List of alerts
         """
         alerts = []
-        timestamp = datetime.utcnow().isoformat()
+        timestamp = datetime.now(timezone.utc).isoformat()
 
         # Drift alerts
         if drift_report.drift_detected:
@@ -370,14 +370,14 @@ class AlertManager:
 
     def get_recent_alerts(self, hours: int = 24) -> List[Dict]:
         """Get alerts from last N hours"""
-        cutoff_time = datetime.utcnow() - timedelta(hours=hours)
+        cutoff_time = datetime.now(timezone.utc) - timedelta(hours=hours)
         cutoff_str = cutoff_time.isoformat()
 
         return [a for a in self.alerts_history if a["timestamp"] >= cutoff_str]
 
     def clear_old_alerts(self, days: int = 30):
         """Clear alerts older than N days"""
-        cutoff_time = datetime.utcnow() - timedelta(days=days)
+        cutoff_time = datetime.now(timezone.utc) - timedelta(days=days)
         cutoff_str = cutoff_time.isoformat()
 
         self.alerts_history = [a for a in self.alerts_history if a["timestamp"] >= cutoff_str]
