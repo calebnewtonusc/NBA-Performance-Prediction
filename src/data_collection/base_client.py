@@ -19,6 +19,9 @@ import requests
 from typing import Dict, Any, Optional
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+from src.utils.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 
 class BaseAPIClient:
@@ -111,7 +114,7 @@ class BaseAPIClient:
             return response.json()
 
         except requests.exceptions.RequestException as e:
-            print(f"Error fetching {url}: {str(e)}")
+            logger.error(f"Error fetching {url}: {str(e)}")
             raise
 
     def close(self):

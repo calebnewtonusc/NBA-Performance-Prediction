@@ -51,8 +51,8 @@ class TestModelManager:
             # Save model (may create directory structure)
             try:
                 manager.save_model(mock_model, "test_model", "v1", metadata)
-            except:
-                # Expected to potentially fail due to directory structure
+            except (OSError, AttributeError, TypeError):
+                # Expected to potentially fail due to directory structure or mocking issues
                 pass
 
     def test_model_list_models(self):
