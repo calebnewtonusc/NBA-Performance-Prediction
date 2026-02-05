@@ -267,12 +267,25 @@ def load_model(model_name: str, model_version: str):
     with models_lock:
         if key not in loaded_models:
             try:
-                model = model_manager.load_model(model_name, model_version)
-                loaded_models[key] = {
-                    "model": model,
-                    "loaded_at": datetime.now(timezone.utc).isoformat(),
-                    "last_used": datetime.now(timezone.utc).isoformat(),
-                }
+                model_data = model_manager.load_model(model_name, model_version)
+
+                # Handle both old format (just model) and new format (dict with model + scaler)
+                if isinstance(model_data, dict) and 'model' in model_data:
+                    # New format with scaler
+                    loaded_models[key] = {
+                        "model": model_data['model'],
+                        "scaler": model_data.get('scaler'),
+                        "loaded_at": datetime.now(timezone.utc).isoformat(),
+                        "last_used": datetime.now(timezone.utc).isoformat(),
+                    }
+                else:
+                    # Old format - just the model
+                    loaded_models[key] = {
+                        "model": model_data,
+                        "scaler": None,
+                        "loaded_at": datetime.now(timezone.utc).isoformat(),
+                        "last_used": datetime.now(timezone.utc).isoformat(),
+                    }
             except FileNotFoundError:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -281,7 +294,7 @@ def load_model(model_name: str, model_version: str):
         else:
             loaded_models[key]["last_used"] = datetime.now(timezone.utc).isoformat()
 
-        return loaded_models[key]["model"]
+        return loaded_models[key]
 
 
 # ==================== Authentication ====================
@@ -390,15 +403,23 @@ async def predict_game(
     Returns predicted winner with confidence scores
     """
     try:
-        # Load model
-        model = load_model(prediction_request.model_name, prediction_request.model_version)
+        # Load model and scaler
+        model_data = load_model(prediction_request.model_name, prediction_request.model_version)
+        model = model_data["model"]
+        scaler = model_data["scaler"]
 
         # Prepare features
         features_df = pd.DataFrame([prediction_request.features.model_dump()])
 
+        # Scale features if scaler is available
+        if scaler is not None:
+            features_scaled = scaler.transform(features_df)
+        else:
+            features_scaled = features_df
+
         # Make prediction
-        prediction = model.predict(features_df)[0]
-        probabilities = model.predict_proba(features_df)[0]
+        prediction = model.predict(features_scaled)[0]
+        probabilities = model.predict_proba(features_scaled)[0]
 
         # Track metrics
         with metrics_lock:
@@ -452,16 +473,24 @@ async def predict_game_simple(
             prediction_request.home_team,
             prediction_request.away_team
         )
-        
-        # Load model
-        model = load_model("game_logistic", "v1")
-        
+
+        # Load model and scaler
+        model_data = load_model("game_logistic", "v1")
+        model = model_data["model"]
+        scaler = model_data["scaler"]
+
         # Prepare features
         features_df = pd.DataFrame([features])
-        
+
+        # Scale features if scaler is available
+        if scaler is not None:
+            features_scaled = scaler.transform(features_df)
+        else:
+            features_scaled = features_df
+
         # Make prediction
-        prediction = model.predict(features_df)[0]
-        probabilities = model.predict_proba(features_df)[0]
+        prediction = model.predict(features_scaled)[0]
+        probabilities = model.predict_proba(features_scaled)[0]
         
         # Track metrics
         with metrics_lock:
@@ -506,13 +535,22 @@ async def predict_batch(
         )
 
     try:
-        model = load_model(batch_request.model_name, batch_request.model_version)
+        model_data = load_model(batch_request.model_name, batch_request.model_version)
+        model = model_data["model"]
+        scaler = model_data["scaler"]
 
         predictions = []
         for game in batch_request.games:
             features_df = pd.DataFrame([game.features.model_dump()])
-            prediction = model.predict(features_df)[0]
-            probabilities = model.predict_proba(features_df)[0]
+
+            # Scale features if scaler is available
+            if scaler is not None:
+                features_scaled = scaler.transform(features_df)
+            else:
+                features_scaled = features_df
+
+            prediction = model.predict(features_scaled)[0]
+            probabilities = model.predict_proba(features_scaled)[0]
 
             winner = "home" if prediction == 1 else "away"
             confidence = probabilities[1] if prediction == 1 else probabilities[0]

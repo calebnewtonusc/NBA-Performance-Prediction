@@ -1,0 +1,9 @@
+{
+  "train_accuracy": 0.6491144088080422,
+  "test_accuracy": 0.6959847036328872,
+  "n_train_games": 2089,
+  "n_test_games": 523,
+  "date_range": "2023-11-03 00:00:00 to 2025-06-22 00:00:00",
+  "trained_on": "real_nba_data",
+  "home_win_rate": 0.5467075038284839
+}
