@@ -1,161 +1,119 @@
-# NBA Performance Prediction - Deployment Status
+# NBA Performance Prediction - Production Deployment
 
-## ✅ EVERYTHING IS WORKING!
+## 🚀 LIVE PRODUCTION SYSTEM
 
-### 🚀 Live Deployments
+**Frontend:** https://nba-performance-prediction.vercel.app
+**Backend API:** https://nba-performance-prediction-production.up.railway.app  
+**API Documentation:** https://nba-performance-prediction-production.up.railway.app/api/docs
 
-**Backend API (Railway):**
-- URL: https://nba-performance-prediction-production.up.railway.app
-- Status: ✅ Healthy and running
-- API Docs: https://nba-performance-prediction-production.up.railway.app/api/docs
+## ✅ System Status
 
-**Frontend (Vercel):**
-- Production: https://frontend-eta-one-bcbtvb58hh.vercel.app
-- Status: ✅ Live and deployed
-- Framework: Next.js 14.1.0
+- **Backend:** Healthy and running on Railway
+- **Frontend:** Deployed on Vercel
+- **Model:** Trained on 2,788 real NBA games
+- **Predictions:** Realistic (10-91% confidence range)
 
-### 📊 Model Performance
+## 🎯 Quick Start
 
-**Trained on REAL NBA Data:**
-- 2,788 actual games from 2023-24 and 2024-25 seasons
+1. **Visit the web app:** https://nba-performance-prediction.vercel.app
+2. Click "Predictions" in the navigation
+3. Select home and away teams (e.g., BOS vs LAL)
+4. Click "Predict Game"
+5. View realistic NBA game predictions!
+
+## 📊 Model Performance
+
+**Real NBA Data:**
+- 2,788 games from 2023-24 and 2024-25 seasons
 - Training accuracy: 64.9%
 - Test accuracy: 69.6%
-- Home team win rate: 54.7% (realistic!)
+- Home team win rate: 54.7%
 
-**Realistic Predictions:**
-- Confidence range: 10-91% (vs previous 99.999%)
-- Example: BOS vs LAL → 69.8% confidence (home win)
-- Example: MIA vs PHX → 54.5% confidence (close game)
+**Prediction Examples:**
+- BOS vs LAL → 69.8% confidence (home win)
+- MIA vs PHX → 54.5% confidence (close game)
+- No more unrealistic 99.999% predictions!
 
-### 🎯 Features Implemented
+## 🔐 API Authentication
 
-1. **Real NBA Data Integration:**
-   - Fetches live team statistics via nba_api
-   - 2,788 games from actual NBA seasons
-   - Automatic team stat calculation
+Username: `admin`
+Password: `G9.zs8FGHP1W_lx^5eP,}mU2`
 
-2. **Machine Learning:**
-   - Logistic Regression model with StandardScaler
-   - 18 features including win %, points, home/away splits
-   - Proper feature normalization
+## 🧪 Test API Directly
 
-3. **API Endpoints:**
-   - `/api/health` - Health check
-   - `/api/auth/login` - Authentication
-   - `/api/predict/simple` - Game predictions (auto-fetches stats)
-   - `/api/predict` - Full prediction with custom features
-   - `/api/predict/batch` - Batch predictions
-
-4. **Frontend:**
-   - Simple team selection (BOS, LAL, etc.)
-   - Auto-fetches live stats
-   - Displays predictions with confidence scores
-   - Responsive design with Tailwind CSS
-
-### 🔐 Authentication
-
-**Credentials:**
-- Username: `admin`
-- Password: `G9.zs8FGHP1W_lx^5eP,}mU2`
-
-### 🧪 Testing the System
-
-**Test API directly:**
 ```bash
-# Get prediction for BOS vs LAL
-curl -X POST "https://nba-performance-prediction-production.up.railway.app/api/auth/login" \
+# Login and get JWT token
+TOKEN=$(curl -s -X POST "https://nba-performance-prediction-production.up.railway.app/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"username":"admin","password":"G9.zs8FGHP1W_lx^5eP,}mU2"}' \
-  | jq -r '.access_token' | read TOKEN
+  | python3 -c "import sys, json; print(json.load(sys.stdin)['access_token'])")
 
-curl -X POST "https://nba-performance-prediction-production.up.railway.app/api/predict/simple" \
+# Get prediction
+curl -s -X POST "https://nba-performance-prediction-production.up.railway.app/api/predict/simple" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $TOKEN" \
-  -d '{"home_team":"BOS","away_team":"LAL"}' | jq
+  -d '{"home_team":"BOS","away_team":"LAL"}' | python3 -m json.tool
 ```
 
-**Use Frontend:**
-1. Visit https://frontend-eta-one-bcbtvb58hh.vercel.app
-2. Navigate to "Predictions"
-3. Select home and away teams
-4. Click "Predict Game"
-5. View realistic predictions!
+## 📚 What You Learned
 
-### 📚 Learning Objectives Achieved
+✅ **Real API Integration** - nba_api for live NBA data
+✅ **Data Engineering** - Fetched and processed 2,788 games
+✅ **Machine Learning** - Logistic Regression with StandardScaler
+✅ **Feature Engineering** - 18 features (win %, points, home/away splits)
+✅ **REST API** - FastAPI with authentication and rate limiting
+✅ **Frontend** - Next.js with React and Tailwind CSS
+✅ **DevOps** - Railway + Vercel deployment pipeline
+✅ **Version Control** - Git workflow with meaningful commits
 
-✅ Real API integration (nba_api)
-✅ JSON data parsing and processing
-✅ Data cleaning and feature engineering
-✅ Machine Learning with scikit-learn
-✅ Feature scaling with StandardScaler
-✅ REST API development with FastAPI
-✅ Frontend development with Next.js
-✅ Cloud deployment (Railway + Vercel)
-✅ Environment variable management
-✅ Git version control
+## 🔄 Update Model Weekly
 
-### 🔄 Continuous Improvement
+```bash
+# Fetch latest NBA games
+cd /Users/joelnewton/Desktop/2026-Code/projects/NBA-Performance-Prediction
+python scripts/fetch_real_nba_data.py
 
-**Data Updates:**
-- Run `python scripts/fetch_real_nba_data.py` to get latest games
-- Run `python scripts/train_with_real_data.py` to retrain model
-- Commit and push updated model to auto-deploy
+# Retrain model with new data
+python scripts/train_with_real_data.py
 
-**Model Retraining:**
-As the 2024-25 season progresses, you can:
-1. Fetch new games weekly
-2. Retrain model with more data
-3. Deploy updated model automatically
-4. Track accuracy improvements over time
+# Deploy updated model
+git add models/
+git commit -m "Update model with latest NBA data"
+git push  # Auto-deploys to Railway
+```
 
-### 🎓 Next Steps for Semester Project
+## 📁 Key Files
 
-**Additional Models to Implement:**
-1. Ridge Regression (for continuous outcomes)
-2. Lasso Regression (feature selection)
-3. Decision Trees (interpretability)
-4. Random Forest (ensemble learning)
-5. Player performance predictions
+- `models/game_logistic/v1/model.pkl` - Trained model + scaler
+- `src/api/main.py` - FastAPI backend with endpoints
+- `src/api/nba_data_fetcher.py` - Live NBA stats fetcher
+- `frontend/app/predictions/page.tsx` - Prediction interface
+- `scripts/fetch_real_nba_data.py` - Fetch real NBA data
+- `scripts/train_with_real_data.py` - Train on real data
+
+## 🎓 Next Steps for Your Project
+
+**Additional Models:**
+1. Decision Trees (interpretability)
+2. Random Forest (ensemble learning)
+3. Ridge/Lasso Regression (player stats)
+4. Model comparison dashboard
 
 **Advanced Features:**
-1. Head-to-head history calculation
-2. Rest days and back-to-back game tracking
-3. Win/loss streaks
-4. Injury data integration
-5. Model comparison dashboard
+1. Head-to-head win history
+2. Rest days tracking
+3. Back-to-back game detection
+4. Win/loss streaks
+5. Injury data integration
 
-### 📝 Repository Structure
+## 🎉 Summary
 
-```
-NBA-Performance-Prediction/
-├── src/
-│   ├── api/                    # FastAPI backend
-│   │   ├── main.py            # API endpoints
-│   │   └── nba_data_fetcher.py # Live data fetching
-│   └── models/                 # ML models
-├── frontend/                   # Next.js frontend
-│   ├── app/                   # Pages
-│   └── lib/                   # API client
-├── models/
-│   └── game_logistic/v1/      # Trained model + scaler
-├── scripts/
-│   ├── fetch_real_nba_data.py # Fetch NBA games
-│   └── train_with_real_data.py # Train model
-└── data/
-    └── raw/                   # Real NBA game data
-```
+Your NBA prediction system is **production-ready** with:
+- ✅ Real data from 2,788 NBA games
+- ✅ Realistic predictions (69.6% accuracy)
+- ✅ Live deployments on Railway + Vercel
+- ✅ Auto-fetching team statistics
+- ✅ Clean production URLs
+- ✅ Ready for semester learning!
 
-### 🎉 Summary
-
-You now have a fully functional NBA prediction system:
-- Trained on 2,788 real NBA games
-- Deployed backend API on Railway
-- Deployed frontend on Vercel
-- Realistic predictions (no more 99.999%!)
-- Auto-fetching live team stats
-- Ready for semester-long learning and improvements
-
-**Frontend:** https://frontend-eta-one-bcbtvb58hh.vercel.app
-**API:** https://nba-performance-prediction-production.up.railway.app/api/docs
-
-Everything is fixed and working! 🏀
+**Start using it now:** https://nba-performance-prediction.vercel.app 🏀
