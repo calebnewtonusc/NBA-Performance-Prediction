@@ -1,0 +1,10 @@
+{
+  "model_type": "LinearRegression",
+  "target": "points",
+  "mae": 2.4949694326216143,
+  "rmse": 3.181176105294154,
+  "r2": 0.6289739552142611,
+  "trained_at": "2026-02-05T15:26:03.851079",
+  "n_train": 800,
+  "n_test": 200
+}
