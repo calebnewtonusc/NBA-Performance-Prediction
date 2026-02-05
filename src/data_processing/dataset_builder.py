@@ -67,7 +67,8 @@ class DatasetBuilder:
         Returns:
             Tuple of (train_df, val_df, test_df)
         """
-        assert abs(train_ratio + val_ratio + test_ratio - 1.0) < 0.01, "Ratios must sum to 1.0"
+        if abs(train_ratio + val_ratio + test_ratio - 1.0) >= 0.01:
+            raise ValueError("Ratios must sum to 1.0")
 
         # Sort by date
         df = df.sort_values(date_column).reset_index(drop=True)
@@ -110,7 +111,8 @@ class DatasetBuilder:
         Returns:
             Tuple of (train_df, val_df, test_df)
         """
-        assert abs(train_ratio + val_ratio + test_ratio - 1.0) < 0.01, "Ratios must sum to 1.0"
+        if abs(train_ratio + val_ratio + test_ratio - 1.0) >= 0.01:
+            raise ValueError("Ratios must sum to 1.0")
 
         # First split: train vs (val + test)
         train_df, temp_df = train_test_split(
