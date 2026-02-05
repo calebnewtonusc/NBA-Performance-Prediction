@@ -26,27 +26,27 @@ install-dev:
 
 sample-data:
 	@echo "Generating sample data..."
-	python scripts/generate_sample_data.py
+	python3 scripts/generate_sample_data.py
 
 data:
 	@echo "Collecting NBA data..."
-	python scripts/collect_data.py --seasons 2023 2024
+	python3 scripts/collect_data.py --seasons 2023 2024
 
 data-quick:
 	@echo "Collecting sample NBA data (quick mode)..."
-	python scripts/collect_data.py --quick --seasons 2023
+	python3 scripts/collect_data.py --quick --seasons 2023
 
 train:
 	@echo "Training all models..."
-	python scripts/train_models.py --all
+	python3 scripts/train_models.py --all
 
 train-game:
 	@echo "Training game prediction models..."
-	python scripts/train_models.py --game-models
+	python3 scripts/train_models.py --game-models
 
 train-player:
 	@echo "Training player statistics models..."
-	python scripts/train_models.py --player-models
+	python3 scripts/train_models.py --player-models
 
 dashboard:
 	@echo "Starting dashboard..."

@@ -40,13 +40,13 @@ echo ""
 
 # Generate sample data
 echo "Generating sample data..."
-python scripts/generate_sample_data.py
+python3 scripts/generate_sample_data.py
 echo "✓ Sample data generated"
 echo ""
 
 # Train models
 echo "Training models (this may take a few minutes)..."
-python scripts/train_models.py --all
+python3 scripts/train_models.py --all
 echo "✓ Models trained"
 echo ""
 

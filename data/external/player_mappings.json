@@ -1,0 +1,182 @@
+{
+  "1": {
+    "first_name": "LeBron",
+    "last_name": "James",
+    "full_name": "LeBron James",
+    "position": "F",
+    "height_feet": 6,
+    "height_inches": 9,
+    "weight_pounds": 250,
+    "team": {
+      "id": 1,
+      "abbreviation": "LAL",
+      "city": "Los Angeles",
+      "conference": "West",
+      "division": "Pacific",
+      "full_name": "Los Angeles Lakers",
+      "name": "Lakers"
+    }
+  },
+  "2": {
+    "first_name": "Jayson",
+    "last_name": "Tatum",
+    "full_name": "Jayson Tatum",
+    "position": "F",
+    "height_feet": 6,
+    "height_inches": 8,
+    "weight_pounds": 210,
+    "team": {
+      "id": 2,
+      "abbreviation": "BOS",
+      "city": "Boston",
+      "conference": "East",
+      "division": "Atlantic",
+      "full_name": "Boston Celtics",
+      "name": "Celtics"
+    }
+  },
+  "3": {
+    "first_name": "Stephen",
+    "last_name": "Curry",
+    "full_name": "Stephen Curry",
+    "position": "G",
+    "height_feet": 6,
+    "height_inches": 2,
+    "weight_pounds": 185,
+    "team": {
+      "id": 3,
+      "abbreviation": "GSW",
+      "city": "Golden State",
+      "conference": "West",
+      "division": "Pacific",
+      "full_name": "Golden State Warriors",
+      "name": "Warriors"
+    }
+  },
+  "4": {
+    "first_name": "Jimmy",
+    "last_name": "Butler",
+    "full_name": "Jimmy Butler",
+    "position": "F",
+    "height_feet": 6,
+    "height_inches": 7,
+    "weight_pounds": 230,
+    "team": {
+      "id": 4,
+      "abbreviation": "MIA",
+      "city": "Miami",
+      "conference": "East",
+      "division": "Southeast",
+      "full_name": "Miami Heat",
+      "name": "Heat"
+    }
+  },
+  "5": {
+    "first_name": "Giannis",
+    "last_name": "Antetokounmpo",
+    "full_name": "Giannis Antetokounmpo",
+    "position": "F",
+    "height_feet": 6,
+    "height_inches": 11,
+    "weight_pounds": 242,
+    "team": {
+      "id": 5,
+      "abbreviation": "MIL",
+      "city": "Milwaukee",
+      "conference": "East",
+      "division": "Central",
+      "full_name": "Milwaukee Bucks",
+      "name": "Bucks"
+    }
+  },
+  "6": {
+    "first_name": "Nikola",
+    "last_name": "Jokic",
+    "full_name": "Nikola Jokic",
+    "position": "C",
+    "height_feet": 6,
+    "height_inches": 11,
+    "weight_pounds": 284,
+    "team": {
+      "id": 6,
+      "abbreviation": "DEN",
+      "city": "Denver",
+      "conference": "West",
+      "division": "Northwest",
+      "full_name": "Denver Nuggets",
+      "name": "Nuggets"
+    }
+  },
+  "7": {
+    "first_name": "Kevin",
+    "last_name": "Durant",
+    "full_name": "Kevin Durant",
+    "position": "F",
+    "height_feet": 6,
+    "height_inches": 10,
+    "weight_pounds": 240,
+    "team": {
+      "id": 7,
+      "abbreviation": "PHX",
+      "city": "Phoenix",
+      "conference": "West",
+      "division": "Pacific",
+      "full_name": "Phoenix Suns",
+      "name": "Suns"
+    }
+  },
+  "8": {
+    "first_name": "Joel",
+    "last_name": "Embiid",
+    "full_name": "Joel Embiid",
+    "position": "C",
+    "height_feet": 7,
+    "height_inches": 0,
+    "weight_pounds": 280,
+    "team": {
+      "id": 8,
+      "abbreviation": "PHI",
+      "city": "Philadelphia",
+      "conference": "East",
+      "division": "Atlantic",
+      "full_name": "Philadelphia 76ers",
+      "name": "76ers"
+    }
+  },
+  "9": {
+    "first_name": "Luka",
+    "last_name": "Doncic",
+    "full_name": "Luka Doncic",
+    "position": "G",
+    "height_feet": 6,
+    "height_inches": 7,
+    "weight_pounds": 230,
+    "team": {
+      "id": 9,
+      "abbreviation": "DAL",
+      "city": "Dallas",
+      "conference": "West",
+      "division": "Southwest",
+      "full_name": "Dallas Mavericks",
+      "name": "Mavericks"
+    }
+  },
+  "10": {
+    "first_name": "Kyrie",
+    "last_name": "Irving",
+    "full_name": "Kyrie Irving",
+    "position": "G",
+    "height_feet": 6,
+    "height_inches": 2,
+    "weight_pounds": 195,
+    "team": {
+      "id": 10,
+      "abbreviation": "BKN",
+      "city": "Brooklyn",
+      "conference": "East",
+      "division": "Atlantic",
+      "full_name": "Brooklyn Nets",
+      "name": "Nets"
+    }
+  }
+}
