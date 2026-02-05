@@ -155,7 +155,7 @@ class PlayerFeatureEngineer:
                 return minutes + seconds / 60.0
             else:
                 return float(min_str)
-        except:
+        except (ValueError, AttributeError, TypeError):
             return 0.0
 
     def calculate_usage_rate(
