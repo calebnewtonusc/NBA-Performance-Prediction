@@ -87,6 +87,17 @@ class APIClient {
     return response.data;
   }
 
+  async predictSimple(homeTeam: string, awayTeam: string): Promise<PredictionResponse> {
+    if (!this.token) {
+      await this.login('admin', 'G9.zs8FGHP1W_lx^5eP,}mU2');
+    }
+    const response = await this.client.post('/api/predict/simple', {
+      home_team: homeTeam,
+      away_team: awayTeam,
+    });
+    return response.data;
+  }
+
   async batchPredict(predictions: PredictionRequest[]): Promise<PredictionResponse[]> {
     if (!this.token) {
       await this.login('admin', 'G9.zs8FGHP1W_lx^5eP,}mU2');
