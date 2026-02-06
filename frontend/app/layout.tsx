@@ -22,17 +22,29 @@ export default function RootLayout({
           </main>
 
           {/* Footer */}
-          <footer className="mt-12 border-t border-gray-200 bg-gray-50">
-            <div className="container mx-auto px-4 py-6 text-center">
-              <p className="text-sm font-semibold text-gray-900">
-                NBA Performance Prediction v1.0.0
-              </p>
-              <p className="text-xs text-gray-700 mt-2">
-                Machine learning platform for NBA game and player predictions
-              </p>
-              <p className="text-xs text-gray-600 mt-3">
-                Built by <a href="https://calebnewton.me" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">Caleb Newton</a>
-              </p>
+          <footer className="mt-20 pb-12">
+            <div className="container mx-auto px-4 flex justify-center">
+              <a
+                href="https://calebnewton.me"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 px-8 py-4 bg-white bg-opacity-60 rounded-full border-2 border-blue-200 shadow-md hover:shadow-xl hover:-translate-y-0.5 hover:border-blue-300 transition-all duration-300 no-underline"
+              >
+                <img
+                  src="/caleb-usc.jpg"
+                  alt="Caleb Newton at USC"
+                  className="w-12 h-12 rounded-full object-cover border-2 border-blue-300 shadow-md"
+                  style={{ objectPosition: 'center 30%' }}
+                />
+                <div className="flex flex-col items-start gap-1">
+                  <span className="text-xs text-gray-400 uppercase tracking-wider font-semibold">
+                    Built by
+                  </span>
+                  <span className="text-base text-gray-800 font-bold">
+                    Caleb Newton
+                  </span>
+                </div>
+              </a>
             </div>
           </footer>
         </div>
