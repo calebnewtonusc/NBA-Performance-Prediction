@@ -3,9 +3,9 @@
 # Use this file for reproducible builds
 
 # Core Data Science Libraries
-numpy==1.26.4
+numpy>=2.0.0,<2.2.0
 pandas==2.1.4
-scipy==1.11.4
+scipy==1.14.1
 
 # Machine Learning
 scikit-learn==1.8.0
