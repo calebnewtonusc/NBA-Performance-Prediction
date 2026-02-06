@@ -81,7 +81,7 @@ class APIClient {
   async predict(data: PredictionRequest): Promise<PredictionResponse> {
     if (!this.token) {
       // Auto-login with default credentials
-      await this.login('admin', 'G9.zs8FGHP1W_lx^5eP,}mU2');
+      await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
     }
     const response = await this.client.post('/api/predict', data);
     return response.data;
@@ -89,7 +89,7 @@ class APIClient {
 
   async predictSimple(homeTeam: string, awayTeam: string): Promise<PredictionResponse> {
     if (!this.token) {
-      await this.login('admin', 'G9.zs8FGHP1W_lx^5eP,}mU2');
+      await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
     }
     const response = await this.client.post('/api/predict/simple', {
       home_team: homeTeam,
@@ -100,7 +100,7 @@ class APIClient {
 
   async batchPredict(predictions: PredictionRequest[]): Promise<PredictionResponse[]> {
     if (!this.token) {
-      await this.login('admin', 'G9.zs8FGHP1W_lx^5eP,}mU2');
+      await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
     }
     const response = await this.client.post('/api/predict/batch', { predictions });
     return response.data.predictions;
@@ -108,7 +108,7 @@ class APIClient {
 
   async getModels(): Promise<any> {
     if (!this.token) {
-      await this.login('admin', 'G9.zs8FGHP1W_lx^5eP,}mU2');
+      await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
     }
     const response = await this.client.get('/api/models');
     return response.data;
