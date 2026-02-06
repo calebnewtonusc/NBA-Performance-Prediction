@@ -4,7 +4,7 @@
 
 # Core Data Science Libraries
 numpy>=2.0.0,<2.2.0
-pandas==2.1.4
+pandas>=2.2.0
 scipy==1.14.1
 
 # Machine Learning
