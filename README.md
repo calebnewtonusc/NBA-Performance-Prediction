@@ -13,19 +13,20 @@ A collaborative ML project featuring advanced performance optimizations (10-100x
 
 ## 🚀 Live Demo
 
-> **Status**: Ready for deployment! Follow the [Deployment Guide](docs/DEPLOYMENT.md) to deploy to Railway + Streamlit Cloud.
+> **Status**: ✅ **LIVE IN PRODUCTION!**
 
-Once deployed, your application will be available at:
+**Production Deployment**:
+- **🎯 Web App**: [nba-performance-prediction.vercel.app](https://nba-performance-prediction.vercel.app)
+- **🔌 API**: [nba-performance-prediction-production.up.railway.app](https://nba-performance-prediction-production.up.railway.app)
+- **📖 API Docs**: [API Documentation](https://nba-performance-prediction-production.up.railway.app/api/docs) (Swagger UI)
+- **💚 Health Check**: [API Health](https://nba-performance-prediction-production.up.railway.app/api/health)
 
-- **📊 Dashboard**: `https://your-app.streamlit.app` (Streamlit Cloud)
-- **🔌 API**: `https://your-app.up.railway.app` (Railway)
-- **📖 API Docs**: `https://your-app.up.railway.app/api/docs` (Swagger UI)
-- **💚 Health Check**: `https://your-app.up.railway.app/api/health`
-
-**Deployment Options**:
-- **Backend**: Railway (FastAPI + PostgreSQL + Redis) - ~$15/month
-- **Frontend**: Streamlit Cloud (Free tier available)
-- **CI/CD**: GitHub Actions (automated testing & deployment)
+**Production Stack**:
+- **Frontend**: Next.js 14 on Vercel (Auto-deployment from GitHub)
+- **Backend**: FastAPI on Railway (Docker-based deployment)
+- **Models**: 6 trained ML models (3 game + 3 player prediction models)
+- **Data**: 2,788 real NBA games from nba_api integration
+- **Auth**: JWT-based authentication with secure password hashing
 
 See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for step-by-step deployment instructions.
 
@@ -400,11 +401,33 @@ This is an educational project. Feel free to use and modify as needed.
 - **Security**: Bandit scanning, no vulnerabilities
 - **Compatibility**: Python 3.9-3.12, Pandas 3.0 ready
 
-## Team Members
+## Production Achievements
 
-Add your names here as you join the project!
+### Deployed Models
+- ✅ **Game Prediction Models** (3 models):
+  - Logistic Regression: 69.6% accuracy
+  - Decision Tree: 61.6% accuracy
+  - Random Forest: 67.3% accuracy
 
-- Joel Newton
-- [Add your name]
-- [Add your name]
-- [Add your name]
+- ✅ **Player Statistics Models** (3 models):
+  - Linear Regression: 2.49 MAE
+  - Ridge Regression: 2.49 MAE
+  - Lasso Regression: 2.50 MAE
+
+### Data Collection
+- ✅ 2,788 real NBA games collected via nba_api
+- ✅ Full integration with live NBA stats API
+- ✅ Automated data fetching and processing pipeline
+
+### Production Deployment
+- ✅ FastAPI backend with JWT authentication
+- ✅ Next.js frontend with auto-login
+- ✅ Railway deployment (Docker-based)
+- ✅ Vercel deployment (auto-deploy from GitHub)
+- ✅ All 6 models deployed and accessible
+
+## Built By
+
+**Caleb Newton** - [calebnewton.me](https://calebnewton.me)
+
+Educational project for demonstrating machine learning concepts and production deployment practices.
