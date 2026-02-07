@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
 import { apiClient, ModelInfo, PerformanceMetrics, DriftReport, Alert } from '@/lib/api-client'
 import { SkeletonCardGrid, SkeletonStats, SkeletonChart } from '@/components/LoadingSkeleton'
+import { InfoTooltip } from '@/components/InfoTooltip'
 import {
   BarChart,
   Bar,
@@ -181,25 +182,37 @@ export default function Performance() {
               <h3 className="text-xl font-semibold mb-4">Current Metrics</h3>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Accuracy:</span>
+                  <span className="text-gray-400 flex items-center">
+                    Accuracy:
+                    <InfoTooltip content="Percentage of correct predictions out of all predictions made. Higher is better." />
+                  </span>
                   <span className="text-2xl font-bold text-green-500">
                     {(performance.accuracy * 100).toFixed(1)}%
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Precision:</span>
+                  <span className="text-gray-400 flex items-center">
+                    Precision:
+                    <InfoTooltip content="Of all positive predictions, how many were correct. Measures prediction reliability." />
+                  </span>
                   <span className="text-xl font-semibold">
                     {(performance.precision * 100).toFixed(1)}%
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">Recall:</span>
+                  <span className="text-gray-400 flex items-center">
+                    Recall:
+                    <InfoTooltip content="Of all actual positives, how many were correctly identified. Measures completeness." />
+                  </span>
                   <span className="text-xl font-semibold">
                     {(performance.recall * 100).toFixed(1)}%
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-400">F1 Score:</span>
+                  <span className="text-gray-400 flex items-center">
+                    F1 Score:
+                    <InfoTooltip content="Harmonic mean of precision and recall. Balanced measure of model performance." />
+                  </span>
                   <span className="text-xl font-semibold">
                     {(performance.f1_score * 100).toFixed(1)}%
                   </span>
@@ -282,7 +295,10 @@ export default function Performance() {
       {/* Drift Detection */}
       {drift && (
         <div>
-          <h2 className="text-2xl font-bold mb-4">Data Drift Detection</h2>
+          <h2 className="text-2xl font-bold mb-4 flex items-center">
+            Data Drift Detection
+            <InfoTooltip content="Detects when input data patterns change significantly, which may reduce model accuracy. Retraining may be needed when drift is detected." />
+          </h2>
           <div
             className={`p-6 rounded-lg border ${
               drift.drift_detected

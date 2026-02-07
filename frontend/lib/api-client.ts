@@ -314,6 +314,39 @@ class APIClient {
     return response.data;
   }
 
+  async compareModels(homeTeam: string, awayTeam: string): Promise<Array<{ model: ModelInfo; prediction: PredictionResponse }>> {
+    if (!this.token) {
+      await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
+    }
+
+    // Get all available models
+    const models = await this.getModelsList();
+
+    // Make predictions with each model
+    const comparisons = await Promise.all(
+      models.map(async (model) => {
+        try {
+          const response = await this.client.post('/api/v1/predict/simple', {
+            home_team: homeTeam,
+            away_team: awayTeam,
+            model_name: model.name,
+            model_version: model.version,
+          });
+          return {
+            model,
+            prediction: response.data,
+          };
+        } catch (error) {
+          console.error(`Failed to get prediction from ${model.name} v${model.version}:`, error);
+          return null;
+        }
+      })
+    );
+
+    // Filter out failed predictions
+    return comparisons.filter((c): c is { model: ModelInfo; prediction: PredictionResponse } => c !== null);
+  }
+
   async batchPredict(predictions: PredictionRequest[]): Promise<PredictionResponse[]> {
     if (!this.token) {
       await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
