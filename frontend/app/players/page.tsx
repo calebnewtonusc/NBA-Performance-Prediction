@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
 import { apiClient, Player, PlayerStats } from '@/lib/api-client'
 import { SkeletonPlayerGrid, SkeletonText } from '@/components/LoadingSkeleton'
+import { InfoTooltip } from '@/components/InfoTooltip'
 import {
   BarChart,
   Bar,
@@ -14,6 +15,15 @@ import {
   ResponsiveContainer,
 } from '@/components/LazyChart'
 
+const FEATURED_PLAYERS = [
+  { name: 'LeBron James', id: 237 },
+  { name: 'Stephen Curry', id: 124 },
+  { name: 'Kevin Durant', id: 140 },
+  { name: 'Giannis Antetokounmpo', id: 15 },
+  { name: 'Luka Doncic', id: 154 },
+  { name: 'Joel Embiid', id: 162 },
+]
+
 export default function Players() {
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<Player[]>([])
@@ -23,6 +33,29 @@ export default function Players() {
   const [loading, setLoading] = useState(false)
   const [statsLoading, setStatsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [recentSearches, setRecentSearches] = useState<string[]>([])
+
+  // Load recent searches from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('recentPlayerSearches')
+    if (saved) {
+      try {
+        setRecentSearches(JSON.parse(saved))
+      } catch (e) {
+        console.error('Failed to parse recent searches', e)
+      }
+    }
+  }, [])
+
+  const addToRecentSearches = (query: string) => {
+    const trimmed = query.trim()
+    if (!trimmed) return
+
+    // Add to front, remove duplicates, limit to 5
+    const updated = [trimmed, ...recentSearches.filter(s => s.toLowerCase() !== trimmed.toLowerCase())].slice(0, 5)
+    setRecentSearches(updated)
+    localStorage.setItem('recentPlayerSearches', JSON.stringify(updated))
+  }
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -47,6 +80,9 @@ export default function Players() {
         })
         setError('No players found matching your search')
       } else {
+        // Add to recent searches on successful search
+        addToRecentSearches(searchQuery)
+
         toast.success(`Found ${results.length} player(s)`, {
           description: `Showing results for "${searchQuery}"`
         })
@@ -140,7 +176,10 @@ export default function Players() {
 
       {/* Search Section */}
       <div className="bg-secondary p-6 rounded-lg border border-gray-700">
-        <h2 className="text-2xl font-bold mb-4">Search Players</h2>
+        <div className="flex items-center gap-2 mb-4">
+          <h2 className="text-2xl font-bold">Search Players</h2>
+          <InfoTooltip content="Search by first name, last name, or team. Typos are automatically corrected using fuzzy matching." />
+        </div>
         <form onSubmit={handleSearch} className="flex gap-4">
           <input
             type="text"
@@ -158,6 +197,55 @@ export default function Players() {
             {loading ? 'Searching...' : 'Search'}
           </button>
         </form>
+
+        {/* Recent Searches */}
+        {recentSearches.length > 0 && !loading && searchResults.length === 0 && (
+          <div className="mt-4">
+            <p className="text-sm text-gray-400 mb-2">Recent Searches:</p>
+            <div className="flex flex-wrap gap-2">
+              {recentSearches.map((search, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setSearchQuery(search)
+                    handleSearch(new Event('submit') as any)
+                  }}
+                  className="px-3 py-1.5 bg-background border border-gray-600 rounded-full text-sm hover:border-primary hover:text-primary transition-colors"
+                >
+                  {search}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Featured Players */}
+        {!loading && searchResults.length === 0 && !selectedPlayer && (
+          <div className="mt-6 pt-6 border-t border-gray-700">
+            <p className="text-sm text-gray-400 mb-3">Popular Players:</p>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {FEATURED_PLAYERS.map((player) => (
+                <button
+                  key={player.id}
+                  onClick={() => {
+                    setSearchQuery(player.name)
+                    handleSearch(new Event('submit') as any)
+                  }}
+                  className="p-3 bg-background border border-gray-600 rounded-lg hover:border-primary hover:bg-background/80 transition-all text-left"
+                >
+                  <span className="text-sm font-medium">{player.name}</span>
+                </button>
+              ))}
+            </div>
+
+            <p className="text-xs text-gray-500 mt-4 flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+              Tip: Try searching by first name, last name, or team
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Error Display */}

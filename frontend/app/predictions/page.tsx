@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { apiClient, PredictionResponse } from '@/lib/api-client'
+import { InfoTooltip } from '@/components/InfoTooltip'
 import {
   BarChart,
   Bar,
@@ -141,8 +142,9 @@ export default function Predictions() {
           <h2 className="text-2xl font-bold mb-6" id="matchup-heading">Select Matchup</h2>
           <form onSubmit={handlePredict} className="space-y-6" aria-labelledby="matchup-heading">
             <div>
-              <label htmlFor="home-team-select" className="block text-sm font-medium mb-2">
+              <label htmlFor="home-team-select" className="block text-sm font-medium mb-2 flex items-center">
                 Home Team
+                <InfoTooltip content="The team playing at home. Home court advantage is automatically factored into predictions." />
               </label>
               <select
                 id="home-team-select"
@@ -161,8 +163,9 @@ export default function Predictions() {
             </div>
 
             <div>
-              <label htmlFor="away-team-select" className="block text-sm font-medium mb-2">
+              <label htmlFor="away-team-select" className="block text-sm font-medium mb-2 flex items-center">
                 Away Team
+                <InfoTooltip content="The visiting team. Road game statistics and travel fatigue are considered in predictions." />
               </label>
               <select
                 id="away-team-select"
