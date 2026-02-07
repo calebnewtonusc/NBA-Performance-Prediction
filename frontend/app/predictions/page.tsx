@@ -280,7 +280,22 @@ export default function Predictions() {
 
         <div className="bg-secondary p-4 sm:p-6 rounded-lg border border-gray-700">
           <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6" id="results-heading">Prediction Result</h2>
-          {prediction ? (
+          {loading ? (
+            <div className="space-y-6 animate-pulse">
+              <div className="text-center space-y-4">
+                <div className="h-16 sm:h-24 bg-gray-700 rounded-lg mx-auto w-32 sm:w-40"></div>
+                <div className="h-6 sm:h-8 bg-gray-700 rounded-lg mx-auto w-48 sm:w-64"></div>
+                <div className="h-10 bg-gray-700 rounded-lg mx-auto w-40 sm:w-52"></div>
+              </div>
+              <div className="pt-4 sm:pt-6 border-t border-gray-700">
+                <div className="h-40 sm:h-48 bg-gray-700 rounded-lg"></div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 sm:pt-6 border-t border-gray-700">
+                <div className="bg-gray-700 h-24 rounded-lg"></div>
+                <div className="bg-gray-700 h-24 rounded-lg"></div>
+              </div>
+            </div>
+          ) : prediction ? (
             <div className="space-y-6" role="region" aria-labelledby="results-heading" aria-live="polite">
               <div className="text-center space-y-4">
                 <div className="text-4xl sm:text-6xl font-bold text-primary break-words" aria-label={`Predicted winner: ${prediction.prediction === 'home' ? homeTeam : awayTeam}`}>
