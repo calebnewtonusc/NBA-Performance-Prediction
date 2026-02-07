@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { BarChart3, Home, Users, TrendingUp, Database, Menu, X } from 'lucide-react'
 import { HealthIndicator } from './HealthIndicator'
@@ -23,11 +24,18 @@ export default function Navigation() {
       <div className="container mx-auto px-4">
         {/* Desktop Navigation */}
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center space-x-2">
-            <BarChart3 className="h-8 w-8 text-primary" />
+          <Link href="/" className="flex items-center space-x-3">
+            <Image
+              src="/nba-logo.png"
+              alt="NBA Predictions Logo"
+              width={40}
+              height={40}
+              className="rounded-lg"
+              priority
+            />
             <span className="text-xl font-bold hidden sm:inline">NBA Predictions</span>
             <span className="text-lg font-bold sm:hidden">NBA</span>
-          </div>
+          </Link>
 
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center gap-6">
