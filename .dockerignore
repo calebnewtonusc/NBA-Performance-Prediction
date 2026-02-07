@@ -4,52 +4,67 @@ __pycache__/
 *$py.class
 *.so
 .Python
-*.egg-info/
-dist/
 build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
 *.egg
 
 # Virtual environments
 venv/
-env/
 ENV/
+env/
+.venv
 
 # IDE
 .vscode/
 .idea/
 *.swp
-*.swo
-
-# Git
-.git/
-.gitignore
-
-# Data (too large)
-data/raw/*.json
-data/processed/*.csv
-data/processed/*.parquet
-
-# Models (too large)
-models/*.pkl
-models/*.pickle
-
-# Logs
-logs/
-*.log
-
-# Jupyter
-.ipynb_checkpoints/
-*.ipynb
+.DS_Store
 
 # Testing
 .pytest_cache/
 .coverage
 htmlcov/
-.tox/
 
-# OS
-.DS_Store
-Thumbs.db
+# Logs
+*.log
+logs/
 
-# Documentation
-docs/_build/
+# Environment
+.env
+.env.local
+
+# Git
+.git/
+.gitignore
+
+# CI/CD
+.github/
+
+# Data files
+data/raw/
+*.csv
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Misc
+README.md
+LICENSE

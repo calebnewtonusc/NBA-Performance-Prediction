@@ -60,7 +60,7 @@ class APIClient {
   }
 
   async login(username: string, password: string): Promise<string> {
-    const response = await this.client.post('/api/auth/login', {
+    const response = await this.client.post('/api/v1/auth/login', {
       username,
       password,
     });
@@ -74,7 +74,7 @@ class APIClient {
   }
 
   async getHealth(): Promise<HealthResponse> {
-    const response = await this.client.get('/api/health');
+    const response = await this.client.get('/api/v1/health');
     return response.data;
   }
 
@@ -83,7 +83,7 @@ class APIClient {
       // Auto-login with default credentials
       await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
     }
-    const response = await this.client.post('/api/predict', data);
+    const response = await this.client.post('/api/v1/predict', data);
     return response.data;
   }
 
@@ -91,7 +91,7 @@ class APIClient {
     if (!this.token) {
       await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
     }
-    const response = await this.client.post('/api/predict/simple', {
+    const response = await this.client.post('/api/v1/predict/simple', {
       home_team: homeTeam,
       away_team: awayTeam,
     });
@@ -102,7 +102,7 @@ class APIClient {
     if (!this.token) {
       await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
     }
-    const response = await this.client.post('/api/predict/batch', { predictions });
+    const response = await this.client.post('/api/v1/predict/batch', { predictions });
     return response.data.predictions;
   }
 
@@ -110,7 +110,24 @@ class APIClient {
     if (!this.token) {
       await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
     }
-    const response = await this.client.get('/api/models');
+    const response = await this.client.get('/api/v1/models');
+    return response.data;
+  }
+
+  async exportPredictionsCSV(predictions: any[], includeTimestamp: boolean = true): Promise<Blob> {
+    if (!this.token) {
+      await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
+    }
+    const response = await this.client.post(
+      '/api/v1/export/csv',
+      {
+        predictions,
+        include_timestamp: includeTimestamp,
+      },
+      {
+        responseType: 'blob',
+      }
+    );
     return response.data;
   }
 }

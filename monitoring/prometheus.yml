@@ -1,0 +1,46 @@
+# Prometheus Configuration for NBA Prediction API
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'nba-prediction-api'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Load rules once and periodically evaluate them
+rule_files:
+  - 'alert_rules.yml'
+
+# Scrape configurations
+scrape_configs:
+  # NBA Prediction API
+  - job_name: 'nba-api'
+    static_configs:
+      - targets: ['localhost:8000']
+    metrics_path: '/api/v1/metrics'
+    bearer_token: 'YOUR_API_TOKEN_HERE'  # Replace with actual token
+    scrape_interval: 30s
+
+  # Database metrics (if using PostgreSQL exporter)
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+    scrape_interval: 60s
+
+  # Redis metrics (if using Redis exporter)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+    scrape_interval: 30s
+
+  # Node exporter for system metrics
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100']
+    scrape_interval: 30s
