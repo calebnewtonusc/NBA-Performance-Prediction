@@ -1,7 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { apiClient, Player, PlayerStats } from '@/lib/api-client'
+import { SkeletonPlayerGrid, SkeletonText } from '@/components/LoadingSkeleton'
 import {
   BarChart,
   Bar,
@@ -25,21 +27,40 @@ export default function Players() {
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!searchQuery.trim()) {
-      setError('Please enter a player name to search')
+      toast.error('Please enter a player name to search')
       return
     }
 
     setLoading(true)
     setError(null)
+    setSearchResults([])
+    setSelectedPlayer(null)
+    setPlayerStats(null)
 
     try {
       const results = await apiClient.searchPlayers(searchQuery, 20)
       setSearchResults(results)
+
       if (results.length === 0) {
+        toast.info('No players found', {
+          description: 'Try searching by first name, last name, or team'
+        })
         setError('No players found matching your search')
+      } else {
+        toast.success(`Found ${results.length} player(s)`, {
+          description: `Showing results for "${searchQuery}"`
+        })
       }
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to search players')
+      const errorMessage = err.message || 'Failed to search players'
+      setError(errorMessage)
+      toast.error('Search failed', {
+        description: errorMessage,
+        action: {
+          label: 'Retry',
+          onClick: () => handleSearch(e)
+        }
+      })
     } finally {
       setLoading(false)
     }
@@ -53,9 +74,19 @@ export default function Players() {
     try {
       const stats = await apiClient.getPlayerStats(player.id, selectedSeason)
       setPlayerStats(stats)
+
+      if (stats.games_played > 0) {
+        toast.success(`Loaded ${player.first_name} ${player.last_name}`, {
+          description: `${stats.games_played} games in ${selectedSeason}-${parseInt(selectedSeason.slice(2)) + 1} season`
+        })
+      }
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to load player stats')
+      const errorMessage = err.message || 'Failed to load player stats'
+      setError(errorMessage)
       setPlayerStats(null)
+      toast.error('Failed to load stats', {
+        description: errorMessage
+      })
     } finally {
       setStatsLoading(false)
     }
@@ -70,9 +101,19 @@ export default function Players() {
       try {
         const stats = await apiClient.getPlayerStats(selectedPlayer.id, season)
         setPlayerStats(stats)
+
+        if (stats.games_played === 0) {
+          toast.info('No stats available', {
+            description: `${selectedPlayer.first_name} ${selectedPlayer.last_name} has no recorded stats for the ${season}-${parseInt(season.slice(2)) + 1} season`
+          })
+        }
       } catch (err: any) {
-        setError(err.response?.data?.detail || 'Failed to load player stats')
+        const errorMessage = err.message || 'Failed to load player stats'
+        setError(errorMessage)
         setPlayerStats(null)
+        toast.error('Failed to load stats', {
+          description: errorMessage
+        })
       } finally {
         setStatsLoading(false)
       }

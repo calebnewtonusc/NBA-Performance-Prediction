@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Navigation from '@/components/Navigation'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
   title: 'NBA Performance Prediction',
@@ -58,6 +59,19 @@ export default function RootLayout({
             </div>
           </footer>
         </div>
+        <Toaster
+          theme="dark"
+          position="top-right"
+          richColors
+          closeButton
+          toastOptions={{
+            style: {
+              background: '#1F2937',
+              border: '1px solid #374151',
+              color: '#F3F4F6',
+            },
+          }}
+        />
         </ErrorBoundary>
       </body>
     </html>
