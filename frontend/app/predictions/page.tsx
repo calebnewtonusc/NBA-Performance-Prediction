@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 import { apiClient, PredictionResponse } from '@/lib/api-client'
 import { InfoTooltip } from '@/components/InfoTooltip'
@@ -48,12 +49,33 @@ const NBA_TEAMS = [
 ]
 
 export default function Predictions() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
   const [homeTeam, setHomeTeam] = useState('BOS')
   const [awayTeam, setAwayTeam] = useState('LAL')
   const [prediction, setPrediction] = useState<PredictionResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [predictionHistory, setPredictionHistory] = useState<any[]>([])
+
+  // Load from URL parameters on mount
+  useEffect(() => {
+    const urlHome = searchParams.get('home')
+    const urlAway = searchParams.get('away')
+
+    if (urlHome && urlAway) {
+      setHomeTeam(urlHome)
+      setAwayTeam(urlAway)
+
+      // Auto-predict if valid teams from URL
+      if (urlHome !== urlAway) {
+        setTimeout(() => {
+          handlePredict(new Event('submit') as any)
+        }, 500)
+      }
+    }
+  }, [])
 
   const handlePredict = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -79,6 +101,9 @@ export default function Predictions() {
       toast.success('Prediction generated', {
         description: `${result.prediction === 'home' ? homeTeam : awayTeam} predicted to win with ${(result.confidence * 100).toFixed(1)}% confidence`
       })
+
+      // Update URL with current prediction
+      router.push(`/predictions?home=${homeTeam}&away=${awayTeam}`, { scroll: false })
 
       // Add to history
       const historyEntry = {
@@ -125,6 +150,37 @@ export default function Predictions() {
       toast.error('Export failed', {
         description: errorMessage
       })
+    }
+  }
+
+  const handleShare = async () => {
+    const url = `${window.location.origin}/predictions?home=${homeTeam}&away=${awayTeam}`
+    const title = `NBA Prediction: ${homeTeam} vs ${awayTeam}`
+    const text = prediction
+      ? `${prediction.prediction === 'home' ? homeTeam : awayTeam} predicted to win with ${(prediction.confidence * 100).toFixed(1)}% confidence`
+      : `Predict ${homeTeam} vs ${awayTeam}`
+
+    // Try native share API first (mobile)
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text, url })
+        toast.success('Shared successfully')
+      } catch (err: any) {
+        // User canceled or share failed
+        if (err.name !== 'AbortError') {
+          console.error('Share failed:', err)
+        }
+      }
+    } else {
+      // Fallback to clipboard copy (desktop)
+      try {
+        await navigator.clipboard.writeText(url)
+        toast.success('Link copied to clipboard!', {
+          description: 'Share this link with friends'
+        })
+      } catch (err) {
+        toast.error('Failed to copy link')
+      }
     }
   }
 
@@ -281,6 +337,19 @@ export default function Predictions() {
                   <div className="text-xl font-bold">{awayTeam}</div>
                   <div className="text-primary font-bold mt-1">{(prediction.away_win_probability * 100).toFixed(1)}% to win</div>
                 </div>
+              </div>
+
+              {/* Share Button */}
+              <div className="pt-6 border-t border-gray-700">
+                <button
+                  onClick={handleShare}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+                  </svg>
+                  Share Prediction
+                </button>
               </div>
 
               {predictionHistory.length > 0 && (
