@@ -49,6 +49,8 @@ from src.monitoring.drift_detection import (
     ModelPerformanceMonitor,
     AlertManager,
 )
+from src.data_collection.player_data import PlayerDataCollector
+from src.data_collection.game_data import GameDataCollector
 
 # Load environment variables
 load_dotenv()
@@ -195,6 +197,12 @@ api_metrics = {
 drift_detector = DataDriftDetector(threshold=0.1)
 performance_monitor = ModelPerformanceMonitor(window_size=100)
 alert_manager = AlertManager()
+
+# Player data collector
+player_data_collector = PlayerDataCollector()
+
+# Game data collector
+game_data_collector = GameDataCollector()
 
 
 # ==================== Pydantic Models ====================
@@ -1191,6 +1199,356 @@ async def predict_compare_models(
         with metrics_lock:
             api_metrics["errors_total"] += 1
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
+# ==================== Player Data Endpoints ====================
+
+
+@app.get("/api/v1/players/search", tags=["Players"])
+@limiter.limit("30/minute")
+async def search_players(
+    request: Request,
+    q: str,
+    limit: int = 20,
+    token: dict = Depends(verify_token)
+):
+    """
+    Search for NBA players by name
+
+    Args:
+        q: Search query (player name)
+        limit: Maximum number of results to return (default: 20)
+
+    Returns:
+        List of matching players with their information
+    """
+    try:
+        # Search for players
+        players = player_data_collector.search_players(q)
+
+        # Limit results
+        players = players[:limit]
+
+        return {
+            "query": q,
+            "count": len(players),
+            "players": players
+        }
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to search players: {str(e)}"
+        )
+
+
+@app.get("/api/v1/players/{player_id}", tags=["Players"])
+@limiter.limit("30/minute")
+async def get_player_details(
+    request: Request,
+    player_id: int,
+    token: dict = Depends(verify_token)
+):
+    """
+    Get detailed information about a specific player
+
+    Args:
+        player_id: NBA player ID
+
+    Returns:
+        Player details including name, position, team, physical stats
+    """
+    try:
+        # Fetch player details
+        player = player_data_collector.fetch_player_by_id(player_id)
+
+        if not player:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Player with ID {player_id} not found"
+            )
+
+        return player
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch player details: {str(e)}"
+        )
+
+
+@app.get("/api/v1/players/{player_id}/stats", tags=["Players"])
+@limiter.limit("30/minute")
+async def get_player_stats(
+    request: Request,
+    player_id: int,
+    season: str = "2024",
+    token: dict = Depends(verify_token)
+):
+    """
+    Get player statistics for a specific season
+
+    Args:
+        player_id: NBA player ID
+        season: Season year (e.g., "2024" for 2024-25 season, default: "2024")
+
+    Returns:
+        Player game statistics and season averages
+    """
+    try:
+        # Convert season string to int
+        season_year = int(season)
+
+        # Fetch player stats for the season
+        stats = player_data_collector.fetch_player_stats_by_season(
+            season=season_year,
+            player_ids=[player_id]
+        )
+
+        if not stats:
+            return {
+                "player_id": player_id,
+                "season": season,
+                "games_played": 0,
+                "stats": [],
+                "averages": {}
+            }
+
+        # Calculate season averages
+        averages = player_data_collector.calculate_player_season_averages(stats)
+        player_averages = averages.get(player_id, {})
+
+        return {
+            "player_id": player_id,
+            "season": season,
+            "games_played": len(stats),
+            "stats": stats,
+            "averages": player_averages
+        }
+
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid season format: {season}. Use year format (e.g., '2024')"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch player stats: {str(e)}"
+        )
+
+
+# ==================== Game Data Endpoints ====================
+
+
+@app.get("/api/v1/games", tags=["Games"])
+@limiter.limit("30/minute")
+async def list_games(
+    request: Request,
+    team: Optional[str] = None,
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    season: str = "2024",
+    limit: int = 50,
+    token: dict = Depends(verify_token)
+):
+    """
+    List NBA games with optional filters
+
+    Args:
+        team: Team abbreviation (e.g., "BOS", "LAL")
+        start_date: Start date (YYYY-MM-DD)
+        end_date: End date (YYYY-MM-DD)
+        season: Season year (default: "2024")
+        limit: Maximum number of games to return (default: 50)
+
+    Returns:
+        List of games matching the filters
+    """
+    try:
+        # Determine date range
+        if start_date and end_date:
+            # Use provided date range
+            pass
+        else:
+            # Default to current season dates
+            season_year = int(season)
+            start_date = f"{season_year}-10-01"
+            end_date = f"{season_year + 1}-04-30"
+
+        # Fetch games based on filters
+        if team:
+            # Convert team abbreviation to ID using NBADataFetcher
+            team_mapping = {
+                "ATL": 1, "BOS": 2, "BKN": 3, "CHA": 4, "CHI": 5, "CLE": 6,
+                "DAL": 7, "DEN": 8, "DET": 9, "GSW": 10, "HOU": 11, "IND": 12,
+                "LAC": 13, "LAL": 14, "MEM": 15, "MIA": 16, "MIL": 17, "MIN": 18,
+                "NOP": 19, "NYK": 20, "OKC": 21, "ORL": 22, "PHI": 23, "PHX": 24,
+                "POR": 25, "SAC": 26, "SAS": 27, "TOR": 28, "UTA": 29, "WAS": 30
+            }
+            team_id = team_mapping.get(team.upper())
+            if not team_id:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Invalid team abbreviation: {team}"
+                )
+
+            games = game_data_collector.fetch_games_by_team(team_id, start_date, end_date)
+        else:
+            games = game_data_collector.fetch_games_by_date_range(start_date, end_date)
+
+        # Limit results
+        games = games[:limit]
+
+        # Enrich game data
+        enriched_games = game_data_collector.enrich_game_data(games)
+
+        return {
+            "count": len(enriched_games),
+            "filters": {
+                "team": team,
+                "start_date": start_date,
+                "end_date": end_date,
+                "season": season,
+                "limit": limit
+            },
+            "games": enriched_games
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch games: {str(e)}"
+        )
+
+
+@app.get("/api/v1/games/{game_id}", tags=["Games"])
+@limiter.limit("30/minute")
+async def get_game_details(
+    request: Request,
+    game_id: int,
+    token: dict = Depends(verify_token)
+):
+    """
+    Get detailed information about a specific game
+
+    Args:
+        game_id: NBA game ID
+
+    Returns:
+        Game details including teams, scores, date, and enriched data
+    """
+    try:
+        # Fetch game details
+        game = game_data_collector.fetch_game_by_id(game_id)
+
+        if not game:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Game with ID {game_id} not found"
+            )
+
+        # Enrich game data
+        enriched_games = game_data_collector.enrich_game_data([game])
+
+        return enriched_games[0] if enriched_games else game
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch game details: {str(e)}"
+        )
+
+
+@app.get("/api/v1/teams/stats", tags=["Teams"])
+@limiter.limit("30/minute")
+async def get_team_statistics(
+    request: Request,
+    team: str,
+    season: str = "2024",
+    token: dict = Depends(verify_token)
+):
+    """
+    Get team statistics for a specific season
+
+    Args:
+        team: Team abbreviation (e.g., "BOS", "LAL")
+        season: Season year (default: "2024")
+
+    Returns:
+        Team statistics including averages and trends
+    """
+    try:
+        # Get team stats from NBADataFetcher
+        data_fetcher = NBADataFetcher()
+        season_year = int(season)
+
+        team_stats = data_fetcher.get_team_stats(team.upper(), season_year)
+
+        if not team_stats:
+            # If no stats from fetcher, calculate from games
+            season_year = int(season)
+            start_date = f"{season_year}-10-01"
+            end_date = f"{season_year + 1}-04-30"
+
+            team_mapping = {
+                "ATL": 1, "BOS": 2, "BKN": 3, "CHA": 4, "CHI": 5, "CLE": 6,
+                "DAL": 7, "DEN": 8, "DET": 9, "GSW": 10, "HOU": 11, "IND": 12,
+                "LAC": 13, "LAL": 14, "MEM": 15, "MIA": 16, "MIL": 17, "MIN": 18,
+                "NOP": 19, "NYK": 20, "OKC": 21, "ORL": 22, "PHI": 23, "PHX": 24,
+                "POR": 25, "SAC": 26, "SAS": 27, "TOR": 28, "UTA": 29, "WAS": 30
+            }
+            team_id = team_mapping.get(team.upper())
+
+            if not team_id:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=f"Invalid team abbreviation: {team}"
+                )
+
+            games = game_data_collector.fetch_games_by_team(team_id, start_date, end_date)
+
+            # Calculate basic stats from games
+            total_games = len(games)
+            wins = sum(1 for g in games if (
+                (g["home_team"]["id"] == team_id and g["home_team_score"] > g["visitor_team_score"]) or
+                (g["visitor_team"]["id"] == team_id and g["visitor_team_score"] > g["home_team_score"])
+            ))
+
+            return {
+                "team": team.upper(),
+                "season": season,
+                "games_played": total_games,
+                "wins": wins,
+                "losses": total_games - wins,
+                "win_percentage": wins / total_games if total_games > 0 else 0,
+                "games": games[:10]  # Return last 10 games
+            }
+
+        return {
+            "team": team.upper(),
+            "season": season,
+            "stats": team_stats
+        }
+
+    except HTTPException:
+        raise
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid season format: {season}. Use year format (e.g., '2024')"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to fetch team stats: {str(e)}"
+        )
 
 
 # ==================== Model Monitoring & Drift Detection ====================
