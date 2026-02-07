@@ -46,6 +46,144 @@ export interface HealthResponse {
   version: string;
 }
 
+export interface ModelInfo {
+  name: string;
+  version: string;
+  accuracy?: number;
+  created_at?: string;
+  last_used?: string;
+  metrics?: {
+    accuracy: number;
+    precision: number;
+    recall: number;
+    f1_score: number;
+  };
+}
+
+export interface PerformanceMetrics {
+  accuracy: number;
+  precision: number;
+  recall: number;
+  f1_score: number;
+  predictions_count: number;
+  correct_predictions: number;
+  incorrect_predictions: number;
+  recent_accuracy?: number;
+}
+
+export interface DriftReport {
+  drift_detected: boolean;
+  drift_score: number;
+  threshold: number;
+  features_with_drift: string[];
+  timestamp: string;
+}
+
+export interface Alert {
+  id: string;
+  severity: 'critical' | 'warning' | 'info';
+  message: string;
+  timestamp: string;
+  resolved: boolean;
+}
+
+export interface Player {
+  id: number;
+  first_name: string;
+  last_name: string;
+  position: string;
+  height_feet?: number;
+  height_inches?: number;
+  weight_pounds?: number;
+  team?: {
+    id: number;
+    abbreviation: string;
+    city: string;
+    conference: string;
+    division: string;
+    full_name: string;
+    name: string;
+  };
+}
+
+export interface PlayerStats {
+  player_id: number;
+  season: string;
+  games_played: number;
+  stats: any[];
+  averages: {
+    pts?: number;
+    ast?: number;
+    reb?: number;
+    stl?: number;
+    blk?: number;
+    turnover?: number;
+    fgm?: number;
+    fga?: number;
+    fg_pct?: number;
+    fg3m?: number;
+    fg3a?: number;
+    fg3_pct?: number;
+    ftm?: number;
+    fta?: number;
+    ft_pct?: number;
+    oreb?: number;
+    dreb?: number;
+    pf?: number;
+    games_played?: number;
+  };
+}
+
+export interface Game {
+  id: number;
+  date: string;
+  home_team: {
+    id: number;
+    abbreviation: string;
+    city: string;
+    conference: string;
+    division: string;
+    full_name: string;
+    name: string;
+  };
+  visitor_team: {
+    id: number;
+    abbreviation: string;
+    city: string;
+    conference: string;
+    division: string;
+    full_name: string;
+    name: string;
+  };
+  home_team_score: number;
+  visitor_team_score: number;
+  season: number;
+  postseason: boolean;
+  status: string;
+  winner?: string;
+  score_differential?: number;
+  total_points?: number;
+}
+
+export interface GameFilters {
+  team?: string;
+  start_date?: string;
+  end_date?: string;
+  season?: string;
+  limit?: number;
+}
+
+export interface TeamStats {
+  team: string;
+  season: string;
+  games_played: number;
+  wins: number;
+  losses: number;
+  win_percentage: number;
+  games?: Game[];
+  stats?: any;
+}
+
 class APIClient {
   private client: AxiosInstance;
   private token: string | null = null;
@@ -128,6 +266,102 @@ class APIClient {
         responseType: 'blob',
       }
     );
+    return response.data;
+  }
+
+  async getModelsList(): Promise<ModelInfo[]> {
+    if (!this.token) {
+      await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
+    }
+    const response = await this.client.get('/api/v1/models');
+    return response.data.models || [];
+  }
+
+  async getModelDetails(name: string, version: string): Promise<ModelInfo> {
+    if (!this.token) {
+      await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
+    }
+    const response = await this.client.get(`/api/v1/models/${name}/${version}`);
+    return response.data;
+  }
+
+  async getModelPerformance(): Promise<PerformanceMetrics> {
+    if (!this.token) {
+      await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
+    }
+    const response = await this.client.get('/api/v1/monitoring/performance');
+    return response.data;
+  }
+
+  async getDriftStatus(): Promise<DriftReport> {
+    if (!this.token) {
+      await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
+    }
+    const response = await this.client.get('/api/v1/monitoring/drift');
+    return response.data;
+  }
+
+  async getMonitoringAlerts(hours: number = 24): Promise<Alert[]> {
+    if (!this.token) {
+      await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
+    }
+    const response = await this.client.get(`/api/v1/monitoring/alerts?hours=${hours}`);
+    return response.data.alerts || [];
+  }
+
+  async searchPlayers(query: string, limit: number = 20): Promise<Player[]> {
+    if (!this.token) {
+      await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
+    }
+    const response = await this.client.get('/api/v1/players/search', {
+      params: { q: query, limit }
+    });
+    return response.data.players || [];
+  }
+
+  async getPlayerDetails(playerId: number): Promise<Player> {
+    if (!this.token) {
+      await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
+    }
+    const response = await this.client.get(`/api/v1/players/${playerId}`);
+    return response.data;
+  }
+
+  async getPlayerStats(playerId: number, season: string = '2024'): Promise<PlayerStats> {
+    if (!this.token) {
+      await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
+    }
+    const response = await this.client.get(`/api/v1/players/${playerId}/stats`, {
+      params: { season }
+    });
+    return response.data;
+  }
+
+  async getGames(filters: GameFilters = {}): Promise<Game[]> {
+    if (!this.token) {
+      await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
+    }
+    const response = await this.client.get('/api/v1/games', {
+      params: filters
+    });
+    return response.data.games || [];
+  }
+
+  async getGameDetails(gameId: number): Promise<Game> {
+    if (!this.token) {
+      await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
+    }
+    const response = await this.client.get(`/api/v1/games/${gameId}`);
+    return response.data;
+  }
+
+  async getTeamStats(team: string, season: string = '2024'): Promise<TeamStats> {
+    if (!this.token) {
+      await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
+    }
+    const response = await this.client.get('/api/v1/teams/stats', {
+      params: { team, season }
+    });
     return response.data;
   }
 }
