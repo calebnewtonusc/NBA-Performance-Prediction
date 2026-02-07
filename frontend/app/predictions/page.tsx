@@ -58,6 +58,8 @@ export default function Predictions() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [predictionHistory, setPredictionHistory] = useState<any[]>([])
+  const [comparing, setComparing] = useState(false)
+  const [modelComparisons, setModelComparisons] = useState<Array<{ model: any; prediction: PredictionResponse }> | null>(null)
 
   // Load from URL parameters on mount
   useEffect(() => {
@@ -126,6 +128,41 @@ export default function Predictions() {
       })
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleCompareAll = async () => {
+    // Validation: Prevent same team selection
+    if (homeTeam === awayTeam) {
+      toast.error('Invalid matchup', {
+        description: 'Home team and away team cannot be the same. Please select different teams.'
+      })
+      return
+    }
+
+    setComparing(true)
+    setError(null)
+
+    try {
+      const comparisons = await apiClient.compareModels(homeTeam, awayTeam)
+      setModelComparisons(comparisons)
+
+      toast.success(`Compared ${comparisons.length} model(s)`, {
+        description: `All models have predicted the ${homeTeam} vs ${awayTeam} matchup`
+      })
+    } catch (err: any) {
+      const errorMessage = err.message || 'Failed to compare models'
+      setError(errorMessage)
+
+      toast.error('Model comparison failed', {
+        description: errorMessage,
+        action: {
+          label: 'Retry',
+          onClick: () => handleCompareAll()
+        }
+      })
+    } finally {
+      setComparing(false)
     }
   }
 
@@ -267,6 +304,34 @@ export default function Predictions() {
             </button>
           </form>
 
+          {/* Compare All Models Button */}
+          <button
+            type="button"
+            onClick={handleCompareAll}
+            disabled={comparing || loading || homeTeam === awayTeam}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-3 flex items-center justify-center gap-2"
+            aria-label={comparing ? 'Comparing models' : 'Compare all models'}
+            aria-busy={comparing}
+          >
+            {comparing ? (
+              <>
+                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Comparing models...
+              </>
+            ) : (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                  <path fillRule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clipRule="evenodd" />
+                </svg>
+                Compare All Models
+              </>
+            )}
+          </button>
+
           {error && (
             <div
               className="mt-4 p-4 bg-red-500/10 border border-red-500 rounded-lg text-red-400"
@@ -388,6 +453,164 @@ export default function Predictions() {
           )}
         </div>
       </div>
+
+      {/* Model Comparison Results */}
+      {modelComparisons && modelComparisons.length > 0 && (
+        <div className="bg-secondary p-4 sm:p-6 rounded-lg border border-gray-700">
+          <div className="flex items-center gap-2 mb-4 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold">Model Comparison</h2>
+            <InfoTooltip content="Compare predictions from all available machine learning models to see consensus and variance in confidence levels." />
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="border-b border-gray-700">
+                  <th className="pb-3 pr-4 font-semibold text-gray-400">Model</th>
+                  <th className="pb-3 pr-4 font-semibold text-gray-400">Prediction</th>
+                  <th className="pb-3 pr-4 font-semibold text-gray-400">Confidence</th>
+                  <th className="pb-3 pr-4 font-semibold text-gray-400">Home Win %</th>
+                  <th className="pb-3 font-semibold text-gray-400">Away Win %</th>
+                  <th className="pb-3 font-semibold text-gray-400">Accuracy</th>
+                </tr>
+              </thead>
+              <tbody>
+                {modelComparisons.map((comparison, index) => {
+                  const predictedWinner = comparison.prediction.prediction === 'home' ? homeTeam : awayTeam
+                  return (
+                    <tr key={index} className="border-b border-gray-700 last:border-0">
+                      <td className="py-3 pr-4">
+                        <div>
+                          <div className="font-semibold">{comparison.model.name}</div>
+                          <div className="text-xs text-gray-500">v{comparison.model.version}</div>
+                        </div>
+                      </td>
+                      <td className="py-3 pr-4">
+                        <span className="font-bold text-primary">{predictedWinner}</span>
+                      </td>
+                      <td className="py-3 pr-4">
+                        <span className="font-semibold">{(comparison.prediction.confidence * 100).toFixed(1)}%</span>
+                      </td>
+                      <td className="py-3 pr-4">
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 bg-gray-700 rounded-full h-2 overflow-hidden">
+                            <div
+                              className="bg-primary h-full transition-all"
+                              style={{ width: `${comparison.prediction.home_win_probability * 100}%` }}
+                            ></div>
+                          </div>
+                          <span className="text-sm font-medium w-12 text-right">
+                            {(comparison.prediction.home_win_probability * 100).toFixed(1)}%
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-3 pr-4">
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 bg-gray-700 rounded-full h-2 overflow-hidden">
+                            <div
+                              className="bg-blue-500 h-full transition-all"
+                              style={{ width: `${comparison.prediction.away_win_probability * 100}%` }}
+                            ></div>
+                          </div>
+                          <span className="text-sm font-medium w-12 text-right">
+                            {(comparison.prediction.away_win_probability * 100).toFixed(1)}%
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-3">
+                        {comparison.model.metrics?.accuracy ? (
+                          <span className="text-sm text-green-400 font-medium">
+                            {(comparison.model.metrics.accuracy * 100).toFixed(1)}%
+                          </span>
+                        ) : (
+                          <span className="text-sm text-gray-500">N/A</span>
+                        )}
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-4">
+            {modelComparisons.map((comparison, index) => {
+              const predictedWinner = comparison.prediction.prediction === 'home' ? homeTeam : awayTeam
+              return (
+                <div key={index} className="bg-background p-4 rounded-lg border border-gray-600">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <div className="font-bold text-lg">{comparison.model.name}</div>
+                      <div className="text-xs text-gray-500">v{comparison.model.version}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm text-gray-400">Accuracy</div>
+                      {comparison.model.metrics?.accuracy ? (
+                        <div className="text-green-400 font-semibold">
+                          {(comparison.model.metrics.accuracy * 100).toFixed(1)}%
+                        </div>
+                      ) : (
+                        <div className="text-gray-500">N/A</div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div>
+                      <div className="text-sm text-gray-400 mb-1">Prediction</div>
+                      <div className="text-xl font-bold text-primary">{predictedWinner}</div>
+                      <div className="text-sm text-gray-300">
+                        {(comparison.prediction.confidence * 100).toFixed(1)}% confidence
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-sm text-gray-400 mb-1">Home: {homeTeam}</div>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 bg-gray-700 rounded-full h-2 overflow-hidden">
+                          <div
+                            className="bg-primary h-full transition-all"
+                            style={{ width: `${comparison.prediction.home_win_probability * 100}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-sm font-medium">
+                          {(comparison.prediction.home_win_probability * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-sm text-gray-400 mb-1">Away: {awayTeam}</div>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 bg-gray-700 rounded-full h-2 overflow-hidden">
+                          <div
+                            className="bg-blue-500 h-full transition-all"
+                            style={{ width: `${comparison.prediction.away_win_probability * 100}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-sm font-medium">
+                          {(comparison.prediction.away_win_probability * 100).toFixed(1)}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="mt-4 pt-4 border-t border-gray-700">
+            <p className="text-xs text-gray-500 flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+              Tip: Different models may have varying strengths. Compare accuracy and confidence when making decisions.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
