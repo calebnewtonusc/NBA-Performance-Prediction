@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import Navigation from '@/components/Navigation'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { KeyboardShortcutsProvider } from '@/components/KeyboardShortcutsProvider'
 import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
@@ -17,12 +18,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ErrorBoundary>
-          <div className="min-h-screen bg-background">
-            <Navigation />
-            <main className="container mx-auto px-4 py-8">
-              {children}
-            </main>
+        <KeyboardShortcutsProvider>
+          <ErrorBoundary>
+            <div className="min-h-screen bg-background">
+              <Navigation />
+              <main className="container mx-auto px-4 py-8">
+                {children}
+              </main>
 
           {/* Footer */}
           <footer className="mt-20 pt-12 pb-12 bg-gradient-to-br from-gray-800/30 to-gray-900/30 border-t-2 border-gray-700 rounded-t-3xl">
@@ -72,7 +74,8 @@ export default function RootLayout({
             },
           }}
         />
-        </ErrorBoundary>
+          </ErrorBoundary>
+        </KeyboardShortcutsProvider>
       </body>
     </html>
   )

@@ -16,6 +16,7 @@ Usage:
 """
 
 import json
+import requests
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 from src.data_collection.base_client import BaseAPIClient
@@ -27,14 +28,30 @@ logger = setup_logger(__name__)
 class PlayerDataCollector:
     """Collector for NBA player data"""
 
-    def __init__(self, base_url: str = "https://www.balldontlie.io/api/v1"):
+    def __init__(self, base_url: str = "https://api.balldontlie.io/v1", api_key: Optional[str] = None):
         """
         Initialize the player data collector
 
         Args:
-            base_url: Base URL for the NBA API
+            base_url: Base URL for the NBA API (default: https://api.balldontlie.io/v1)
+            api_key: API key for balldontlie.io (required - get free key at app.balldontlie.io)
         """
-        self.client = BaseAPIClient(base_url=base_url, rate_limit_delay=1.0)
+        import os
+
+        # Try to get API key from parameter, environment variable, or config
+        self.api_key = api_key or os.getenv('BALLDONTLIE_API_KEY')
+
+        if not self.api_key:
+            logger.warning(
+                "No API key provided for balldontlie.io! "
+                "Get a free API key at https://app.balldontlie.io and set BALLDONTLIE_API_KEY environment variable."
+            )
+
+        self.client = BaseAPIClient(
+            base_url=base_url,
+            api_key=self.api_key,
+            rate_limit_delay=12.0  # Free tier: 5 requests/min = 12 seconds between requests
+        )
         self.data_dir = Path("data/raw/players")
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
@@ -98,28 +115,45 @@ class PlayerDataCollector:
             logger.error(f"Error fetching player {player_id}: {str(e)}")
             return None
 
-    def search_players(self, search_term: str) -> List[Dict[str, Any]]:
+    def search_players(self, search_term: str) -> Dict[str, Any]:
         """
-        Search for players by name
+        Search for players by name using the balldontlie.io API
 
         Args:
             search_term: Player name to search for
 
         Returns:
-            List of matching player dictionaries
+            Dictionary with players list, metadata, and data source info
+
+        Raises:
+            Exception: If API key is missing or API request fails
         """
         logger.info(f"Searching for players matching '{search_term}'")
 
+        if not self.api_key:
+            error_msg = (
+                "balldontlie.io API key is required. "
+                "Get a free API key at https://app.balldontlie.io and set the "
+                "BALLDONTLIE_API_KEY environment variable."
+            )
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+
         all_players = []
-        page = 1
+        cursor = None
+        max_pages = 10  # Safety limit
 
         try:
-            while True:
-                response = self.client.get("/players", params={
+            for page_num in range(max_pages):
+                params = {
                     "search": search_term,
-                    "per_page": 100,
-                    "page": page
-                })
+                    "per_page": 100
+                }
+
+                if cursor:
+                    params["cursor"] = cursor
+
+                response = self.client.get("/players", params=params)
 
                 players = response.get("data", [])
                 if not players:
@@ -127,56 +161,49 @@ class PlayerDataCollector:
 
                 all_players.extend(players)
 
+                # Check for pagination cursor
                 meta = response.get("meta", {})
-                if page >= meta.get("total_pages", 1):
+                cursor = meta.get("next_cursor")
+
+                # If no more pages, break
+                if not cursor:
                     break
 
-                page += 1
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 401:
+                error_msg = (
+                    "Invalid API key for balldontlie.io. "
+                    "Please verify your API key at https://app.balldontlie.io"
+                )
+                logger.error(error_msg)
+                raise ValueError(error_msg)
+            elif e.response.status_code == 429:
+                error_msg = (
+                    "Rate limit exceeded for balldontlie.io API. "
+                    "Free tier allows 5 requests/minute. Please wait and try again."
+                )
+                logger.error(error_msg)
+                raise ValueError(error_msg)
+            else:
+                logger.error(f"API request failed: {str(e)}")
+                raise
 
         except Exception as e:
-            logger.warning(f"API search failed: {str(e)}, using fallback data")
-            return self._search_local_players(search_term)
+            error_msg = f"Failed to search players: {str(e)}"
+            logger.error(error_msg)
+            raise
 
-        # If API returns no results, fallback to local search
-        if not all_players:
-            logger.warning(f"API returned no results for '{search_term}', using fallback data")
-            return self._search_local_players(search_term)
+        logger.info(f"Found {len(all_players)} players from balldontlie.io API")
+        return {
+            "players": all_players,
+            "data_source": "api",
+            "timestamp": self._get_timestamp()
+        }
 
-        logger.info(f"Found {len(all_players)} players from API")
-        return all_players
-
-    def _search_local_players(self, search_term: str, limit: int = 25) -> List[Dict[str, Any]]:
-        """
-        Search players using local sample data (fallback when API fails)
-
-        Args:
-            search_term: Player name to search for
-            limit: Maximum number of results
-
-        Returns:
-            List of matching player dictionaries
-        """
-        try:
-            # Import the sample players module
-            import sys
-            from pathlib import Path
-
-            # Add scripts directory to path
-            scripts_dir = Path(__file__).parent.parent.parent / "scripts"
-            if str(scripts_dir) not in sys.path:
-                sys.path.insert(0, str(scripts_dir))
-
-            from sample_players import search_local_players
-
-            # Perform local fuzzy search
-            players = search_local_players(search_term, limit)
-
-            logger.info(f"Found {len(players)} players from local fallback data")
-            return players
-
-        except Exception as e:
-            logger.error(f"Error searching local players: {str(e)}")
-            return []
+    def _get_timestamp(self) -> str:
+        """Get current timestamp in ISO format"""
+        from datetime import datetime, timezone
+        return datetime.now(timezone.utc).isoformat()
 
     def fetch_player_stats_by_season(
         self,

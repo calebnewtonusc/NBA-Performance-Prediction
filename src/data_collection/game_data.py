@@ -29,14 +29,30 @@ logger = setup_logger(__name__)
 class GameDataCollector:
     """Collector for NBA game data"""
 
-    def __init__(self, base_url: str = "https://www.balldontlie.io/api/v1"):
+    def __init__(self, base_url: str = "https://api.balldontlie.io/v1", api_key: Optional[str] = None):
         """
         Initialize the game data collector
 
         Args:
-            base_url: Base URL for the NBA API
+            base_url: Base URL for the NBA API (default: https://api.balldontlie.io/v1)
+            api_key: API key for balldontlie.io (required - get free key at app.balldontlie.io)
         """
-        self.client = BaseAPIClient(base_url=base_url, rate_limit_delay=1.0)
+        import os
+
+        # Try to get API key from parameter, environment variable, or config
+        self.api_key = api_key or os.getenv('BALLDONTLIE_API_KEY')
+
+        if not self.api_key:
+            logger.warning(
+                "No API key provided for balldontlie.io! "
+                "Get a free API key at https://app.balldontlie.io and set BALLDONTLIE_API_KEY environment variable."
+            )
+
+        self.client = BaseAPIClient(
+            base_url=base_url,
+            api_key=self.api_key,
+            rate_limit_delay=12.0  # Free tier: 5 requests/min = 12 seconds between requests
+        )
         self.data_dir = Path("data/raw/games")
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
