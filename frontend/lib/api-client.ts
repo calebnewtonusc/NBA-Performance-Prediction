@@ -187,14 +187,92 @@ export interface TeamStats {
 class APIClient {
   private client: AxiosInstance;
   private token: string | null = null;
+  private cache: Map<string, { data: any; timestamp: number }> = new Map();
+  private cacheDuration = 5 * 60 * 1000; // 5 minutes
 
   constructor() {
     this.client = axios.create({
       baseURL: API_BASE_URL,
+      timeout: 30000, // 30 second timeout
       headers: {
         'Content-Type': 'application/json',
       },
     });
+
+    // Add response interceptor for better error handling
+    this.client.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        // Transform errors into user-friendly messages
+        return Promise.reject(this.handleError(error));
+      }
+    );
+  }
+
+  private handleError(error: any): Error {
+    // Network error (no internet, server down, etc.)
+    if (error.code === 'ECONNABORTED') {
+      return new Error('Request timed out. Please try again.');
+    }
+
+    if (error.code === 'ERR_NETWORK' || !error.response) {
+      return new Error('Unable to connect to server. Please check your internet connection.');
+    }
+
+    // HTTP error responses
+    if (error.response) {
+      const status = error.response.status;
+      const message = error.response.data?.detail || error.response.data?.message;
+
+      switch (status) {
+        case 400:
+          return new Error(message || 'Invalid request. Please check your input.');
+        case 401:
+          return new Error('Session expired. Please refresh the page.');
+        case 403:
+          return new Error('Access denied. You do not have permission to perform this action.');
+        case 404:
+          return new Error(message || 'Resource not found. Please try again.');
+        case 429:
+          return new Error('Too many requests. Please wait a moment and try again.');
+        case 500:
+          return new Error(message || 'Server error. Please try again later.');
+        case 502:
+        case 503:
+        case 504:
+          return new Error('Service temporarily unavailable. Please try again in a few moments.');
+        default:
+          return new Error(message || `Error ${status}: Unable to complete request`);
+      }
+    }
+
+    // Unknown error
+    return new Error(error.message || 'An unexpected error occurred. Please try again.');
+  }
+
+  private getCacheKey(method: string, url: string, params?: any): string {
+    return `${method}:${url}:${JSON.stringify(params || {})}`;
+  }
+
+  private getCached<T>(key: string): T | null {
+    const cached = this.cache.get(key);
+    if (!cached) return null;
+
+    const age = Date.now() - cached.timestamp;
+    if (age > this.cacheDuration) {
+      this.cache.delete(key);
+      return null;
+    }
+
+    return cached.data as T;
+  }
+
+  private setCache(key: string, data: any): void {
+    this.cache.set(key, { data, timestamp: Date.now() });
+  }
+
+  clearCache(): void {
+    this.cache.clear();
   }
 
   async login(username: string, password: string): Promise<string> {
@@ -310,13 +388,33 @@ class APIClient {
   }
 
   async searchPlayers(query: string, limit: number = 20): Promise<Player[]> {
+    // Check cache first
+    const cacheKey = this.getCacheKey('GET', 'players/search', { query, limit });
+    const cached = this.getCached<Player[]>(cacheKey);
+    if (cached) {
+      console.log('[Cache] Using cached player search results');
+      return cached;
+    }
+
     if (!this.token) {
       await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
     }
+
     const response = await this.client.get('/api/v1/players/search', {
       params: { q: query, limit }
     });
-    return response.data.players || [];
+
+    // Validate response
+    if (!response.data || !Array.isArray(response.data.players)) {
+      throw new Error('Invalid response format from server');
+    }
+
+    const players = response.data.players;
+
+    // Cache the results
+    this.setCache(cacheKey, players);
+
+    return players;
   }
 
   async getPlayerDetails(playerId: number): Promise<Player> {
@@ -338,13 +436,33 @@ class APIClient {
   }
 
   async getGames(filters: GameFilters = {}): Promise<Game[]> {
+    // Check cache first
+    const cacheKey = this.getCacheKey('GET', 'games', filters);
+    const cached = this.getCached<Game[]>(cacheKey);
+    if (cached) {
+      console.log('[Cache] Using cached games data');
+      return cached;
+    }
+
     if (!this.token) {
       await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
     }
+
     const response = await this.client.get('/api/v1/games', {
       params: filters
     });
-    return response.data.games || [];
+
+    // Validate response
+    if (!response.data || !Array.isArray(response.data.games)) {
+      throw new Error('Invalid response format from server');
+    }
+
+    const games = response.data.games;
+
+    // Cache the results
+    this.setCache(cacheKey, games);
+
+    return games;
   }
 
   async getGameDetails(gameId: number): Promise<Game> {
@@ -356,13 +474,33 @@ class APIClient {
   }
 
   async getTeamStats(team: string, season: string = '2024'): Promise<TeamStats> {
+    // Check cache first
+    const cacheKey = this.getCacheKey('GET', 'teams/stats', { team, season });
+    const cached = this.getCached<TeamStats>(cacheKey);
+    if (cached) {
+      console.log('[Cache] Using cached team stats');
+      return cached;
+    }
+
     if (!this.token) {
       await this.login('admin', '3vmPHdnH8RSfvqc-UCdy5A');
     }
+
     const response = await this.client.get('/api/v1/teams/stats', {
       params: { team, season }
     });
-    return response.data;
+
+    // Validate response
+    if (!response.data) {
+      throw new Error('Invalid response format from server');
+    }
+
+    const teamStats = response.data;
+
+    // Cache the results
+    this.setCache(cacheKey, teamStats);
+
+    return teamStats;
   }
 }
 

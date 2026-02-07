@@ -1,7 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { apiClient, Game, TeamStats } from '@/lib/api-client'
+import { SkeletonTable, SkeletonStats } from '@/components/LoadingSkeleton'
 import {
   BarChart,
   Bar,
@@ -61,6 +63,8 @@ export default function Explorer() {
   const handleLoadData = async () => {
     setLoading(true)
     setError(null)
+    setGames([])
+    setTeamStats(null)
 
     try {
       const filters = {
@@ -76,11 +80,28 @@ export default function Explorer() {
       if (selectedTeam) {
         const stats = await apiClient.getTeamStats(selectedTeam, selectedSeason)
         setTeamStats(stats)
+
+        toast.success('Data loaded', {
+          description: `Found ${gamesData.length} games for ${selectedTeam} in ${selectedSeason}-${parseInt(selectedSeason.slice(2)) + 1}`
+        })
       } else {
         setTeamStats(null)
+
+        toast.success('Data loaded', {
+          description: `Found ${gamesData.length} games for ${selectedSeason}-${parseInt(selectedSeason.slice(2)) + 1} season`
+        })
       }
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to load data')
+      const errorMessage = err.message || 'Failed to load data'
+      setError(errorMessage)
+
+      toast.error('Failed to load data', {
+        description: errorMessage,
+        action: {
+          label: 'Retry',
+          onClick: () => handleLoadData()
+        }
+      })
     } finally {
       setLoading(false)
     }

@@ -53,6 +53,10 @@ tqdm>=4.66.0
 # Date/Time Utilities
 pytz>=2023.3
 
+# Fuzzy String Matching
+fuzzywuzzy>=0.18.0
+python-Levenshtein>=0.21.0
+
 # NBA Specific (optional, can be installed later)
 # nba_api>=1.1.14
 

@@ -113,8 +113,8 @@ class PlayerDataCollector:
         all_players = []
         page = 1
 
-        while True:
-            try:
+        try:
+            while True:
                 response = self.client.get("/players", params={
                     "search": search_term,
                     "per_page": 100,
@@ -133,11 +133,50 @@ class PlayerDataCollector:
 
                 page += 1
 
-            except Exception as e:
-                logger.error(f"Error searching players page {page}: {str(e)}")
-                break
+        except Exception as e:
+            logger.warning(f"API search failed: {str(e)}, using fallback data")
+            return self._search_local_players(search_term)
 
+        # If API returns no results, fallback to local search
+        if not all_players:
+            logger.warning(f"API returned no results for '{search_term}', using fallback data")
+            return self._search_local_players(search_term)
+
+        logger.info(f"Found {len(all_players)} players from API")
         return all_players
+
+    def _search_local_players(self, search_term: str, limit: int = 25) -> List[Dict[str, Any]]:
+        """
+        Search players using local sample data (fallback when API fails)
+
+        Args:
+            search_term: Player name to search for
+            limit: Maximum number of results
+
+        Returns:
+            List of matching player dictionaries
+        """
+        try:
+            # Import the sample players module
+            import sys
+            from pathlib import Path
+
+            # Add scripts directory to path
+            scripts_dir = Path(__file__).parent.parent.parent / "scripts"
+            if str(scripts_dir) not in sys.path:
+                sys.path.insert(0, str(scripts_dir))
+
+            from sample_players import search_local_players
+
+            # Perform local fuzzy search
+            players = search_local_players(search_term, limit)
+
+            logger.info(f"Found {len(players)} players from local fallback data")
+            return players
+
+        except Exception as e:
+            logger.error(f"Error searching local players: {str(e)}")
+            return []
 
     def fetch_player_stats_by_season(
         self,

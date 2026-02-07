@@ -1,7 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { apiClient, ModelInfo, PerformanceMetrics, DriftReport, Alert } from '@/lib/api-client'
+import { SkeletonCardGrid, SkeletonStats, SkeletonChart } from '@/components/LoadingSkeleton'
 import {
   BarChart,
   Bar,
@@ -40,8 +42,34 @@ export default function Performance() {
       setPerformance(performanceData)
       setDrift(driftData)
       setAlerts(alertsData)
+
+      // Show alerts if drift detected or critical alerts exist
+      const criticalAlerts = alertsData.filter(a => a.severity === 'critical' && !a.resolved)
+
+      if (driftData.drift_detected) {
+        toast.warning('Data drift detected', {
+          description: `Drift score: ${driftData.drift_score.toFixed(4)} (threshold: ${driftData.threshold.toFixed(4)})`
+        })
+      } else if (criticalAlerts.length > 0) {
+        toast.error(`${criticalAlerts.length} critical alert(s)`, {
+          description: 'Check the alerts section for details'
+        })
+      } else {
+        toast.success('Performance data loaded', {
+          description: `${modelsData.length} models, accuracy: ${(performanceData.accuracy * 100).toFixed(1)}%`
+        })
+      }
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to load performance data')
+      const errorMessage = err.message || 'Failed to load performance data'
+      setError(errorMessage)
+
+      toast.error('Failed to load performance data', {
+        description: errorMessage,
+        action: {
+          label: 'Retry',
+          onClick: () => loadData()
+        }
+      })
     } finally {
       setLoading(false)
     }
