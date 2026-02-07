@@ -1,8 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BarChart3, Home, Users, TrendingUp, Database } from 'lucide-react'
+import { BarChart3, Home, Users, TrendingUp, Database, Menu, X } from 'lucide-react'
 import { HealthIndicator } from './HealthIndicator'
 
 const navItems = [
@@ -15,16 +16,21 @@ const navItems = [
 
 export default function Navigation() {
   const pathname = usePathname()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
     <nav className="bg-secondary border-b border-gray-700">
       <div className="container mx-auto px-4">
+        {/* Desktop Navigation */}
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center space-x-2">
             <BarChart3 className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold">NBA Predictions</span>
+            <span className="text-xl font-bold hidden sm:inline">NBA Predictions</span>
+            <span className="text-lg font-bold sm:hidden">NBA</span>
           </div>
-          <div className="flex items-center gap-6">
+
+          {/* Desktop Menu */}
+          <div className="hidden lg:flex items-center gap-6">
             <div className="flex space-x-4">
               {navItems.map((item) => {
                 const Icon = item.icon
@@ -47,7 +53,48 @@ export default function Navigation() {
             </div>
             <HealthIndicator />
           </div>
+
+          {/* Mobile Menu Button */}
+          <div className="lg:hidden flex items-center gap-3">
+            <HealthIndicator />
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-md text-gray-300 hover:bg-gray-700 hover:text-white transition-colors"
+              aria-label="Toggle mobile menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden pb-4 space-y-2">
+            {navItems.map((item) => {
+              const Icon = item.icon
+              const isActive = pathname === item.href
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`flex items-center space-x-3 px-4 py-3 rounded-md text-base font-medium transition-colors ${
+                    isActive
+                      ? 'bg-primary text-white'
+                      : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                  }`}
+                >
+                  <Icon className="h-5 w-5" />
+                  <span>{item.label}</span>
+                </Link>
+              )
+            })}
+          </div>
+        )}
       </div>
     </nav>
   )
