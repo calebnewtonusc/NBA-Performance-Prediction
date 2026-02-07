@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { BarChart3, Home, Users, TrendingUp, Database } from 'lucide-react'
+import { HealthIndicator } from './HealthIndicator'
 
 const navItems = [
   { href: '/', label: 'Home', icon: Home },
@@ -23,25 +24,28 @@ export default function Navigation() {
             <BarChart3 className="h-8 w-8 text-primary" />
             <span className="text-xl font-bold">NBA Predictions</span>
           </div>
-          <div className="flex space-x-4">
-            {navItems.map((item) => {
-              const Icon = item.icon
-              const isActive = pathname === item.href
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive
-                      ? 'bg-primary text-white'
-                      : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span>{item.label}</span>
-                </Link>
-              )
-            })}
+          <div className="flex items-center gap-6">
+            <div className="flex space-x-4">
+              {navItems.map((item) => {
+                const Icon = item.icon
+                const isActive = pathname === item.href
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'bg-primary text-white'
+                        : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{item.label}</span>
+                  </Link>
+                )
+              })}
+            </div>
+            <HealthIndicator />
           </div>
         </div>
       </div>
