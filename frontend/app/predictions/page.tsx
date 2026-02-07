@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 import { apiClient, PredictionResponse } from '@/lib/api-client'
@@ -48,7 +48,7 @@ const NBA_TEAMS = [
   { name: 'Washington Wizards', abbr: 'WAS' },
 ]
 
-export default function Predictions() {
+function PredictionsContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -612,5 +612,20 @@ export default function Predictions() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function Predictions() {
+  return (
+    <Suspense fallback={
+      <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8">
+        <div>
+          <h1 className="text-3xl sm:text-4xl font-bold">Game Predictions</h1>
+          <p className="text-sm sm:text-base text-gray-400 mt-2">Loading...</p>
+        </div>
+      </div>
+    }>
+      <PredictionsContent />
+    </Suspense>
   )
 }
