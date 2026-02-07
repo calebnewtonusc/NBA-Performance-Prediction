@@ -128,7 +128,19 @@ pip install -r requirements.txt
 make install
 ```
 
-4. Generate sample data and train models:
+4. **Configure NBA API Key (REQUIRED)**:
+```bash
+# Copy environment template
+cp .env.example .env
+
+# Get a free API key at https://app.balldontlie.io
+# Then edit .env and add:
+# BALLDONTLIE_API_KEY=your_api_key_here
+```
+
+See [API Key Setup Guide](docs/API_KEY_SETUP.md) for detailed instructions.
+
+5. Generate sample data and train models:
 ```bash
 make sample-data  # Generate test data
 make train        # Train all models
