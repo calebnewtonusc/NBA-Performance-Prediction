@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { apiClient, PredictionResponse } from '@/lib/api-client'
 import {
   BarChart,
@@ -55,13 +56,28 @@ export default function Predictions() {
 
   const handlePredict = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Validation: Prevent same team selection
+    if (homeTeam === awayTeam) {
+      toast.error('Invalid matchup', {
+        description: 'Home team and away team cannot be the same. Please select different teams.'
+      })
+      return
+    }
+
     setLoading(true)
     setError(null)
+    setPrediction(null)
 
     try {
       // Call simplified endpoint - backend fetches live stats automatically
       const result = await apiClient.predictSimple(homeTeam, awayTeam)
       setPrediction(result)
+
+      // Show success toast
+      toast.success('Prediction generated', {
+        description: `${result.prediction === 'home' ? homeTeam : awayTeam} predicted to win with ${(result.confidence * 100).toFixed(1)}% confidence`
+      })
 
       // Add to history
       const historyEntry = {
@@ -72,7 +88,16 @@ export default function Predictions() {
       }
       setPredictionHistory((prev) => [...prev, historyEntry])
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to get prediction')
+      const errorMessage = err.message || err.response?.data?.detail || 'Failed to get prediction'
+      setError(errorMessage)
+
+      toast.error('Prediction failed', {
+        description: errorMessage,
+        action: {
+          label: 'Retry',
+          onClick: () => handlePredict(e)
+        }
+      })
     } finally {
       setLoading(false)
     }
@@ -89,8 +114,16 @@ export default function Predictions() {
       a.click()
       document.body.removeChild(a)
       window.URL.revokeObjectURL(url)
+
+      toast.success('CSV exported', {
+        description: `${predictionHistory.length} prediction(s) exported successfully`
+      })
     } catch (err: any) {
-      setError('Failed to export CSV')
+      const errorMessage = err.message || 'Failed to export CSV'
+      setError(errorMessage)
+      toast.error('Export failed', {
+        description: errorMessage
+      })
     }
   }
 
@@ -153,9 +186,20 @@ export default function Predictions() {
               </p>
             </div>
 
+            {homeTeam === awayTeam && (
+              <div className="bg-yellow-500/10 border border-yellow-500 rounded-lg p-4" role="alert" aria-live="polite">
+                <p className="text-sm text-yellow-400 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  Please select different teams for home and away
+                </p>
+              </div>
+            )}
+
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || homeTeam === awayTeam}
               className="w-full bg-primary hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label={loading ? 'Loading prediction' : 'Get game prediction'}
               aria-busy={loading}
