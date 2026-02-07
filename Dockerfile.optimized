@@ -1,0 +1,55 @@
+# NBA Performance Prediction - Optimized Multi-Stage Docker Image
+# Uses distroless Python image for minimal attack surface and smaller size
+
+# ==================== Stage 1: Builder ====================
+FROM python:3.11-slim as builder
+
+WORKDIR /app
+
+# Install build dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements
+COPY requirements.txt .
+
+# Install Python dependencies to a specific directory
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+# ==================== Stage 2: Runtime (Distroless) ====================
+FROM gcr.io/distroless/python3-debian11
+
+# Set working directory
+WORKDIR /app
+
+# Copy Python packages from builder
+COPY --from=builder /install /usr/local
+
+# Copy application code
+COPY src/ /app/src/
+COPY models/ /app/models/
+COPY alembic/ /app/alembic/
+COPY alembic.ini /app/
+
+# Create necessary directories (distroless doesn't have mkdir, so we copy from builder)
+COPY --from=builder /tmp /tmp
+
+# Set Python path
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+
+# Non-root user (distroless default)
+USER nonroot:nonroot
+
+# Expose API port
+EXPOSE 8000
+
+# Health check (distroless doesn't have curl, using Python)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD ["/usr/bin/python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health')"]
+
+# Run FastAPI with uvicorn
+CMD ["/usr/bin/python3", "-m", "uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
