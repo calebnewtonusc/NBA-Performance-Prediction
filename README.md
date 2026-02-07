@@ -7,9 +7,9 @@
 [![Enterprise Ready](https://img.shields.io/badge/status-enterprise%20ready-brightgreen)](docs/DEPLOYMENT_GUIDE.md)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**Enterprise-grade machine learning system for predicting NBA game outcomes and player statistics with production-ready infrastructure.**
+**Enterprise-grade machine learning system for predicting NBA game outcomes and player statistics with production-ready infrastructure and modern full-stack web application.**
 
-A collaborative ML project featuring advanced performance optimizations (10-100x speedup), comprehensive testing, full CI/CD pipeline, and production deployment guides.
+A comprehensive ML project featuring advanced performance optimizations (10-100x speedup), interactive web dashboard, model comparison tools, real-time predictions, and production-ready deployment.
 
 ## 🚀 Live Demo
 
@@ -29,6 +29,33 @@ A collaborative ML project featuring advanced performance optimizations (10-100x
 - **Auth**: JWT-based authentication with secure password hashing
 
 See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for step-by-step deployment instructions.
+
+## 🎯 Web Application Features
+
+**Modern, Production-Ready Dashboard:**
+- **Real-Time Predictions**: Get instant win probability predictions for any NBA matchup
+- **Model Comparison**: Compare predictions from 4 different ML models side-by-side
+- **Player Statistics**: Search 200+ NBA players with fuzzy matching and autocomplete
+- **Data Explorer**: Analyze 2,788+ historical games with advanced filtering and pagination
+- **Model Performance**: Monitor accuracy, precision, recall, F1 scores, and data drift detection
+- **Mobile-First Design**: Fully responsive with touch-optimized navigation and card views
+- **Smart UX Features**:
+  - Featured players for quick access
+  - Recent search history (localStorage persistence)
+  - Shareable prediction links with URL parameters
+  - Toast notifications for user feedback
+  - Loading skeletons for smooth transitions
+  - Keyboard shortcuts (Cmd+K, Cmd+Enter, ESC)
+  - Contextual help tooltips throughout
+  - API health monitoring with live status indicators
+  - Data freshness indicators showing cache vs live data
+
+**Technical Stack:**
+- **Frontend**: Next.js 14, TypeScript, Tailwind CSS, Recharts
+- **Backend**: FastAPI, SQLAlchemy, Pydantic
+- **Authentication**: JWT with bcrypt password hashing
+- **Caching**: 5-minute in-memory cache with automatic invalidation
+- **API Integration**: Real-time NBA data from balldontlie.io
 
 ## Key Features
 
@@ -432,11 +459,15 @@ This is an educational project. Feel free to use and modify as needed.
 - ✅ Automated data fetching and processing pipeline
 
 ### Production Deployment
-- ✅ FastAPI backend with JWT authentication
-- ✅ Next.js frontend with auto-login
-- ✅ Railway deployment (Docker-based)
-- ✅ Vercel deployment (auto-deploy from GitHub)
-- ✅ All 6 models deployed and accessible
+- ✅ FastAPI backend with JWT authentication and bcrypt hashing
+- ✅ Next.js 14 frontend with TypeScript and modern React patterns
+- ✅ Railway deployment (Docker-based with health checks)
+- ✅ Vercel deployment (auto-deploy from GitHub with zero downtime)
+- ✅ All 6 models deployed and accessible via REST API
+- ✅ Comprehensive error handling with retry mechanisms
+- ✅ Production-grade caching with 5-minute TTL
+- ✅ Mobile-optimized responsive design
+- ✅ Real-time API health monitoring
 
 ## Built By
 
