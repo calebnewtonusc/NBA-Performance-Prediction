@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { apiClient, Game, TeamStats } from '@/lib/api-client'
 import { SkeletonTable, SkeletonStats } from '@/components/LoadingSkeleton'
+import { InfoTooltip } from '@/components/InfoTooltip'
 import {
   BarChart,
   Bar,
