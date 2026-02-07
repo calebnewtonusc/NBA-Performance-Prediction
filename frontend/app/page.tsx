@@ -96,7 +96,14 @@ export default function Home() {
   )
 }
 
-function StatCard({ title, value, icon: Icon, color }: any) {
+interface StatCardProps {
+  title: string;
+  value: string | number;
+  icon: React.ComponentType<{ className?: string }>;
+  color: 'green' | 'blue' | 'purple' | 'orange';
+}
+
+function StatCard({ title, value, icon: Icon, color }: StatCardProps) {
   const colorClasses = {
     green: 'bg-green-500/10 text-green-400',
     blue: 'bg-blue-500/10 text-blue-400',
@@ -119,7 +126,13 @@ function StatCard({ title, value, icon: Icon, color }: any) {
   )
 }
 
-function FeatureCard({ title, description, href }: any) {
+interface FeatureCardProps {
+  title: string;
+  description: string;
+  href: string;
+}
+
+function FeatureCard({ title, description, href }: FeatureCardProps) {
   return (
     <a
       href={href}

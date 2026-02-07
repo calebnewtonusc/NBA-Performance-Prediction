@@ -3,7 +3,7 @@
 import { Suspense, useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
-import { apiClient, PredictionResponse } from '@/lib/api-client'
+import { apiClient, PredictionResponse, ModelInfo } from '@/lib/api-client'
 import { InfoTooltip } from '@/components/InfoTooltip'
 import {
   BarChart,
@@ -59,7 +59,7 @@ function PredictionsContent() {
   const [error, setError] = useState<string | null>(null)
   const [predictionHistory, setPredictionHistory] = useState<any[]>([])
   const [comparing, setComparing] = useState(false)
-  const [modelComparisons, setModelComparisons] = useState<Array<{ model: any; prediction: PredictionResponse }> | null>(null)
+  const [modelComparisons, setModelComparisons] = useState<Array<{ model: ModelInfo; prediction: PredictionResponse }> | null>(null)
 
   // Load from URL parameters on mount
   useEffect(() => {
