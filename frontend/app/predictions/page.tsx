@@ -185,17 +185,17 @@ export default function Predictions() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8" role="main" aria-labelledby="page-title">
+    <div className="max-w-6xl mx-auto space-y-6 sm:space-y-8" role="main" aria-labelledby="page-title">
       <div>
-        <h1 className="text-4xl font-bold" id="page-title">Game Predictions</h1>
-        <p className="text-gray-400 mt-2">
+        <h1 className="text-3xl sm:text-4xl font-bold" id="page-title">Game Predictions</h1>
+        <p className="text-sm sm:text-base text-gray-400 mt-2">
           Predict NBA game outcomes using live stats and machine learning
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-secondary p-6 rounded-lg border border-gray-700">
-          <h2 className="text-2xl font-bold mb-6" id="matchup-heading">Select Matchup</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+        <div className="bg-secondary p-4 sm:p-6 rounded-lg border border-gray-700">
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6" id="matchup-heading">Select Matchup</h2>
           <form onSubmit={handlePredict} className="space-y-6" aria-labelledby="matchup-heading">
             <div>
               <label htmlFor="home-team-select" className="block text-sm font-medium mb-2 flex items-center">
@@ -278,27 +278,27 @@ export default function Predictions() {
           )}
         </div>
 
-        <div className="bg-secondary p-6 rounded-lg border border-gray-700">
-          <h2 className="text-2xl font-bold mb-6" id="results-heading">Prediction Result</h2>
+        <div className="bg-secondary p-4 sm:p-6 rounded-lg border border-gray-700">
+          <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6" id="results-heading">Prediction Result</h2>
           {prediction ? (
             <div className="space-y-6" role="region" aria-labelledby="results-heading" aria-live="polite">
               <div className="text-center space-y-4">
-                <div className="text-6xl font-bold text-primary" aria-label={`Predicted winner: ${prediction.prediction === 'home' ? homeTeam : awayTeam}`}>
+                <div className="text-4xl sm:text-6xl font-bold text-primary break-words" aria-label={`Predicted winner: ${prediction.prediction === 'home' ? homeTeam : awayTeam}`}>
                   {prediction.prediction === 'home' ? homeTeam : awayTeam}
                 </div>
-                <div className="text-2xl text-gray-300" aria-label={`Confidence: ${(prediction.confidence * 100).toFixed(1)} percent`}>
+                <div className="text-lg sm:text-2xl text-gray-300" aria-label={`Confidence: ${(prediction.confidence * 100).toFixed(1)} percent`}>
                   Wins with {(prediction.confidence * 100).toFixed(1)}% confidence
                 </div>
-                <div className="inline-block px-4 py-2 bg-primary/20 rounded-lg">
-                  <span className="text-lg font-medium">
+                <div className="inline-block px-3 sm:px-4 py-2 bg-primary/20 rounded-lg">
+                  <span className="text-base sm:text-lg font-medium">
                     {prediction.prediction === 'home' ? 'Home' : 'Away'} Victory Predicted
                   </span>
                 </div>
               </div>
 
-              <div className="pt-6 border-t border-gray-700">
-                <h3 className="text-lg font-bold mb-4">Win Probability</h3>
-                <ResponsiveContainer width="100%" height={200}>
+              <div className="pt-4 sm:pt-6 border-t border-gray-700">
+                <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4">Win Probability</h3>
+                <ResponsiveContainer width="100%" height={180}>
                   <BarChart
                     data={[
                       {
@@ -326,16 +326,16 @@ export default function Predictions() {
                 </ResponsiveContainer>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 pt-6 border-t border-gray-700">
-                <div>
-                  <div className="text-gray-400 text-sm">Home Team</div>
-                  <div className="text-xl font-bold">{homeTeam}</div>
-                  <div className="text-primary font-bold mt-1">{(prediction.home_win_probability * 100).toFixed(1)}% to win</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6 border-t border-gray-700">
+                <div className="bg-background p-4 rounded-lg border border-gray-600">
+                  <div className="text-gray-400 text-xs sm:text-sm uppercase tracking-wider">Home Team</div>
+                  <div className="text-lg sm:text-xl font-bold mt-1">{homeTeam}</div>
+                  <div className="text-primary font-bold mt-2 text-base sm:text-lg">{(prediction.home_win_probability * 100).toFixed(1)}% to win</div>
                 </div>
-                <div>
-                  <div className="text-gray-400 text-sm">Away Team</div>
-                  <div className="text-xl font-bold">{awayTeam}</div>
-                  <div className="text-primary font-bold mt-1">{(prediction.away_win_probability * 100).toFixed(1)}% to win</div>
+                <div className="bg-background p-4 rounded-lg border border-gray-600">
+                  <div className="text-gray-400 text-xs sm:text-sm uppercase tracking-wider">Away Team</div>
+                  <div className="text-lg sm:text-xl font-bold mt-1">{awayTeam}</div>
+                  <div className="text-primary font-bold mt-2 text-base sm:text-lg">{(prediction.away_win_probability * 100).toFixed(1)}% to win</div>
                 </div>
               </div>
 
