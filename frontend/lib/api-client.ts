@@ -387,10 +387,10 @@ class APIClient {
     return response.data.alerts || [];
   }
 
-  async searchPlayers(query: string, limit: number = 20): Promise<Player[]> {
+  async searchPlayers(query: string, limit: number = 20): Promise<{ players: Player[], dataSource?: string, timestamp?: string }> {
     // Check cache first
     const cacheKey = this.getCacheKey('GET', 'players/search', { query, limit });
-    const cached = this.getCached<Player[]>(cacheKey);
+    const cached = this.getCached<{ players: Player[], dataSource?: string, timestamp?: string }>(cacheKey);
     if (cached) {
       console.log('[Cache] Using cached player search results');
       return cached;
@@ -409,12 +409,16 @@ class APIClient {
       throw new Error('Invalid response format from server');
     }
 
-    const players = response.data.players;
+    const result = {
+      players: response.data.players,
+      dataSource: response.data.data_source,
+      timestamp: response.data.timestamp
+    };
 
     // Cache the results
-    this.setCache(cacheKey, players);
+    this.setCache(cacheKey, result);
 
-    return players;
+    return result;
   }
 
   async getPlayerDetails(playerId: number): Promise<Player> {

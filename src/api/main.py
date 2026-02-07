@@ -198,11 +198,15 @@ drift_detector = DataDriftDetector(threshold=0.1)
 performance_monitor = ModelPerformanceMonitor(window_size=100)
 alert_manager = AlertManager()
 
-# Player data collector
-player_data_collector = PlayerDataCollector()
+# Player data collector with API key from environment
+player_data_collector = PlayerDataCollector(
+    api_key=os.getenv("BALLDONTLIE_API_KEY")
+)
 
-# Game data collector
-game_data_collector = GameDataCollector()
+# Game data collector with API key from environment
+game_data_collector = GameDataCollector(
+    api_key=os.getenv("BALLDONTLIE_API_KEY")
+)
 
 
 # ==================== Pydantic Models ====================
@@ -1223,16 +1227,18 @@ async def search_players(
         List of matching players with their information
     """
     try:
-        # Search for players
-        players = player_data_collector.search_players(q)
+        # Search for players - returns dict with players, data_source, timestamp
+        result = player_data_collector.search_players(q)
 
         # Limit results
-        players = players[:limit]
+        players = result.get("players", [])[:limit]
 
         return {
             "query": q,
             "count": len(players),
-            "players": players
+            "players": players,
+            "data_source": result.get("data_source", "unknown"),
+            "timestamp": result.get("timestamp")
         }
 
     except Exception as e:

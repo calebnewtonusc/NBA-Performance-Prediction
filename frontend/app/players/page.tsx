@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { apiClient, Player, PlayerStats } from '@/lib/api-client'
 import { SkeletonPlayerGrid, SkeletonText } from '@/components/LoadingSkeleton'
 import { InfoTooltip } from '@/components/InfoTooltip'
+import { DataFreshnessIndicator } from '@/components/DataFreshnessIndicator'
 import {
   BarChart,
   Bar,
@@ -34,6 +35,8 @@ export default function Players() {
   const [statsLoading, setStatsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [recentSearches, setRecentSearches] = useState<string[]>([])
+  const [dataSource, setDataSource] = useState<string | undefined>()
+  const [timestamp, setTimestamp] = useState<string | undefined>()
 
   // Load recent searches from localStorage on mount
   useEffect(() => {
@@ -71,10 +74,12 @@ export default function Players() {
     setPlayerStats(null)
 
     try {
-      const results = await apiClient.searchPlayers(searchQuery, 20)
-      setSearchResults(results)
+      const response = await apiClient.searchPlayers(searchQuery, 20)
+      setSearchResults(response.players)
+      setDataSource(response.dataSource)
+      setTimestamp(response.timestamp)
 
-      if (results.length === 0) {
+      if (response.players.length === 0) {
         toast.info('No players found', {
           description: 'Try searching by first name, last name, or team'
         })
@@ -83,7 +88,7 @@ export default function Players() {
         // Add to recent searches on successful search
         addToRecentSearches(searchQuery)
 
-        toast.success(`Found ${results.length} player(s)`, {
+        toast.success(`Found ${response.players.length} player(s)`, {
           description: `Showing results for "${searchQuery}"`
         })
       }
@@ -258,7 +263,10 @@ export default function Players() {
       {/* Search Results */}
       {searchResults.length > 0 && (
         <div className="bg-secondary p-6 rounded-lg border border-gray-700">
-          <h2 className="text-2xl font-bold mb-4">Search Results ({searchResults.length})</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-2xl font-bold">Search Results ({searchResults.length})</h2>
+            <DataFreshnessIndicator dataSource={dataSource} timestamp={timestamp} />
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto">
             {searchResults.map((player) => (
               <button
