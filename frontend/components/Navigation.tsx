@@ -32,6 +32,7 @@ export default function Navigation() {
               height={40}
               className="rounded-lg"
               priority
+              unoptimized
             />
             <span className="text-xl font-bold hidden sm:inline">NBA Predictions</span>
             <span className="text-lg font-bold sm:hidden">NBA</span>
