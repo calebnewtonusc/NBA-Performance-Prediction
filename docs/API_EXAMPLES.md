@@ -1,4 +1,4 @@
-# basketball.fill NBA Prediction API - Usage Examples
+# NBA Prediction API - Usage Examples
 
 Complete code examples for all API endpoints in multiple languages.
 
@@ -557,18 +557,18 @@ class NBAAPIClient:
             )
             response.raise_for_status()
             self.token = response.json()["access_token"]
-            logger.info("checkmark.circle.fill Authenticated successfully")
+            logger.info("✓ Authenticated successfully")
         except requests.exceptions.HTTPError as e:
             if e.response.status_code == 401:
-                logger.error("xmark.circle.fill Invalid credentials")
+                logger.error("✗ Invalid credentials")
             else:
-                logger.error(f"xmark.circle.fill HTTP error: {e}")
+                logger.error(f"✗ HTTP error: {e}")
             raise
         except requests.exceptions.Timeout:
-            logger.error("xmark.circle.fill Request timed out")
+            logger.error("✗ Request timed out")
             raise
         except requests.exceptions.ConnectionError:
-            logger.error("xmark.circle.fill Connection failed")
+            logger.error("✗ Connection failed")
             raise
 
     def predict_game(self, home_team: str, away_team: str, model: str = "logistic") -> Optional[dict]:
@@ -769,7 +769,7 @@ class NBAPredictor:
         Args:
             games: List of (home_team, away_team) tuples
         """
-        print(f"\nbasketball.fill NBA Predictions for {datetime.now().strftime('%B %d, %Y')}\n")
+        print(f"\nNBA Predictions for {datetime.now().strftime('%B %d, %Y')}\n")
         print("=" * 70)
 
         for home, away in games:
@@ -794,11 +794,11 @@ class NBAPredictor:
                 print(f"     Away: {pred['away_win_probability']*100:.1f}%")
                 print(f"     Model: {pred['model_used']}")
                 if pred.get('cached'):
-                    print(f"     bolt.fill Cached result")
+                    print(f"     ⚡ Cached result")
 
             except Exception as e:
                 print(f"\n{home} vs {away}")
-                print(f"  xmark.circle.fill Error: {e}")
+                print(f"  ✗ Error: {e}")
 
         print("\n" + "=" * 70)
 

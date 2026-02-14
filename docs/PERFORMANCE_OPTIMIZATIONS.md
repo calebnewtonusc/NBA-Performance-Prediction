@@ -155,7 +155,7 @@ Processing 10 years of NBA data (12,300 games):
 
 ## 5. Best Practices Applied
 
-### checkmark.circle.fill Use Vectorized Operations
+### ✓ Use Vectorized Operations
 ```python
 # Good - Vectorized
 df['win'] = df['home_score'] > df['away_score']
@@ -165,7 +165,7 @@ for idx, row in df.iterrows():
     df.at[idx, 'win'] = row['home_score'] > row['away_score']
 ```
 
-### checkmark.circle.fill Use .empty Instead of len()
+### ✓ Use .empty Instead of len()
 ```python
 # Good - Pythonic
 if df.empty:
@@ -176,7 +176,7 @@ if len(df) == 0:
     return
 ```
 
-### checkmark.circle.fill Use itertuples() When Iteration Needed
+### ✓ Use itertuples() When Iteration Needed
 ```python
 # Good - Fast iteration
 for game in df.itertuples():
@@ -187,7 +187,7 @@ for idx, game in df.iterrows():
     process(game['home_score'])
 ```
 
-### checkmark.circle.fill Avoid Chained Assignment
+### ✓ Avoid Chained Assignment
 ```python
 # Good - No SettingWithCopyWarning
 df['new_col'] = df['old_col'] * 2
@@ -236,17 +236,17 @@ pytest tests/test_game_features_refactored.py -v
 ## 8. Performance Tips for Contributors
 
 ### DO:
-- checkmark.circle.fill Use vectorized pandas operations
-- checkmark.circle.fill Benchmark before/after changes
-- checkmark.circle.fill Profile code to find bottlenecks
-- checkmark.circle.fill Use `itertuples()` when iteration is necessary
-- checkmark.circle.fill Test with realistic dataset sizes
+- ✓ Use vectorized pandas operations
+- ✓ Benchmark before/after changes
+- ✓ Profile code to find bottlenecks
+- ✓ Use `itertuples()` when iteration is necessary
+- ✓ Test with realistic dataset sizes
 
 ### DON'T:
-- xmark.circle.fill Use `iterrows()` on large DataFrames
-- xmark.circle.fill Apply functions row-by-row when vectorization is possible
-- xmark.circle.fill Use `inplace=True` (deprecated in pandas 3.0)
-- xmark.circle.fill Assume small-data optimizations work at scale
+- ✗ Use `iterrows()` on large DataFrames
+- ✗ Apply functions row-by-row when vectorization is possible
+- ✗ Use `inplace=True` (deprecated in pandas 3.0)
+- ✗ Assume small-data optimizations work at scale
 
 ---
 
