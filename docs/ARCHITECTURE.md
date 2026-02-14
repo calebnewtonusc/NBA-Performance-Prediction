@@ -6,7 +6,7 @@ The NBA Performance Prediction system is a full-stack machine learning applicati
 
 ---
 
-## wrench.and.screwdriver.fill High-Level Architecture
+## High-Level Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -97,7 +97,7 @@ The NBA Performance Prediction system is a full-stack machine learning applicati
 │  Player Stats Models (Regression)                       │
 │  ┌───────────────────────────────────────────────────┐  │
 │  │ 1. Linear Regression (MAE ~2.49)                 │  │
-│  │ 2. Ridge Regression (MAE ~2.49) star.fill Default        │  │
+│  │ 2. Ridge Regression (MAE ~2.49) [Default]        │  │
 │  │ 3. Lasso Regression (MAE ~2.49)                  │  │
 │  └───────────────────────────────────────────────────┘  │
 │                                                          │
@@ -333,7 +333,7 @@ CREATE TABLE audit_logs (
 
 ---
 
-## chart.bar.fill Monitoring & Observability
+## Monitoring & Observability
 
 ### Metrics Collected
 
@@ -375,7 +375,7 @@ logs/
 
 ---
 
-## rocket.fill Deployment Pipeline (CI/CD)
+## Deployment Pipeline (CI/CD)
 
 ```
 Developer Push to GitHub
@@ -395,7 +395,7 @@ GitHub Actions Triggered
     ▼
 Tests Pass?
     │
-    ├─ NO ──> xmark.circle.fill Deployment Blocked
+    ├─ NO ──> ✗ Deployment Blocked
     │
     ▼ YES
     │
@@ -412,7 +412,7 @@ Tests Pass?
            └─ Update DNS
     │
     ▼
-Production Deployment Complete checkmark.circle.fill
+Production Deployment Complete ✓
     │
     └──> Post-Deployment
            ├─ Smoke tests
@@ -422,7 +422,7 @@ Production Deployment Complete checkmark.circle.fill
 
 ---
 
-## wrench.fill Technology Stack
+## Technology Stack
 
 ### Backend
 - **Framework**: FastAPI 0.104+
@@ -454,7 +454,7 @@ Production Deployment Complete checkmark.circle.fill
 
 ---
 
-## chart.line.uptrend.xyaxis Performance Characteristics
+## Performance Characteristics
 
 ### API Response Times (P95)
 - Health check: <50ms

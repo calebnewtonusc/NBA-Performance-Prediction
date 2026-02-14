@@ -6,11 +6,11 @@
 
 If you need to rollback immediately:
 
-1. checkmark.circle.fill **Identify the deployment platform** (Railway backend, Vercel frontend)
-2. checkmark.circle.fill **Locate the last known good commit/deployment**
-3. checkmark.circle.fill **Execute rollback commands** (see below)
-4. checkmark.circle.fill **Verify service health**
-5. checkmark.circle.fill **Notify team and create incident report**
+1. ✓ **Identify the deployment platform** (Railway backend, Vercel frontend)
+2. ✓ **Locate the last known good commit/deployment**
+3. ✓ **Execute rollback commands** (see below)
+4. ✓ **Verify service health**
+5. ✓ **Notify team and create incident report**
 
 ---
 
@@ -21,7 +21,7 @@ If you need to rollback immediately:
 1. Go to [Railway Dashboard](https://railway.app/dashboard)
 2. Select your NBA Prediction API project
 3. Click "Deployments" tab
-4. Find the last successful deployment (marked with checkmark.circle.fill)
+4. Find the last successful deployment (marked with ✓)
 5. Click "..." menu → "Redeploy"
 6. Wait for deployment to complete (usually 2-3 minutes)
 7. Verify: `curl https://nba-performance-prediction-production.up.railway.app/api/health`
@@ -116,7 +116,7 @@ alembic downgrade <revision-id>
 alembic downgrade base
 ```
 
-exclamationmark.triangle.fill **WARNING**: Database rollbacks can cause data loss. Always:
+⚠ **WARNING**: Database rollbacks can cause data loss. Always:
 - Create a backup before rolling back
 - Test on staging first
 - Coordinate with team during business hours
@@ -221,13 +221,13 @@ INFO stats
 
 **Should we rollback?**
 
-checkmark.circle.fill **YES, rollback if**:
+✓ **YES, rollback if**:
 - Complete service outage
 - Data corruption/loss
 - Security vulnerability
 - No quick fix available
 
-xmark.circle.fill **NO, forward fix if**:
+✗ **NO, forward fix if**:
 - Minor bug with workaround
 - Fix is simple and tested
 - Rollback would cause more issues
@@ -252,7 +252,7 @@ Updates:
 - 14:32 - Incident detected
 - 14:35 - Rollback initiated
 - 14:40 - Rollback complete, verifying
-- 14:45 - All systems healthy checkmark.circle.fill
+- 14:45 - All systems healthy ✓
 
 Root Cause: [To be determined in post-mortem]
 ```
