@@ -49,7 +49,7 @@ def generate_password(length: int = 24, use_special: bool = True) -> str:
 def main():
     """Generate and display all required secrets"""
     print("=" * 70)
-    print("🔐 NBA Performance Prediction - Production Secrets Generator")
+    print("[lock.shield.fill] NBA Performance Prediction - Production Secrets Generator")
     print("=" * 70)
     print()
     print("Copy these values to your environment variables:")
@@ -95,7 +95,7 @@ def main():
     print()
 
     print("=" * 70)
-    print("⚠️  IMPORTANT SECURITY NOTES:")
+    print("[exclamationmark.triangle]  IMPORTANT SECURITY NOTES:")
     print("=" * 70)
     print("1. Store these secrets securely (use a password manager)")
     print("2. Never commit secrets to version control")

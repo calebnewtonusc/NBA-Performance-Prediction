@@ -272,12 +272,12 @@ class DatabaseManager:
     def create_tables(self):
         """Create all tables"""
         Base.metadata.create_all(bind=self.engine)
-        print("✅ Database tables created successfully")
+        print("[checkmark.circle] Database tables created successfully")
 
     def drop_tables(self):
         """Drop all tables (use with caution!)"""
         Base.metadata.drop_all(bind=self.engine)
-        print("⚠️  Database tables dropped")
+        print("[exclamationmark.triangle]  Database tables dropped")
 
     def get_session(self):
         """Get database session"""

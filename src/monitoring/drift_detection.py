@@ -60,7 +60,7 @@ class DataDriftDetector:
                 "75%": X.quantile(0.75).to_dict(),
             },
         }
-        print("✅ Reference distribution fitted")
+        print("[checkmark.circle] Reference distribution fitted")
 
     def detect_drift(self, X: pd.DataFrame) -> DriftReport:
         """
@@ -97,11 +97,11 @@ class DataDriftDetector:
         # Recommendation
         if drift_detected:
             recommendation = (
-                f"⚠️  Data drift detected in {len(features_with_drift)} features. "
+                f"[exclamationmark.triangle]  Data drift detected in {len(features_with_drift)} features. "
                 f"Consider retraining the model with recent data."
             )
         else:
-            recommendation = "✅ No significant data drift detected. Model is stable."
+            recommendation = "[checkmark.circle] No significant data drift detected. Model is stable."
 
         return DriftReport(
             timestamp=datetime.now(timezone.utc).isoformat(),
@@ -160,7 +160,7 @@ class ModelPerformanceMonitor:
     def set_baseline(self, accuracy: float):
         """Set baseline accuracy from training"""
         self.baseline_accuracy = accuracy
-        print(f"✅ Baseline accuracy set: {accuracy:.4f}")
+        print(f"[checkmark.circle] Baseline accuracy set: {accuracy:.4f}")
 
     def record_prediction(
         self, prediction: int, actual: int, confidence: float, timestamp: Optional[str] = None
@@ -239,15 +239,15 @@ class ModelPerformanceMonitor:
             if degradation > 0.1:
                 alerts.append("🚨 CRITICAL: Accuracy degraded by >10%")
             elif degradation > 0.05:
-                alerts.append("⚠️  WARNING: Accuracy degraded by >5%")
+                alerts.append("[exclamationmark.triangle]  WARNING: Accuracy degraded by >5%")
 
         if current_accuracy < 0.5:
             alerts.append("🚨 CRITICAL: Accuracy below 50%")
         elif current_accuracy < 0.6:
-            alerts.append("⚠️  WARNING: Accuracy below 60%")
+            alerts.append("[exclamationmark.triangle]  WARNING: Accuracy below 60%")
 
         if not alerts:
-            alerts.append("✅ Performance is stable")
+            alerts.append("[checkmark.circle] Performance is stable")
 
         return alerts
 

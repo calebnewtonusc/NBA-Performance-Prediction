@@ -112,12 +112,12 @@ def validate_game_features():
             print("  ⚠ WARNING: Performance could be better")
 
         print("\n" + "=" * 70)
-        print("✅ ALL GAME FEATURES VALIDATION PASSED")
+        print("[checkmark.circle] ALL GAME FEATURES VALIDATION PASSED")
         print("=" * 70)
         return True
 
     except Exception as e:
-        print(f"\n❌ VALIDATION FAILED: {str(e)}")
+        print(f"\n[xmark.circle] VALIDATION FAILED: {str(e)}")
         import traceback
         traceback.print_exc()
         return False
@@ -149,12 +149,12 @@ def validate_data_cleaning():
         print("✓ Missing value handling works (no inplace operations)")
 
         print("\n" + "=" * 70)
-        print("✅ ALL DATA CLEANING VALIDATION PASSED")
+        print("[checkmark.circle] ALL DATA CLEANING VALIDATION PASSED")
         print("=" * 70)
         return True
 
     except Exception as e:
-        print(f"\n❌ VALIDATION FAILED: {str(e)}")
+        print(f"\n[xmark.circle] VALIDATION FAILED: {str(e)}")
         import traceback
         traceback.print_exc()
         return False
@@ -179,12 +179,12 @@ def validate_version_consistency():
         assert package_version == "1.0.0", "Version mismatch!"
 
         print("\n" + "=" * 70)
-        print("✅ VERSION VALIDATION PASSED")
+        print("[checkmark.circle] VERSION VALIDATION PASSED")
         print("=" * 70)
         return True
 
     except Exception as e:
-        print(f"\n❌ VALIDATION FAILED: {str(e)}")
+        print(f"\n[xmark.circle] VALIDATION FAILED: {str(e)}")
         return False
 
 
@@ -210,7 +210,7 @@ def main():
 
     all_passed = True
     for name, passed in results.items():
-        status = "✅ PASS" if passed else "❌ FAIL"
+        status = "[checkmark.circle] PASS" if passed else "[xmark.circle] FAIL"
         print(f"{name:.<50} {status}")
         if not passed:
             all_passed = False
@@ -218,10 +218,10 @@ def main():
     print("=" * 70)
 
     if all_passed:
-        print("\n🎉 ALL VALIDATIONS PASSED - CODE IS READY FOR PRODUCTION! 🎉\n")
+        print("\n[party.popper] ALL VALIDATIONS PASSED - CODE IS READY FOR PRODUCTION! [party.popper]\n")
         return 0
     else:
-        print("\n❌ SOME VALIDATIONS FAILED - PLEASE FIX ISSUES ABOVE\n")
+        print("\n[xmark.circle] SOME VALIDATIONS FAILED - PLEASE FIX ISSUES ABOVE\n")
         return 1
 
 

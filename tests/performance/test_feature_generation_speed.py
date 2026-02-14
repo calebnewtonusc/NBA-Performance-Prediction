@@ -117,10 +117,10 @@ def test_feature_generation_performance():
 
 
 if __name__ == "__main__":
-    print("\n🚀 Testing Feature Generation Performance\n")
+    print("\n[rocket.fill] Testing Feature Generation Performance\n")
     results = test_feature_generation_performance()
 
-    print("\n✅ Performance test complete!")
+    print("\n[checkmark.circle] Performance test complete!")
     print("\nNote: The optimized version uses pre-built lookup dictionaries")
     print("to avoid repeated DataFrame filtering, achieving O(n) complexity.")
     print("\nFor 1000 games, this saves hours of processing time!")

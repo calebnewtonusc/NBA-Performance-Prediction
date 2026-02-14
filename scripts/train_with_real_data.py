@@ -214,4 +214,4 @@ with open(metadata_file, 'w') as f:
     json.dump(metadata, f, indent=2, default=str)
 
 print(f"✓ Metadata saved to {metadata_file}")
-print("\n✅ Model training complete with REAL NBA data!")
+print("\n[checkmark.circle] Model training complete with REAL NBA data!")

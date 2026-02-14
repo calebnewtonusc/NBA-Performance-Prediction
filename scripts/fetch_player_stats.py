@@ -104,4 +104,4 @@ if player_stats_list:
     print(f"\nSample columns:")
     print(all_stats.columns.tolist()[:10])
 else:
-    print("\n❌ No player stats fetched")
+    print("\n[xmark.circle] No player stats fetched")

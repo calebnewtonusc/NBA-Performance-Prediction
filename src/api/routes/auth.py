@@ -76,7 +76,7 @@ async def login(login_data: LoginRequest, request: Request):
 
         client_ip = request.client.host if request.client else "unknown"
         logger.warning(
-            f"⚠️  SECURITY: Failed login for '{login_data.username}' from {client_ip}"
+            f"[exclamationmark.triangle]  SECURITY: Failed login for '{login_data.username}' from {client_ip}"
         )
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -91,7 +91,7 @@ async def login(login_data: LoginRequest, request: Request):
     elif plain_password_fallback:
         password_valid = login_data.password == plain_password_fallback
         if password_valid:
-            logger.warning("⚠️  SECURITY: Using plain text password! Set API_PASSWORD_HASH")
+            logger.warning("[exclamationmark.triangle]  SECURITY: Using plain text password! Set API_PASSWORD_HASH")
 
     if password_valid:
         with metrics_lock:
@@ -106,7 +106,7 @@ async def login(login_data: LoginRequest, request: Request):
 
     client_ip = request.client.host if request.client else "unknown"
     logger.warning(
-        f"⚠️  SECURITY: Failed login for '{login_data.username}' from {client_ip}"
+        f"[exclamationmark.triangle]  SECURITY: Failed login for '{login_data.username}' from {client_ip}"
     )
     raise HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

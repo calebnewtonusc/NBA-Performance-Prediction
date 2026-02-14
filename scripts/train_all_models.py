@@ -237,5 +237,5 @@ with open(models_dir / 'game_models_comparison.json', 'w') as f:
         ], key=lambda x: x[1])[0]
     }, f, indent=2)
 
-print("\n✅ All game prediction models saved and ready!")
+print("\n[checkmark.circle] All game prediction models saved and ready!")
 print(f"   Models directory: {models_dir}")

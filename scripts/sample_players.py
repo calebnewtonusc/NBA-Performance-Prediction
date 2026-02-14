@@ -386,4 +386,4 @@ if __name__ == "__main__":
     for player in results:
         print(f"  - {player['first_name']} {player['last_name']} ({player['team']['full_name'] if player.get('team') else 'Free Agent'})")
 
-    print(f"\n✅ Total players in database: {len(SAMPLE_PLAYERS)}")
+    print(f"\n[checkmark.circle] Total players in database: {len(SAMPLE_PLAYERS)}")

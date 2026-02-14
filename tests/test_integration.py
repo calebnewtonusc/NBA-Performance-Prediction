@@ -348,7 +348,7 @@ def main():
         print("✓ Error handling works")
 
         print("\n" + "=" * 70)
-        print("✅ ALL INTEGRATION TESTS PASSED")
+        print("[checkmark.circle] ALL INTEGRATION TESTS PASSED")
         print("=" * 70)
         print("\nThe full ML pipeline is working correctly:")
         print("  • Data cleaning ✓")
@@ -361,7 +361,7 @@ def main():
         return 0
 
     except Exception as e:
-        print(f"\n❌ INTEGRATION TEST FAILED: {str(e)}")
+        print(f"\n[xmark.circle] INTEGRATION TEST FAILED: {str(e)}")
         import traceback
         traceback.print_exc()
         return 1
