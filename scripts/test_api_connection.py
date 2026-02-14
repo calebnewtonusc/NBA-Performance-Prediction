@@ -22,22 +22,22 @@ def test_health_endpoint(base_url: str) -> bool:
         response = requests.get(f"{base_url}/api/health", timeout=10)
         if response.status_code == 200:
             data = response.json()
-            print(f"✅ Health check passed")
+            print(f"[checkmark.circle] Health check passed")
             print(f"   Status: {data.get('status')}")
             print(f"   Models loaded: {data.get('models_loaded')}")
             print(f"   Uptime: {data.get('uptime_seconds')}s")
             return True
         else:
-            print(f"❌ Health check failed with status {response.status_code}")
+            print(f"[xmark.circle] Health check failed with status {response.status_code}")
             return False
     except requests.exceptions.RequestException as e:
-        print(f"❌ Health check failed: {e}")
+        print(f"[xmark.circle] Health check failed: {e}")
         return False
 
 
 def test_login(base_url: str, username: str, password: str) -> str:
     """Test login and return access token"""
-    print(f"\n🔐 Testing login endpoint: {base_url}/api/auth/login")
+    print(f"\n[lock.shield.fill] Testing login endpoint: {base_url}/api/auth/login")
     try:
         response = requests.post(
             f"{base_url}/api/auth/login",
@@ -47,42 +47,42 @@ def test_login(base_url: str, username: str, password: str) -> str:
         if response.status_code == 200:
             data = response.json()
             token = data.get("access_token")
-            print(f"✅ Login successful")
+            print(f"[checkmark.circle] Login successful")
             print(f"   Token type: {data.get('token_type')}")
             print(f"   Token (first 20 chars): {token[:20]}...")
             return token
         else:
-            print(f"❌ Login failed with status {response.status_code}")
+            print(f"[xmark.circle] Login failed with status {response.status_code}")
             print(f"   Response: {response.text}")
             return ""
     except requests.exceptions.RequestException as e:
-        print(f"❌ Login failed: {e}")
+        print(f"[xmark.circle] Login failed: {e}")
         return ""
 
 
 def test_models_endpoint(base_url: str, token: str) -> bool:
     """Test the models endpoint"""
-    print(f"\n📊 Testing models endpoint: {base_url}/api/models")
+    print(f"\n[chart.bar.fill] Testing models endpoint: {base_url}/api/models")
     try:
         headers = {"Authorization": f"Bearer {token}"}
         response = requests.get(f"{base_url}/api/models", headers=headers, timeout=10)
         if response.status_code == 200:
             data = response.json()
-            print(f"✅ Models endpoint accessible")
+            print(f"[checkmark.circle] Models endpoint accessible")
             print(f"   Available models: {data.get('models', [])}")
             print(f"   Models loaded: {len(data.get('loaded_models', []))}")
             return True
         else:
-            print(f"❌ Models endpoint failed with status {response.status_code}")
+            print(f"[xmark.circle] Models endpoint failed with status {response.status_code}")
             return False
     except requests.exceptions.RequestException as e:
-        print(f"❌ Models endpoint failed: {e}")
+        print(f"[xmark.circle] Models endpoint failed: {e}")
         return False
 
 
 def test_prediction(base_url: str, token: str) -> bool:
     """Test the prediction endpoint with sample data"""
-    print(f"\n🎯 Testing prediction endpoint: {base_url}/api/predict")
+    print(f"\n[target] Testing prediction endpoint: {base_url}/api/predict")
 
     # Sample prediction data
     prediction_data = {
@@ -120,18 +120,18 @@ def test_prediction(base_url: str, token: str) -> bool:
         )
         if response.status_code == 200:
             data = response.json()
-            print(f"✅ Prediction successful")
+            print(f"[checkmark.circle] Prediction successful")
             print(f"   Matchup: {data.get('home_team')} vs {data.get('away_team')}")
             print(f"   Prediction: {data.get('prediction')}")
             print(f"   Confidence: {data.get('confidence', 0)*100:.1f}%")
             print(f"   Model: {data.get('model_used')}")
             return True
         else:
-            print(f"❌ Prediction failed with status {response.status_code}")
+            print(f"[xmark.circle] Prediction failed with status {response.status_code}")
             print(f"   Response: {response.text}")
             return False
     except requests.exceptions.RequestException as e:
-        print(f"❌ Prediction failed: {e}")
+        print(f"[xmark.circle] Prediction failed: {e}")
         return False
 
 
@@ -141,7 +141,7 @@ def test_metrics_endpoint(base_url: str) -> bool:
     try:
         response = requests.get(f"{base_url}/api/metrics", timeout=10)
         if response.status_code == 200:
-            print(f"✅ Metrics endpoint accessible")
+            print(f"[checkmark.circle] Metrics endpoint accessible")
             # Prometheus metrics are plain text
             lines = response.text.split('\n')[:5]
             print(f"   First few metrics:")
@@ -150,10 +150,10 @@ def test_metrics_endpoint(base_url: str) -> bool:
                     print(f"     {line}")
             return True
         else:
-            print(f"❌ Metrics endpoint failed with status {response.status_code}")
+            print(f"[xmark.circle] Metrics endpoint failed with status {response.status_code}")
             return False
     except requests.exceptions.RequestException as e:
-        print(f"❌ Metrics endpoint failed: {e}")
+        print(f"[xmark.circle] Metrics endpoint failed: {e}")
         return False
 
 
@@ -197,29 +197,29 @@ def main():
     else:
         results["models"] = False
         results["prediction"] = False
-        print("\n⚠️  Skipping authenticated endpoints (login failed)")
+        print("\n[exclamationmark.triangle]  Skipping authenticated endpoints (login failed)")
 
     results["metrics"] = test_metrics_endpoint(args.url)
 
     # Summary
     print("\n" + "=" * 70)
-    print("📊 Test Summary")
+    print("[chart.bar.fill] Test Summary")
     print("=" * 70)
     passed = sum(1 for result in results.values() if result)
     total = len(results)
     print(f"   Passed: {passed}/{total}")
     print()
     for test_name, result in results.items():
-        status = "✅ PASS" if result else "❌ FAIL"
+        status = "[checkmark.circle] PASS" if result else "[xmark.circle] FAIL"
         print(f"   {status} - {test_name}")
     print("=" * 70)
 
     # Exit code
     if passed == total:
-        print("\n🎉 All tests passed!")
+        print("\n[party.popper] All tests passed!")
         sys.exit(0)
     else:
-        print(f"\n⚠️  {total - passed} test(s) failed")
+        print(f"\n[exclamationmark.triangle]  {total - passed} test(s) failed")
         sys.exit(1)
 
 

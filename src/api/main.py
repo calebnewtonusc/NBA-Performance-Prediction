@@ -183,7 +183,7 @@ try:
         default_ttl=300  # 5 minutes default for predictions
     )
 except Exception as e:
-    print(f"⚠️  Cache initialization failed: {e}, using in-memory cache")
+    print(f"[exclamationmark.triangle]  Cache initialization failed: {e}, using in-memory cache")
     cache = get_cache(use_redis=False)
 
 # Metrics tracking (thread-safe counters)
@@ -444,7 +444,7 @@ async def login(login_data: LoginRequest, request: Request):
         logger = logging.getLogger("uvicorn")
         client_ip = request.client.host if request.client else "unknown"
         logger.warning(
-            f"⚠️  SECURITY: Failed login attempt for username '{login_data.username}' from IP: {client_ip} at {datetime.now(timezone.utc).isoformat()}"
+            f"[exclamationmark.triangle]  SECURITY: Failed login attempt for username '{login_data.username}' from IP: {client_ip} at {datetime.now(timezone.utc).isoformat()}"
         )
 
         raise HTTPException(
@@ -463,7 +463,7 @@ async def login(login_data: LoginRequest, request: Request):
         password_valid = login_data.password == plain_password_fallback
         if password_valid:
             logger = logging.getLogger("uvicorn")
-            logger.warning("⚠️  SECURITY: Using plain text password authentication! Please set API_PASSWORD_HASH instead of API_PASSWORD")
+            logger.warning("[exclamationmark.triangle]  SECURITY: Using plain text password authentication! Please set API_PASSWORD_HASH instead of API_PASSWORD")
 
     if password_valid:
         access_token = create_access_token(data={"sub": login_data.username})
@@ -476,7 +476,7 @@ async def login(login_data: LoginRequest, request: Request):
     logger = logging.getLogger("uvicorn")
     client_ip = request.client.host if request.client else "unknown"
     logger.warning(
-        f"⚠️  SECURITY: Failed login attempt for username '{login_data.username}' from IP: {client_ip} at {datetime.now(timezone.utc).isoformat()}"
+        f"[exclamationmark.triangle]  SECURITY: Failed login attempt for username '{login_data.username}' from IP: {client_ip} at {datetime.now(timezone.utc).isoformat()}"
     )
 
     raise HTTPException(
@@ -1008,8 +1008,8 @@ def validate_environment() -> list:
 async def startup_event():
     """Initialize on startup and check security configuration"""
     logger = logging.getLogger("uvicorn")
-    logger.info("🚀 NBA Prediction API starting up...")
-    logger.info(f"📊 API Documentation: http://localhost:8000/api/docs")
+    logger.info("[rocket.fill] NBA Prediction API starting up...")
+    logger.info(f"[chart.bar.fill] API Documentation: http://localhost:8000/api/docs")
     logger.info(f"🔒 Authentication: POST /api/auth/login")
     logger.info(f"🏀 Predictions: POST /api/predict")
 
@@ -1017,27 +1017,27 @@ async def startup_event():
     issues, warnings = validate_environment()
 
     if issues:
-        logger.error("❌ CRITICAL CONFIGURATION ISSUES:")
+        logger.error("[xmark.circle] CRITICAL CONFIGURATION ISSUES:")
         for issue in issues:
             logger.error(f"  - {issue}")
-        logger.error("⚠️  Fix these issues before deploying to production!")
+        logger.error("[exclamationmark.triangle]  Fix these issues before deploying to production!")
 
     if warnings:
-        logger.warning("⚠️  CONFIGURATION WARNINGS:")
+        logger.warning("[exclamationmark.triangle]  CONFIGURATION WARNINGS:")
         for warning in warnings:
             logger.warning(f"  - {warning}")
 
     if not issues and not warnings:
-        logger.info("✅ All environment variables properly configured!")
+        logger.info("[checkmark.circle] All environment variables properly configured!")
 
     # Print helper for generating password hash
-    logger.info("💡 TIP: To generate a password hash, use Python:")
+    logger.info("[lightbulb.fill] TIP: To generate a password hash, use Python:")
     logger.info("    from passlib.context import CryptContext")
     logger.info("    pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')")
     logger.info("    print(pwd_context.hash('your_password_here'))")
 
     # Preload commonly used models for faster first requests
-    logger.info("📦 Preloading ML models...")
+    logger.info("[shippingbox.fill] Preloading ML models...")
     models_to_preload = [
         ("game_logistic", "v1"),
         ("game_forest", "v1"),
@@ -1053,7 +1053,7 @@ async def startup_event():
         except Exception as e:
             logger.warning(f"  ✗ Failed to load {model_name}:{version}: {e}")
 
-    logger.info(f"✅ Preloaded {preloaded_count}/{len(models_to_preload)} models")
+    logger.info(f"[checkmark.circle] Preloaded {preloaded_count}/{len(models_to_preload)} models")
 
 
 @app.on_event("shutdown")

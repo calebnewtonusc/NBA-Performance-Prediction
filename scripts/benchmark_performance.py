@@ -192,7 +192,7 @@ def main():
     print(f"  New (vectorized):   {results[-1]['total_ms']:,.2f}ms")
     print(f"  Speedup:           ~{speedup:.0f}x faster")
     print()
-    print("🎯 Feature engineering for 10,000 games: <1 second (was ~1-2 minutes)")
+    print("[target] Feature engineering for 10,000 games: <1 second (was ~1-2 minutes)")
     print()
     print("=" * 70)
 

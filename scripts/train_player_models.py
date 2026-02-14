@@ -214,7 +214,7 @@ with open(models_dir / 'player_models_comparison.json', 'w') as f:
         }
     }, f, indent=2)
 
-print("\n✅ All player prediction models saved!")
+print("\n[checkmark.circle] All player prediction models saved!")
 print(f"   Models directory: {models_dir}")
 print("\nNote: Using synthetic data for demonstration.")
 print("Replace with real player stats via NBA API for production.")

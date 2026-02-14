@@ -83,8 +83,8 @@ def show_home():
     This dashboard provides interactive visualizations for NBA game and player performance predictions.
 
     **Features:**
-    - 🎯 Game outcome predictions (Win/Loss)
-    - 📊 Player statistics predictions (Points, Rebounds, Assists)
+    - [target] Game outcome predictions (Win/Loss)
+    - [chart.bar.fill] Player statistics predictions (Points, Rebounds, Assists)
     - 📈 Model performance analytics
     - 🔍 Data exploration tools
     """)

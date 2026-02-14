@@ -134,7 +134,7 @@ def get_db():
 def init_db():
     """Initialize database tables"""
     Base.metadata.create_all(bind=engine)
-    logger.info("✅ Database tables initialized")
+    logger.info("[checkmark.circle] Database tables initialized")
 
 
 def get_pool_status():
@@ -159,7 +159,7 @@ def get_pool_status():
 def close_db_connections():
     """Close all database connections (for cleanup)"""
     engine.dispose()
-    logger.info("✅ All database connections closed")
+    logger.info("[checkmark.circle] All database connections closed")
 
 
 # Health check function
@@ -185,11 +185,11 @@ if __name__ == "__main__":
 
     # Check health
     if check_db_health():
-        print("✅ Database connection successful!")
+        print("[checkmark.circle] Database connection successful!")
 
         # Get pool status
         status = get_pool_status()
-        print(f"\n📊 Pool Status:")
+        print(f"\n[chart.bar.fill] Pool Status:")
         print(f"  Size: {status['size']}")
         print(f"  Checked In: {status['checked_in']}")
         print(f"  Checked Out: {status['checked_out']}")
@@ -200,8 +200,8 @@ if __name__ == "__main__":
         with get_db_session() as session:
             result = session.execute("SELECT NOW() as current_time")
             row = result.fetchone()
-            print(f"\n⏰ Database time: {row[0]}")
+            print(f"\n[clock.fill] Database time: {row[0]}")
 
-        print("\n✅ All tests passed!")
+        print("\n[checkmark.circle] All tests passed!")
     else:
-        print("❌ Database connection failed!")
+        print("[xmark.circle] Database connection failed!")

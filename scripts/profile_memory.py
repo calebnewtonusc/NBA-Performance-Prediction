@@ -176,7 +176,7 @@ def main():
         print("=" * 70)
 
         # Recommendations
-        print("\n📊 MEMORY OPTIMIZATION RECOMMENDATIONS:")
+        print("\n[chart.bar.fill] MEMORY OPTIMIZATION RECOMMENDATIONS:")
         if peak / 1024 / 1024 > 1000:
             print("  ⚠ High memory usage detected (>1GB)")
             print("  • Consider batch processing for large datasets")
@@ -187,16 +187,16 @@ def main():
             print("  • Current implementation is acceptable")
             print("  • Consider optimization for very large datasets")
         else:
-            print("  ✅ Excellent memory efficiency (<500MB)")
+            print("  [checkmark.circle] Excellent memory efficiency (<500MB)")
             print("  • Memory usage is well optimized")
 
-        print("\n💡 TIP: Run with mprof for graphical visualization:")
+        print("\n[lightbulb.fill] TIP: Run with mprof for graphical visualization:")
         print("  mprof run scripts/profile_memory.py")
         print("  mprof plot")
         print()
 
     except Exception as e:
-        print(f"\n❌ Profiling failed: {str(e)}")
+        print(f"\n[xmark.circle] Profiling failed: {str(e)}")
         import traceback
         traceback.print_exc()
         return 1

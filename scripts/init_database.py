@@ -40,15 +40,15 @@ try:
     # Test connection
     print("[1/3] Testing database connection...")
     if db_manager.health_check():
-        print("✅ Database connection successful")
+        print("[checkmark.circle] Database connection successful")
     else:
-        print("❌ Database connection failed!")
+        print("[xmark.circle] Database connection failed!")
         sys.exit(1)
 
     # Create tables
     print("\n[2/3] Creating database tables...")
     db_manager.create_tables()
-    print("✅ All tables created successfully")
+    print("[checkmark.circle] All tables created successfully")
 
     # Verify tables
     print("\n[3/3] Verifying tables...")
@@ -62,13 +62,13 @@ try:
         session.query(Prediction).first()
         session.query(ModelMetadata).first()
 
-        print("✅ All tables verified")
+        print("[checkmark.circle] All tables verified")
     finally:
         session.close()
 
     print()
     print("=" * 70)
-    print("✅ DATABASE INITIALIZATION COMPLETE!")
+    print("[checkmark.circle] DATABASE INITIALIZATION COMPLETE!")
     print("=" * 70)
     print()
     print("Next steps:")
@@ -77,13 +77,13 @@ try:
     print()
 
 except ImportError as e:
-    print(f"\n❌ Import error: {e}")
+    print(f"\n[xmark.circle] Import error: {e}")
     print("\nInstall required packages:")
     print("  pip install -r requirements-api.txt")
     sys.exit(1)
 
 except Exception as e:
-    print(f"\n❌ Initialization failed: {e}")
+    print(f"\n[xmark.circle] Initialization failed: {e}")
     import traceback
 
     traceback.print_exc()

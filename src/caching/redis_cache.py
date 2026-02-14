@@ -16,7 +16,7 @@ try:
     REDIS_AVAILABLE = True
 except ImportError:
     REDIS_AVAILABLE = False
-    print("⚠️  Redis not installed. Install with: pip install redis")
+    print("[exclamationmark.triangle]  Redis not installed. Install with: pip install redis")
 
 
 class RedisCache:
@@ -298,10 +298,10 @@ def get_cache(use_redis: bool = True, **kwargs) -> Any:
         try:
             cache = RedisCache(**kwargs)
             if cache.health_check():
-                print("✅ Redis cache connected")
+                print("[checkmark.circle] Redis cache connected")
                 return cache
-            print("⚠️  Redis not available, falling back to in-memory cache")
+            print("[exclamationmark.triangle]  Redis not available, falling back to in-memory cache")
         except Exception as e:
-            print(f"⚠️  Redis connection failed: {e}, falling back to in-memory cache")
+            print(f"[exclamationmark.triangle]  Redis connection failed: {e}, falling back to in-memory cache")
 
     return InMemoryCache()

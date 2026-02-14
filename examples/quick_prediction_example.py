@@ -133,10 +133,10 @@ def main():
         print(f"  {row['feature']:.<30} {row['importance']:.4f}")
 
     print("\n" + "=" * 70)
-    print("✅ PREDICTION COMPLETE")
+    print("[checkmark.circle] PREDICTION COMPLETE")
     print("=" * 70)
 
-    print("\n💡 TIP: Adjust the feature values above to predict different scenarios!")
+    print("\n[lightbulb.fill] TIP: Adjust the feature values above to predict different scenarios!")
     print()
 
 

@@ -24,7 +24,7 @@ try:
     XGBOOST_AVAILABLE = True
 except ImportError:
     XGBOOST_AVAILABLE = False
-    print("⚠️  XGBoost not installed. Install with: pip install xgboost")
+    print("[exclamationmark.triangle]  XGBoost not installed. Install with: pip install xgboost")
 
 from src.models.base_model import BaseModel
 
@@ -95,7 +95,7 @@ class GameXGBoost(BaseModel):
         self.feature_names = list(X_train.columns)
 
         if tune_hyperparameters:
-            print("🔧 Tuning hyperparameters...")
+            print("[wrench.fill] Tuning hyperparameters...")
             self._tune_hyperparameters(X_train, y_train)
 
         # Training with validation set for early stopping
@@ -121,7 +121,7 @@ class GameXGBoost(BaseModel):
             history = {}
 
         self.is_trained = True
-        print(f"✅ XGBoost training complete (best iteration: {self.model.best_iteration})")
+        print(f"[checkmark.circle] XGBoost training complete (best iteration: {self.model.best_iteration})")
 
         return history
 
@@ -194,7 +194,7 @@ class GameXGBoost(BaseModel):
             "log_loss": log_loss(y_test, y_proba),
         }
 
-        print("\n📊 XGBoost Model Performance:")
+        print("\n[chart.bar.fill] XGBoost Model Performance:")
         for metric, value in metrics.items():
             print(f"   {metric}: {value:.4f}")
 
@@ -249,13 +249,13 @@ class GameXGBoost(BaseModel):
             raise ValueError("Model must be trained before saving")
 
         self.model.save_model(filepath)
-        print(f"✅ Model saved to {filepath}")
+        print(f"[checkmark.circle] Model saved to {filepath}")
 
     def load(self, filepath: str):
         """Load model from file"""
         self.model.load_model(filepath)
         self.is_trained = True
-        print(f"✅ Model loaded from {filepath}")
+        print(f"[checkmark.circle] Model loaded from {filepath}")
 
     def get_model_info(self) -> Dict:
         """Get model information"""
@@ -292,7 +292,7 @@ class GameXGBoost(BaseModel):
             plt.show()
 
         except ImportError:
-            print("⚠️  Matplotlib not installed for plotting")
+            print("[exclamationmark.triangle]  Matplotlib not installed for plotting")
 
     def plot_training_history(self):
         """Plot training history"""
@@ -325,4 +325,4 @@ class GameXGBoost(BaseModel):
             plt.show()
 
         except ImportError:
-            print("⚠️  Matplotlib not installed for plotting")
+            print("[exclamationmark.triangle]  Matplotlib not installed for plotting")
