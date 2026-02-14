@@ -125,7 +125,7 @@ def calculate_game_features(games_df, min_games=10):
 
 print("\nCalculating team statistics...")
 features_df = calculate_game_features(games_df, min_games=10)
-print(f"✓ Created features for {len(features_df)} games")
+print(f"checkmark Created features for {len(features_df)} games")
 
 # Prepare data
 feature_columns = [
@@ -159,7 +159,7 @@ print("\n1. Training Logistic Regression...")
 log_model = LogisticRegression(max_iter=1000, random_state=42, class_weight='balanced')
 log_model.fit(X_train_scaled, y_train)
 log_acc = log_model.score(X_test_scaled, y_test)
-print(f"   ✓ Test accuracy: {log_acc:.4f}")
+print(f"   checkmark Test accuracy: {log_acc:.4f}")
 
 log_dir = models_dir / 'game_logistic' / 'v1'
 log_dir.mkdir(parents=True, exist_ok=True)
@@ -179,7 +179,7 @@ print("\n2. Training Decision Tree...")
 tree_model = DecisionTreeClassifier(max_depth=10, min_samples_split=20, random_state=42)
 tree_model.fit(X_train_scaled, y_train)
 tree_acc = tree_model.score(X_test_scaled, y_test)
-print(f"   ✓ Test accuracy: {tree_acc:.4f}")
+print(f"   checkmark Test accuracy: {tree_acc:.4f}")
 
 tree_dir = models_dir / 'game_tree' / 'v1'
 tree_dir.mkdir(parents=True, exist_ok=True)
@@ -199,7 +199,7 @@ print("\n3. Training Random Forest...")
 rf_model = RandomForestClassifier(n_estimators=100, max_depth=10, random_state=42, n_jobs=-1)
 rf_model.fit(X_train_scaled, y_train)
 rf_acc = rf_model.score(X_test_scaled, y_test)
-print(f"   ✓ Test accuracy: {rf_acc:.4f}")
+print(f"   checkmark Test accuracy: {rf_acc:.4f}")
 
 rf_dir = models_dir / 'game_forest' / 'v1'
 rf_dir.mkdir(parents=True, exist_ok=True)

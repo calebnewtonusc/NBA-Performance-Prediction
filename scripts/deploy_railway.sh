@@ -6,7 +6,7 @@ set -e
 PROJECT_ID="502c137a-1a48-4903-a396-6ecf23965758"
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "🚀 Railway CLI Automated Deployment"
+echo "rocket.fill Railway CLI Automated Deployment"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
@@ -18,7 +18,7 @@ railway link --project $PROJECT_ID --environment production 2>&1 | grep -i "succ
 echo ""
 echo "2️⃣  Checking current services..."
 echo ""
-echo "⚠️  IMPORTANT: Railway requires manual steps for first deployment"
+echo "exclamationmark.triangle.fill  IMPORTANT: Railway requires manual steps for first deployment"
 echo ""
 echo "📋 Complete these steps in Railway web UI:"
 echo "   https://railway.com/project/$PROJECT_ID"
@@ -32,13 +32,13 @@ echo "   6. Go to Settings → Networking → Generate Domain"
 echo "   7. Copy the generated URL"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "📊 Your Railway Project Status"
+echo "chart.bar.fill Your Railway Project Status"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-echo "✅ Project created: insightful-heart"
-echo "✅ PostgreSQL: Added"
-echo "✅ Redis: Added"
-echo "✅ Environment variables: Set"
+echo "checkmark.circle.fill Project created: insightful-heart"
+echo "checkmark.circle.fill PostgreSQL: Added"
+echo "checkmark.circle.fill Redis: Added"
+echo "checkmark.circle.fill Environment variables: Set"
 echo "⏳ API Service: Needs to be connected via web UI"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -49,7 +49,7 @@ echo ""
 read -p "Enter your Railway API URL (e.g., nba-api-xyz.up.railway.app): " RAILWAY_URL
 
 if [ -z "$RAILWAY_URL" ]; then
-    echo "❌ No URL provided"
+    echo "xmark.circle.fill No URL provided"
     exit 1
 fi
 
@@ -59,23 +59,23 @@ if [[ ! $RAILWAY_URL =~ ^https?:// ]]; then
 fi
 
 echo ""
-echo "✅ Railway URL: $RAILWAY_URL"
+echo "checkmark.circle.fill Railway URL: $RAILWAY_URL"
 echo ""
 echo "🧪 Testing API health..."
 sleep 2
 
 if curl -f -s "$RAILWAY_URL/api/health" > /dev/null 2>&1; then
-    echo "✅ API is healthy!"
+    echo "checkmark.circle.fill API is healthy!"
     echo ""
     curl -s "$RAILWAY_URL/api/health" | python3 -m json.tool 2>/dev/null || echo "API responded successfully"
 else
-    echo "⚠️  API not responding yet (may still be deploying)"
+    echo "exclamationmark.triangle.fill  API not responding yet (may still be deploying)"
     echo "   Try: curl $RAILWAY_URL/api/health"
 fi
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "🎉 Railway Backend Complete!"
+echo "party.popper.fill Railway Backend Complete!"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "Your API: $RAILWAY_URL"
@@ -83,7 +83,7 @@ echo "API Docs: $RAILWAY_URL/api/docs"
 echo "Health: $RAILWAY_URL/api/health"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "📝 NEXT: Deploy Frontend to Streamlit Cloud"
+echo "pencil NEXT: Deploy Frontend to Streamlit Cloud"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "Unfortunately, Streamlit has no CLI. Use web UI:"
@@ -108,7 +108,7 @@ read -p "Press Enter after Streamlit is deployed and enter your Streamlit URL...
 read -p "Enter Streamlit URL (e.g., nba-dashboard.streamlit.app): " STREAMLIT_URL
 
 if [ -z "$STREAMLIT_URL" ]; then
-    echo "⚠️  No Streamlit URL provided. You'll need to update CORS manually."
+    echo "exclamationmark.triangle.fill  No Streamlit URL provided. You'll need to update CORS manually."
     exit 0
 fi
 
@@ -118,14 +118,14 @@ if [[ ! $STREAMLIT_URL =~ ^https?:// ]]; then
 fi
 
 echo ""
-echo "✅ Streamlit URL: $STREAMLIT_URL"
+echo "checkmark.circle.fill Streamlit URL: $STREAMLIT_URL"
 echo ""
 echo "🔄 Updating CORS in Railway..."
 
 # Note: Railway CLI doesn't support selecting specific service easily
 # User needs to do this in web UI
 echo ""
-echo "⚠️  Please update CORS manually in Railway:"
+echo "exclamationmark.triangle.fill  Please update CORS manually in Railway:"
 echo ""
 echo "1. Go to your API service in Railway"
 echo "2. Variables tab"
@@ -133,13 +133,13 @@ echo "3. Update ALLOWED_ORIGINS to:"
 echo "   $STREAMLIT_URL,http://localhost:8501"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "🎉 DEPLOYMENT COMPLETE!"
+echo "party.popper.fill DEPLOYMENT COMPLETE!"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "Your Live URLs:"
-echo "  📊 Dashboard: $STREAMLIT_URL"
-echo "  🔌 API: $RAILWAY_URL"
-echo "  📖 Docs: $RAILWAY_URL/api/docs"
+echo "  chart.bar.fill Dashboard: $STREAMLIT_URL"
+echo "  powerplug.fill API: $RAILWAY_URL"
+echo "  book.fill Docs: $RAILWAY_URL/api/docs"
 echo ""
 echo "🧪 Test your app:"
 echo "  curl $RAILWAY_URL/api/health"

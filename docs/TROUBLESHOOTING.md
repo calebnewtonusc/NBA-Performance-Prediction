@@ -1,4 +1,4 @@
-# 🔧 NBA Prediction API - Troubleshooting Guide
+# wrench.fill NBA Prediction API - Troubleshooting Guide
 
 ## Quick Diagnosis
 
@@ -274,11 +274,11 @@ time_total:  %{time_total}\n
 **Solution 1: Models not preloaded**
 ```python
 # Check startup logs:
-📦 Preloading ML models...
-  ✓ Loaded game_logistic:v1
-  ✓ Loaded game_forest:v1
-  ✓ Loaded player_ridge:v1
-✅ Preloaded 3/3 models
+shippingbox.fill Preloading ML models...
+  checkmark Loaded game_logistic:v1
+  checkmark Loaded game_forest:v1
+  checkmark Loaded player_ridge:v1
+checkmark.circle.fill Preloaded 3/3 models
 
 # If not loading, check startup_event() function
 ```

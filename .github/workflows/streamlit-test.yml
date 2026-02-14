@@ -32,24 +32,24 @@ jobs:
 
       - name: Verify Streamlit imports
         run: |
-          python -c "import streamlit; print(f'✓ Streamlit {streamlit.__version__} imported successfully')"
+          python -c "import streamlit; print(f'checkmark Streamlit {streamlit.__version__} imported successfully')"
 
       - name: Check dashboard syntax
         run: |
           python -m py_compile src/visualization/dashboard.py
-          echo "✓ Dashboard syntax is valid"
+          echo "checkmark Dashboard syntax is valid"
 
       - name: Verify dashboard imports
         run: |
           # Test that dashboard can import without errors (won't run main)
-          python -c "import sys; sys.argv = ['streamlit']; import src.visualization.dashboard; print('✓ Dashboard imports successful')"
+          python -c "import sys; sys.argv = ['streamlit']; import src.visualization.dashboard; print('checkmark Dashboard imports successful')"
 
       - name: Test summary
         run: |
-          echo "### ✅ Streamlit Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "### checkmark.circle.fill Streamlit Test Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Status**: Passed" >> $GITHUB_STEP_SUMMARY
           echo "- **Checks**:" >> $GITHUB_STEP_SUMMARY
-          echo "  - ✓ Syntax validation" >> $GITHUB_STEP_SUMMARY
-          echo "  - ✓ Import verification" >> $GITHUB_STEP_SUMMARY
-          echo "  - ✓ Dependencies installed" >> $GITHUB_STEP_SUMMARY
+          echo "  - checkmark Syntax validation" >> $GITHUB_STEP_SUMMARY
+          echo "  - checkmark Import verification" >> $GITHUB_STEP_SUMMARY
+          echo "  - checkmark Dependencies installed" >> $GITHUB_STEP_SUMMARY

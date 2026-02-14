@@ -301,11 +301,11 @@ python scripts/test_api_connection.py --url https://your-railway-app.up.railway.
 ```
 
 All tests should pass:
-- ✅ Health check
-- ✅ Login
-- ✅ Models endpoint
-- ✅ Prediction endpoint
-- ✅ Metrics endpoint
+- checkmark.circle.fill Health check
+- checkmark.circle.fill Login
+- checkmark.circle.fill Models endpoint
+- checkmark.circle.fill Prediction endpoint
+- checkmark.circle.fill Metrics endpoint
 
 ---
 
@@ -535,7 +535,7 @@ If deployment fails or issues occur:
 
 ---
 
-**Deployment Complete! 🎉**
+**Deployment Complete! party.popper.fill**
 
 Your NBA Performance Prediction system is now live:
 - **Dashboard**: https://your-app.streamlit.app

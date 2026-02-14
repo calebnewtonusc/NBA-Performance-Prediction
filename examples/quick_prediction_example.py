@@ -30,7 +30,7 @@ def main():
 
     try:
         model = manager.load_model('game_logistic', 'v1')
-        print("✓ Model loaded successfully")
+        print("checkmark Model loaded successfully")
     except FileNotFoundError:
         print("⚠ No trained model found. Training sample model...")
 
@@ -71,7 +71,7 @@ def main():
         # Save model
         test_metrics = model.evaluate(dataset['X_test'], dataset['y_test'])
         manager.save_model(model, 'game_logistic', 'v1', {'metrics': test_metrics})
-        print("✓ Sample model trained and saved")
+        print("checkmark Sample model trained and saved")
 
     # 2. Prepare game features
     print("\n[Step 2] Preparing game features...")
@@ -98,7 +98,7 @@ def main():
         'away_away_win_pct': 0.480,  # Warriors weak on road
     }])
 
-    print("✓ Game features prepared")
+    print("checkmark Game features prepared")
     print(f"\nMatchup: Lakers (Home) vs Warriors (Away)")
     print(f"Lakers recent form: {game_features['home_win_pct'].values[0]:.1%} wins")
     print(f"Warriors recent form: {game_features['away_win_pct'].values[0]:.1%} wins")

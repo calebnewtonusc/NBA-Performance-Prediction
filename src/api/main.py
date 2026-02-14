@@ -1010,8 +1010,8 @@ async def startup_event():
     logger = logging.getLogger("uvicorn")
     logger.info("[rocket.fill] NBA Prediction API starting up...")
     logger.info(f"[chart.bar.fill] API Documentation: http://localhost:8000/api/docs")
-    logger.info(f"🔒 Authentication: POST /api/auth/login")
-    logger.info(f"🏀 Predictions: POST /api/predict")
+    logger.info(f"lock.fill Authentication: POST /api/auth/login")
+    logger.info(f"basketball.fill Predictions: POST /api/predict")
 
     # Validate environment variables
     issues, warnings = validate_environment()
@@ -1049,9 +1049,9 @@ async def startup_event():
         try:
             load_model(model_name, version)
             preloaded_count += 1
-            logger.info(f"  ✓ Loaded {model_name}:{version}")
+            logger.info(f"  checkmark Loaded {model_name}:{version}")
         except Exception as e:
-            logger.warning(f"  ✗ Failed to load {model_name}:{version}: {e}")
+            logger.warning(f"  xmark Failed to load {model_name}:{version}: {e}")
 
     logger.info(f"[checkmark.circle] Preloaded {preloaded_count}/{len(models_to_preload)} models")
 
@@ -1059,7 +1059,7 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_event():
     """Cleanup on shutdown"""
-    print("👋 NBA Prediction API shutting down...")
+    print("hand.wave.fill NBA Prediction API shutting down...")
     loaded_models.clear()
 
 

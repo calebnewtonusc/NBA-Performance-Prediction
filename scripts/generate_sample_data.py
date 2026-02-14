@@ -179,25 +179,25 @@ def save_sample_data():
     teams = generate_sample_teams()
     with open(data_dir / "teams" / "all_teams.json", "w") as f:
         json.dump(teams, f, indent=2)
-    logger.info(f"✓ Generated {len(teams)} sample teams")
+    logger.info(f"checkmark Generated {len(teams)} sample teams")
 
     # Generate and save games
     games = generate_sample_games(200)
     with open(data_dir / "games" / "2023_season.json", "w") as f:
         json.dump(games, f, indent=2)
-    logger.info(f"✓ Generated {len(games)} sample games")
+    logger.info(f"checkmark Generated {len(games)} sample games")
 
     # Generate and save players
     players = generate_sample_players()
     with open(data_dir / "players" / "all_players.json", "w") as f:
         json.dump(players, f, indent=2)
-    logger.info(f"✓ Generated {len(players)} sample players")
+    logger.info(f"checkmark Generated {len(players)} sample players")
 
     # Generate and save player stats
     stats = generate_sample_player_stats(100)
     with open(data_dir / "players" / "player_stats_2023.json", "w") as f:
         json.dump(stats, f, indent=2)
-    logger.info(f"✓ Generated {len(stats)} sample player stats")
+    logger.info(f"checkmark Generated {len(stats)} sample player stats")
 
     # Create team mappings
     team_mappings = {team["id"]: {
@@ -225,7 +225,7 @@ def save_sample_data():
     with open("data/external/player_mappings.json", "w") as f:
         json.dump(player_mappings, f, indent=2)
 
-    logger.info("✓ Sample data generation complete!")
+    logger.info("checkmark Sample data generation complete!")
     logger.info(f"Data saved to: {data_dir.absolute()}")
 
 

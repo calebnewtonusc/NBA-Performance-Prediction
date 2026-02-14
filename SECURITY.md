@@ -6,7 +6,7 @@ This document outlines all security measures implemented in the NBA Prediction A
 
 ---
 
-## ✅ Fixed Security Issues
+## checkmark.circle.fill Fixed Security Issues
 
 ### 1. Environment Variable Configuration
 
@@ -313,7 +313,7 @@ We aim to respond within 24 hours.
 
 ## Security Best Practices Summary
 
-### ✅ Implemented
+### checkmark.circle.fill Implemented
 
 - Environment variable configuration
 - Restricted CORS origins

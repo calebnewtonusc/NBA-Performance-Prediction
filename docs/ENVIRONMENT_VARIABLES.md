@@ -409,21 +409,21 @@ railway variables set SECRET_KEY=your-new-key
 
 | Variable | Railway | Streamlit | Local | Required |
 |----------|---------|-----------|-------|----------|
-| `SECRET_KEY` | ✅ | ❌ | ✅ | Yes |
-| `API_USERNAME` | ✅ | ✅ | ✅ | Yes |
-| `API_PASSWORD` | ✅ | ✅ | ✅ | Yes |
-| `API_BASE_URL` | ❌ | ✅ | ✅ | Yes (frontend) |
-| `DATABASE_URL` | Auto | ❌ | ✅ | Yes (backend) |
-| `REDIS_HOST` | Auto | ❌ | ✅ | Yes (backend) |
-| `REDIS_PORT` | Auto | ❌ | ✅ | Yes (backend) |
-| `REDIS_PASSWORD` | Auto | ❌ | ✅ | Yes (backend) |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | ✅ | ❌ | ✅ | No |
-| `MAX_BATCH_SIZE` | ✅ | ❌ | ✅ | No |
-| `ALLOWED_ORIGINS` | ✅ | ❌ | ✅ | Yes (backend) |
-| `ENABLE_MONITORING` | ✅ | ❌ | ✅ | No |
-| `LOG_LEVEL` | ✅ | ❌ | ✅ | No |
-| `API_HOST` | ❌ | ❌ | ✅ | No |
-| `API_PORT` | ❌ | ❌ | ✅ | No |
+| `SECRET_KEY` | checkmark.circle.fill | xmark.circle.fill | checkmark.circle.fill | Yes |
+| `API_USERNAME` | checkmark.circle.fill | checkmark.circle.fill | checkmark.circle.fill | Yes |
+| `API_PASSWORD` | checkmark.circle.fill | checkmark.circle.fill | checkmark.circle.fill | Yes |
+| `API_BASE_URL` | xmark.circle.fill | checkmark.circle.fill | checkmark.circle.fill | Yes (frontend) |
+| `DATABASE_URL` | Auto | xmark.circle.fill | checkmark.circle.fill | Yes (backend) |
+| `REDIS_HOST` | Auto | xmark.circle.fill | checkmark.circle.fill | Yes (backend) |
+| `REDIS_PORT` | Auto | xmark.circle.fill | checkmark.circle.fill | Yes (backend) |
+| `REDIS_PASSWORD` | Auto | xmark.circle.fill | checkmark.circle.fill | Yes (backend) |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | checkmark.circle.fill | xmark.circle.fill | checkmark.circle.fill | No |
+| `MAX_BATCH_SIZE` | checkmark.circle.fill | xmark.circle.fill | checkmark.circle.fill | No |
+| `ALLOWED_ORIGINS` | checkmark.circle.fill | xmark.circle.fill | checkmark.circle.fill | Yes (backend) |
+| `ENABLE_MONITORING` | checkmark.circle.fill | xmark.circle.fill | checkmark.circle.fill | No |
+| `LOG_LEVEL` | checkmark.circle.fill | xmark.circle.fill | checkmark.circle.fill | No |
+| `API_HOST` | xmark.circle.fill | xmark.circle.fill | checkmark.circle.fill | No |
+| `API_PORT` | xmark.circle.fill | xmark.circle.fill | checkmark.circle.fill | No |
 
 ---
 

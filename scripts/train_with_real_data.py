@@ -125,7 +125,7 @@ def calculate_team_stats(games_df, min_games=10):
     return pd.DataFrame(features_list)
 
 features_df = calculate_team_stats(games_df, min_games=10)
-print(f"✓ Created features for {len(features_df)} games (after min_games filter)")
+print(f"checkmark Created features for {len(features_df)} games (after min_games filter)")
 
 # Prepare training data
 feature_columns = [
@@ -172,8 +172,8 @@ model.fit(X_train_scaled, y_train)
 train_acc = model.score(X_train_scaled, y_train)
 test_acc = model.score(X_test_scaled, y_test)
 
-print(f"✓ Training accuracy: {train_acc:.4f}")
-print(f"✓ Test accuracy: {test_acc:.4f}")
+print(f"checkmark Training accuracy: {train_acc:.4f}")
+print(f"checkmark Test accuracy: {test_acc:.4f}")
 
 # Check prediction probabilities distribution
 y_pred_proba = model.predict_proba(X_test_scaled)[:, 1]
@@ -195,7 +195,7 @@ with open(model_file, 'wb') as f:
     # Save both model and scaler
     pickle.dump({'model': model, 'scaler': scaler}, f)
 
-print(f"✓ Model saved to {model_file}")
+print(f"checkmark Model saved to {model_file}")
 
 # Save metadata
 import json
@@ -213,5 +213,5 @@ metadata_file = models_dir / 'metadata.json'
 with open(metadata_file, 'w') as f:
     json.dump(metadata, f, indent=2, default=str)
 
-print(f"✓ Metadata saved to {metadata_file}")
+print(f"checkmark Metadata saved to {metadata_file}")
 print("\n[checkmark.circle] Model training complete with REAL NBA data!")

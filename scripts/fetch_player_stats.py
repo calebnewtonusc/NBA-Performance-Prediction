@@ -79,7 +79,7 @@ for player_name in top_players:
         df_combined['player_id'] = player_id
 
         player_stats_list.append(df_combined)
-        print(f"  ✓ Fetched {len(df_combined)} games for {player_name}")
+        print(f"  checkmark Fetched {len(df_combined)} games for {player_name}")
 
         time.sleep(0.6)  # Rate limiting
 
@@ -98,7 +98,7 @@ if player_stats_list:
     output_file = data_dir / 'player_stats_real.csv'
     all_stats.to_csv(output_file, index=False)
 
-    print(f"\n✓ Saved {len(all_stats)} player game logs to {output_file}")
+    print(f"\ncheckmark Saved {len(all_stats)} player game logs to {output_file}")
     print(f"  Players: {len(player_stats_list)}")
     print(f"  Games per player (avg): {len(all_stats) / len(player_stats_list):.0f}")
     print(f"\nSample columns:")

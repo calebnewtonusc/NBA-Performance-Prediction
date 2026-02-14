@@ -319,44 +319,44 @@ def main():
     try:
         print("[1/7] Testing data cleaning pipeline...")
         test_suite.test_data_cleaning_pipeline(sample_data)
-        print("✓ Data cleaning pipeline works")
+        print("checkmark Data cleaning pipeline works")
 
         print("\n[2/7] Testing feature engineering pipeline...")
         test_suite.test_feature_engineering_pipeline(sample_data)
-        print("✓ Feature engineering pipeline works")
+        print("checkmark Feature engineering pipeline works")
 
         print("\n[3/7] Testing dataset creation pipeline...")
         test_suite.test_dataset_creation_pipeline(sample_data)
-        print("✓ Dataset creation pipeline works")
+        print("checkmark Dataset creation pipeline works")
 
         print("\n[4/7] Testing model training pipeline...")
         test_suite.test_model_training_pipeline(sample_data)
-        print("✓ Model training pipeline works")
+        print("checkmark Model training pipeline works")
 
         print("\n[5/7] Testing full pipeline performance...")
         test_suite.test_full_pipeline_performance(sample_data)
-        print("✓ Full pipeline performance acceptable")
+        print("checkmark Full pipeline performance acceptable")
 
         print("\n[6/7] Testing prediction pipeline...")
         test_suite.test_prediction_pipeline(sample_data)
-        print("✓ Prediction pipeline works")
+        print("checkmark Prediction pipeline works")
 
         print("\n[7/7] Testing error handling...")
         validation_suite = TestDataValidation()
         validation_suite.test_empty_dataframe_handling()
         validation_suite.test_invalid_data_types()
-        print("✓ Error handling works")
+        print("checkmark Error handling works")
 
         print("\n" + "=" * 70)
         print("[checkmark.circle] ALL INTEGRATION TESTS PASSED")
         print("=" * 70)
         print("\nThe full ML pipeline is working correctly:")
-        print("  • Data cleaning ✓")
-        print("  • Feature engineering ✓")
-        print("  • Dataset creation ✓")
-        print("  • Model training ✓")
-        print("  • Predictions ✓")
-        print("  • Error handling ✓")
+        print("  • Data cleaning checkmark")
+        print("  • Feature engineering checkmark")
+        print("  • Dataset creation checkmark")
+        print("  • Model training checkmark")
+        print("  • Predictions checkmark")
+        print("  • Error handling checkmark")
         print()
         return 0
 

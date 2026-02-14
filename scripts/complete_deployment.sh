@@ -5,14 +5,14 @@
 set -e
 
 echo "========================================="
-echo "🚀 NBA Performance Prediction Deployment"
+echo "rocket.fill NBA Performance Prediction Deployment"
 echo "========================================="
 echo ""
 
 PROJECT_ID="502c137a-1a48-4903-a396-6ecf23965758"
 GITHUB_REPO="https://github.com/calebnewtonusc/NBA-Performance-Prediction"
 
-echo "✅ Already completed:"
+echo "checkmark.circle.fill Already completed:"
 echo "  - GitHub repository created: $GITHUB_REPO"
 echo "  - Railway project created: insightful-heart"
 echo "  - PostgreSQL database added"
@@ -34,7 +34,7 @@ echo "(Looking for your API service - not Postgres or Redis)"
 echo ""
 
 # Generate domain for the API service
-echo "⚠️  MANUAL STEP REQUIRED:"
+echo "exclamationmark.triangle.fill  MANUAL STEP REQUIRED:"
 echo ""
 echo "1. Open Railway dashboard: https://railway.com/project/$PROJECT_ID"
 echo "2. Find your API service (the one with your code, NOT Postgres/Redis)"
@@ -46,7 +46,7 @@ echo ""
 read -p "Enter your Railway API URL (e.g., nba-api-production.up.railway.app): " RAILWAY_URL
 
 if [ -z "$RAILWAY_URL" ]; then
-    echo "❌ No URL provided. Exiting."
+    echo "xmark.circle.fill No URL provided. Exiting."
     exit 1
 fi
 
@@ -56,23 +56,23 @@ if [[ ! $RAILWAY_URL =~ ^https?:// ]]; then
 fi
 
 echo ""
-echo "✅ Railway URL: $RAILWAY_URL"
+echo "checkmark.circle.fill Railway URL: $RAILWAY_URL"
 echo ""
 
 # Test the health endpoint
 echo "🧪 Testing Railway API..."
 sleep 2
 if curl -f -s "$RAILWAY_URL/api/health" > /dev/null 2>&1; then
-    echo "✅ API is healthy!"
+    echo "checkmark.circle.fill API is healthy!"
     curl -s "$RAILWAY_URL/api/health" | python3 -m json.tool
 else
-    echo "⚠️  API not responding yet. This is normal if deployment is still in progress."
+    echo "exclamationmark.triangle.fill  API not responding yet. This is normal if deployment is still in progress."
     echo "Wait 1-2 minutes and try: curl $RAILWAY_URL/api/health"
 fi
 
 echo ""
 echo "========================================="
-echo "📝 STREAMLIT CLOUD SETUP"
+echo "pencil STREAMLIT CLOUD SETUP"
 echo "========================================="
 echo ""
 echo "1. Open Streamlit Cloud: https://share.streamlit.io"
@@ -97,7 +97,7 @@ echo ""
 read -p "Enter your Streamlit URL (e.g., nba-dashboard.streamlit.app): " STREAMLIT_URL
 
 if [ -z "$STREAMLIT_URL" ]; then
-    echo "⚠️  No Streamlit URL provided. Skipping CORS update."
+    echo "exclamationmark.triangle.fill  No Streamlit URL provided. Skipping CORS update."
     echo "   Update CORS later in Railway with:"
     echo "   railway variables set ALLOWED_ORIGINS=\"https://YOUR-APP.streamlit.app,http://localhost:8501\""
     exit 0
@@ -109,7 +109,7 @@ if [[ ! $STREAMLIT_URL =~ ^https?:// ]]; then
 fi
 
 echo ""
-echo "✅ Streamlit URL: $STREAMLIT_URL"
+echo "checkmark.circle.fill Streamlit URL: $STREAMLIT_URL"
 echo ""
 
 # Update CORS in Railway
@@ -119,22 +119,22 @@ railway link --project $PROJECT_ID 2>/dev/null || true
 # Find and link to the API service (not Postgres/Redis)
 echo "Updating ALLOWED_ORIGINS..."
 railway variables set ALLOWED_ORIGINS="$STREAMLIT_URL,http://localhost:8501" 2>/dev/null || {
-    echo "⚠️  Could not automatically update CORS."
+    echo "exclamationmark.triangle.fill  Could not automatically update CORS."
     echo "   Please manually set in Railway:"
     echo "   ALLOWED_ORIGINS=$STREAMLIT_URL,http://localhost:8501"
 }
 
 echo ""
 echo "========================================="
-echo "🎉 DEPLOYMENT COMPLETE!"
+echo "party.popper.fill DEPLOYMENT COMPLETE!"
 echo "========================================="
 echo ""
 echo "Your live URLs:"
-echo "  📊 Dashboard: $STREAMLIT_URL"
-echo "  🔌 API: $RAILWAY_URL"
-echo "  📖 API Docs: $RAILWAY_URL/api/docs"
-echo "  💚 Health: $RAILWAY_URL/api/health"
-echo "  💻 GitHub: $GITHUB_REPO"
+echo "  chart.bar.fill Dashboard: $STREAMLIT_URL"
+echo "  powerplug.fill API: $RAILWAY_URL"
+echo "  book.fill API Docs: $RAILWAY_URL/api/docs"
+echo "  heart.fill Health: $RAILWAY_URL/api/health"
+echo "  laptopcomputer GitHub: $GITHUB_REPO"
 echo ""
 echo "========================================="
 echo "🧪 FINAL TESTS"
@@ -166,4 +166,4 @@ echo "  - This setup script (optional)"
 echo ""
 echo "rm DEPLOYMENT_SECRETS.txt"
 echo ""
-echo "✅ All done! Your NBA Prediction system is live!"
+echo "checkmark.circle.fill All done! Your NBA Prediction system is live!"

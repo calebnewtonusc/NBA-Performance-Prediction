@@ -79,7 +79,7 @@ def train_game_models():
 
     # Save dataset
     builder.save_dataset(dataset, name='game_predictions', version='v1')
-    logger.info("✓ Dataset saved")
+    logger.info("checkmark Dataset saved")
 
     # Initialize model manager
     manager = ModelManager()
@@ -98,7 +98,7 @@ def train_game_models():
     )
     log_test_metrics = log_model.evaluate(dataset['X_test'], dataset['y_test'])
     manager.save_model(log_model, 'game_logistic', 'v1', {'metrics': log_test_metrics})
-    logger.info(f"✓ Logistic Regression - Accuracy: {log_test_metrics['accuracy']:.4f}")
+    logger.info(f"checkmark Logistic Regression - Accuracy: {log_test_metrics['accuracy']:.4f}")
 
     logger.info("\n" + "=" * 60)
     logger.info("2. Training Decision Tree...")
@@ -114,7 +114,7 @@ def train_game_models():
     )
     tree_test_metrics = tree_model.evaluate(dataset['X_test'], dataset['y_test'])
     manager.save_model(tree_model, 'game_tree', 'v1', {'metrics': tree_test_metrics})
-    logger.info(f"✓ Decision Tree - Accuracy: {tree_test_metrics['accuracy']:.4f}")
+    logger.info(f"checkmark Decision Tree - Accuracy: {tree_test_metrics['accuracy']:.4f}")
 
     logger.info("\n" + "=" * 60)
     logger.info("3. Training Random Forest...")
@@ -130,7 +130,7 @@ def train_game_models():
     )
     rf_test_metrics = rf_model.evaluate(dataset['X_test'], dataset['y_test'])
     manager.save_model(rf_model, 'game_forest', 'v1', {'metrics': rf_test_metrics})
-    logger.info(f"✓ Random Forest - Accuracy: {rf_test_metrics['accuracy']:.4f}")
+    logger.info(f"checkmark Random Forest - Accuracy: {rf_test_metrics['accuracy']:.4f}")
 
     # Compare models
     logger.info("\n" + "=" * 60)
@@ -147,7 +147,7 @@ def train_game_models():
     print(results)
 
     best_name, best_model = comparison.get_best_model()
-    logger.info(f"\n✓ Best model: {best_name}")
+    logger.info(f"\ncheckmark Best model: {best_name}")
 
     # Set best as production
     if best_name == 'Logistic Regression':
@@ -157,7 +157,7 @@ def train_game_models():
     else:
         manager.set_production_model('game_forest', 'v1')
 
-    logger.info("✓ Game models training complete!")
+    logger.info("checkmark Game models training complete!")
 
 
 def train_player_models():
@@ -224,7 +224,7 @@ def train_player_models():
     )
     linear_metrics = linear_model.evaluate(dataset_single['X_test'], dataset_single['y_test'])
     manager.save_model(linear_model, 'player_linear', 'v1', {'metrics': linear_metrics})
-    logger.info(f"✓ Linear Regression - MAE: {linear_metrics['mae']:.2f}, R²: {linear_metrics['r2']:.4f}")
+    logger.info(f"checkmark Linear Regression - MAE: {linear_metrics['mae']:.2f}, R²: {linear_metrics['r2']:.4f}")
 
     # Train Ridge Regression
     logger.info("\n" + "=" * 60)
@@ -241,7 +241,7 @@ def train_player_models():
     )
     ridge_metrics = ridge_model.evaluate(dataset_single['X_test'], dataset_single['y_test'])
     manager.save_model(ridge_model, 'player_ridge', 'v1', {'metrics': ridge_metrics})
-    logger.info(f"✓ Ridge Regression - MAE: {ridge_metrics['mae']:.2f}, R²: {ridge_metrics['r2']:.4f}")
+    logger.info(f"checkmark Ridge Regression - MAE: {ridge_metrics['mae']:.2f}, R²: {ridge_metrics['r2']:.4f}")
 
     # Train Lasso Regression
     logger.info("\n" + "=" * 60)
@@ -258,7 +258,7 @@ def train_player_models():
     )
     lasso_metrics = lasso_model.evaluate(dataset_single['X_test'], dataset_single['y_test'])
     manager.save_model(lasso_model, 'player_lasso', 'v1', {'metrics': lasso_metrics})
-    logger.info(f"✓ Lasso Regression - MAE: {lasso_metrics['mae']:.2f}, R²: {lasso_metrics['r2']:.4f}")
+    logger.info(f"checkmark Lasso Regression - MAE: {lasso_metrics['mae']:.2f}, R²: {lasso_metrics['r2']:.4f}")
     logger.info(f"  Selected {len(lasso_model.get_selected_features())} features")
 
     # Compare models
@@ -276,9 +276,9 @@ def train_player_models():
     print(results)
 
     best_name, best_model = comparison.get_best_model('mae')
-    logger.info(f"\n✓ Best model: {best_name}")
+    logger.info(f"\ncheckmark Best model: {best_name}")
 
-    logger.info("✓ Player models training complete!")
+    logger.info("checkmark Player models training complete!")
 
 
 def main():
@@ -319,7 +319,7 @@ def main():
             train_player_models()
 
         logger.info("\n" + "=" * 60)
-        logger.info("✓ ALL TRAINING COMPLETE!")
+        logger.info("checkmark ALL TRAINING COMPLETE!")
         logger.info("=" * 60)
 
     except Exception as e:

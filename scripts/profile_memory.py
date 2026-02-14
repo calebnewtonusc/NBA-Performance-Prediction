@@ -58,7 +58,7 @@ def profile_data_cleaning():
     del df, cleaned
     gc.collect()
 
-    print("✓ Data cleaning profiling complete")
+    print("checkmark Data cleaning profiling complete")
 
 
 @profile
@@ -76,7 +76,7 @@ def profile_feature_engineering():
     del df, features
     gc.collect()
 
-    print("✓ Feature engineering profiling complete")
+    print("checkmark Feature engineering profiling complete")
 
 
 @profile
@@ -103,7 +103,7 @@ def profile_dataset_creation():
     del df, features, dataset
     gc.collect()
 
-    print("✓ Dataset creation profiling complete")
+    print("checkmark Dataset creation profiling complete")
 
 
 @profile
@@ -140,7 +140,7 @@ def profile_model_training():
     del df, features, dataset, model
     gc.collect()
 
-    print("✓ Model training profiling complete")
+    print("checkmark Model training profiling complete")
 
 
 def main():
@@ -183,7 +183,7 @@ def main():
             print("  • Use data streaming instead of loading all at once")
             print("  • Optimize DataFrame dtypes (use int32 vs int64)")
         elif peak / 1024 / 1024 > 500:
-            print("  ✓ Moderate memory usage (500MB-1GB)")
+            print("  checkmark Moderate memory usage (500MB-1GB)")
             print("  • Current implementation is acceptable")
             print("  • Consider optimization for very large datasets")
         else:

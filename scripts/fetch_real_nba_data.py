@@ -31,7 +31,7 @@ try:
         league_id_nullable='00'
     )
     games_23 = gamefinder_23.get_data_frames()[0]
-    print(f"✓ Fetched {len(games_23)} game records from 2023-24 season")
+    print(f"checkmark Fetched {len(games_23)} game records from 2023-24 season")
     time.sleep(1)  # Rate limiting
 except Exception as e:
     print(f"Error fetching 2023-24 data: {e}")
@@ -44,7 +44,7 @@ try:
         league_id_nullable='00'
     )
     games_24 = gamefinder_24.get_data_frames()[0]
-    print(f"✓ Fetched {len(games_24)} game records from 2024-25 season")
+    print(f"checkmark Fetched {len(games_24)} game records from 2024-25 season")
 except Exception as e:
     print(f"Error fetching 2024-25 data: {e}")
     games_24 = pd.DataFrame()
@@ -107,7 +107,7 @@ for game_id in game_ids:
     })
 
 games_df = pd.DataFrame(games_processed)
-print(f"✓ Processed {len(games_df)} complete games")
+print(f"checkmark Processed {len(games_df)} complete games")
 
 # Save to data directory
 data_dir = Path(__file__).parent.parent / 'data' / 'raw'
@@ -115,7 +115,7 @@ data_dir.mkdir(parents=True, exist_ok=True)
 
 output_file = data_dir / 'nba_games_real.csv'
 games_df.to_csv(output_file, index=False)
-print(f"\n✓ Saved real NBA game data to {output_file}")
+print(f"\ncheckmark Saved real NBA game data to {output_file}")
 
 print(f"\nSample of fetched data:")
 print(games_df.head())

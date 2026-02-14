@@ -17,7 +17,7 @@ from typing import Dict, Any
 
 def test_health_endpoint(base_url: str) -> bool:
     """Test the health check endpoint"""
-    print(f"\n🔍 Testing health endpoint: {base_url}/api/health")
+    print(f"\nmagnifyingglass Testing health endpoint: {base_url}/api/health")
     try:
         response = requests.get(f"{base_url}/api/health", timeout=10)
         if response.status_code == 200:
@@ -137,7 +137,7 @@ def test_prediction(base_url: str, token: str) -> bool:
 
 def test_metrics_endpoint(base_url: str) -> bool:
     """Test the metrics endpoint"""
-    print(f"\n📈 Testing metrics endpoint: {base_url}/api/metrics")
+    print(f"\nchart.line.uptrend.xyaxis Testing metrics endpoint: {base_url}/api/metrics")
     try:
         response = requests.get(f"{base_url}/api/metrics", timeout=10)
         if response.status_code == 200:

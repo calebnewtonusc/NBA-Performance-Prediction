@@ -32,7 +32,7 @@ API_PASSWORD = os.getenv("API_PASSWORD", "admin")
 # Page configuration
 st.set_page_config(
     page_title="NBA Performance Prediction",
-    page_icon="🏀",
+    page_icon="basketball.fill",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -41,7 +41,7 @@ st.set_page_config(
 def main():
     """Main dashboard function"""
 
-    st.title("🏀 NBA Performance Prediction Dashboard")
+    st.title("basketball.fill NBA Performance Prediction Dashboard")
     st.markdown("---")
 
     # Sidebar
@@ -85,8 +85,8 @@ def show_home():
     **Features:**
     - [target] Game outcome predictions (Win/Loss)
     - [chart.bar.fill] Player statistics predictions (Points, Rebounds, Assists)
-    - 📈 Model performance analytics
-    - 🔍 Data exploration tools
+    - chart.line.uptrend.xyaxis Model performance analytics
+    - magnifyingglass Data exploration tools
     """)
 
     st.markdown("---")
@@ -100,7 +100,7 @@ def show_home():
         'Predicted Winner': ['Lakers', 'Warriors', 'Celtics'],
         'Confidence': ['72%', '65%', '81%'],
         'Actual Result': ['Lakers', 'Warriors', 'Celtics'],
-        'Correct': ['✓', '✓', '✓']
+        'Correct': ['checkmark', 'checkmark', 'checkmark']
     })
 
     st.dataframe(recent_data, use_container_width=True)

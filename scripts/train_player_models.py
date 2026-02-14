@@ -69,7 +69,7 @@ df['rebounds'] = (
     np.random.normal(0, 2, n_games)
 ).clip(0, 18)
 
-print(f"✓ Generated {len(df)} player game logs")
+print(f"checkmark Generated {len(df)} player game logs")
 
 # Feature columns
 feature_cols = [

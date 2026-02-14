@@ -128,7 +128,7 @@ def main():
         print(f"      Average time: {streak_time*1000:.3f}ms")
 
         total_time = team_form_time + h2h_time + streak_time
-        print(f"\n✓ Total time per feature set: {total_time*1000:.3f}ms")
+        print(f"\ncheckmark Total time per feature set: {total_time*1000:.3f}ms")
 
         results.append({
             'dataset': label,
@@ -161,10 +161,10 @@ def main():
     # Performance rating
     large_total = results[-1]['total_ms']
     if large_total < 100:
-        rating = "⚡ EXCELLENT"
+        rating = "bolt.fill EXCELLENT"
         message = "Vectorized operations are highly optimized!"
     elif large_total < 500:
-        rating = "✓ GOOD"
+        rating = "checkmark GOOD"
         message = "Performance is acceptable for production use."
     elif large_total < 2000:
         rating = "~ FAIR"

@@ -6,7 +6,7 @@ set -e
 PROJECT_ID="502c137a-1a48-4903-a396-6ecf23965758"
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "🚀 Deploying to Railway"
+echo "rocket.fill Deploying to Railway"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
@@ -24,7 +24,7 @@ railway up --service nba-api --detach
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "✅ Upload Complete!"
+echo "checkmark.circle.fill Upload Complete!"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 echo "Railway is now building your Docker image."
@@ -47,4 +47,4 @@ open "https://railway.com/project/$PROJECT_ID" 2>/dev/null || \
   echo "Open: https://railway.com/project/$PROJECT_ID"
 
 echo ""
-echo "✅ Deployment initiated!"
+echo "checkmark.circle.fill Deployment initiated!"

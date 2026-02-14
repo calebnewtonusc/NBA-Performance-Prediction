@@ -47,13 +47,13 @@ jobs:
       - name: Run tests
         run: |
           # Tests will be added - for now just verify imports work
-          python -c "from src.api.main import app; print('✓ API imports successful')"
-          python -c "from src.models.model_manager import ModelManager; print('✓ Model manager imports successful')"
-          python -c "from src.database.models import Team, Game; print('✓ Database models imports successful')"
+          python -c "from src.api.main import app; print('checkmark API imports successful')"
+          python -c "from src.models.model_manager import ModelManager; print('checkmark Model manager imports successful')"
+          python -c "from src.database.models import Team, Game; print('checkmark Database models imports successful')"
 
       - name: Test summary
         run: |
-          echo "### ✅ Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "### checkmark.circle.fill Test Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Python Version**: ${{ matrix.python-version }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Status**: Passed" >> $GITHUB_STEP_SUMMARY
