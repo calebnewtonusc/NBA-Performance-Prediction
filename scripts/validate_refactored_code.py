@@ -46,7 +46,7 @@ def validate_game_features():
         from src.data_processing.game_features import GameFeatureEngineer
 
         engineer = GameFeatureEngineer()
-        print("✓ Module imports successfully")
+        print("checkmark Module imports successfully")
 
         # Test 1: Basic functionality
         print("\n[Test 1] Basic Functionality")
@@ -57,7 +57,7 @@ def validate_game_features():
         assert isinstance(result, dict), "Result should be dictionary"
         assert 'games_played' in result, "Missing games_played"
         assert 'win_pct' in result, "Missing win_pct"
-        print(f"✓ calculate_team_form returns correct structure")
+        print(f"checkmark calculate_team_form returns correct structure")
         print(f"  Sample result: {result}")
 
         # Test 2: Edge cases
@@ -66,7 +66,7 @@ def validate_game_features():
             df, team_id=999, date=pd.Timestamp('2024-02-01'), n_games=10
         )
         assert empty_result['games_played'] == 0, "Empty case should have 0 games"
-        print("✓ Empty DataFrame handling works")
+        print("checkmark Empty DataFrame handling works")
 
         # Test 3: Head-to-head
         print("\n[Test 3] Head-to-Head Calculation")
@@ -79,7 +79,7 @@ def validate_game_features():
         wins_sum = h2h_result['team1_wins'] + h2h_result['team2_wins']
         games = h2h_result['h2h_games']
         assert wins_sum == games, f"Wins don't add up: {wins_sum} != {games}"
-        print("✓ Head-to-head calculation correct")
+        print("checkmark Head-to-head calculation correct")
         print(f"  Sample result: {h2h_result}")
 
         # Test 4: Win streak
@@ -88,7 +88,7 @@ def validate_game_features():
             df, team_id=1, before_date=pd.Timestamp('2024-02-01')
         )
         assert isinstance(streak, (int, np.integer)), "Streak should be integer"
-        print(f"✓ Win streak calculation works (streak={streak})")
+        print(f"checkmark Win streak calculation works (streak={streak})")
 
         # Test 5: Performance benchmark
         print("\n[Test 5] Performance Benchmark")
@@ -103,11 +103,11 @@ def validate_game_features():
         elapsed = time.time() - start
         avg_time = elapsed / 10
 
-        print(f"✓ Performance test: {avg_time*1000:.2f}ms per call (10 iterations)")
+        print(f"checkmark Performance test: {avg_time*1000:.2f}ms per call (10 iterations)")
         if avg_time < 0.1:
-            print("  ⚡ EXCELLENT: Vectorized operations are fast!")
+            print("  bolt.fill EXCELLENT: Vectorized operations are fast!")
         elif avg_time < 0.5:
-            print("  ✓ GOOD: Acceptable performance")
+            print("  checkmark GOOD: Acceptable performance")
         else:
             print("  ⚠ WARNING: Performance could be better")
 
@@ -133,7 +133,7 @@ def validate_data_cleaning():
         from src.data_processing.cleaning import DataCleaner
 
         cleaner = DataCleaner()
-        print("✓ Module imports successfully")
+        print("checkmark Module imports successfully")
 
         # Test with missing values
         print("\n[Test 1] Missing Value Handling (No inplace=True)")
@@ -146,7 +146,7 @@ def validate_data_cleaning():
         result = cleaner.handle_missing_values(df, strategy='mean')
         assert not result['col1'].isna().any(), "Missing values should be filled"
         assert len(result) == len(df), "DataFrame length should match"
-        print("✓ Missing value handling works (no inplace operations)")
+        print("checkmark Missing value handling works (no inplace operations)")
 
         print("\n" + "=" * 70)
         print("[checkmark.circle] ALL DATA CLEANING VALIDATION PASSED")
@@ -174,8 +174,8 @@ def validate_version_consistency():
         setup_content = open('setup.py').read()
         assert '1.0.0' in setup_content, "setup.py should have version 1.0.0"
 
-        print(f"✓ Package version: {package_version}")
-        print("✓ setup.py version: 1.0.0")
+        print(f"checkmark Package version: {package_version}")
+        print("checkmark setup.py version: 1.0.0")
         assert package_version == "1.0.0", "Version mismatch!"
 
         print("\n" + "=" * 70)

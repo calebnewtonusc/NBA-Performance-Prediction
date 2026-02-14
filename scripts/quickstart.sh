@@ -12,47 +12,47 @@ echo ""
 # Check Python version
 echo "Checking Python version..."
 python_version=$(python3 --version 2>&1 | awk '{print $2}')
-echo "✓ Python $python_version detected"
+echo "checkmark Python $python_version detected"
 echo ""
 
 # Create virtual environment if it doesn't exist
 if [ ! -d "venv" ]; then
     echo "Creating virtual environment..."
     python3 -m venv venv
-    echo "✓ Virtual environment created"
+    echo "checkmark Virtual environment created"
 else
-    echo "✓ Virtual environment already exists"
+    echo "checkmark Virtual environment already exists"
 fi
 echo ""
 
 # Activate virtual environment
 echo "Activating virtual environment..."
 source venv/bin/activate || . venv/Scripts/activate
-echo "✓ Virtual environment activated"
+echo "checkmark Virtual environment activated"
 echo ""
 
 # Install dependencies
 echo "Installing dependencies..."
 pip install -q --upgrade pip
 pip install -q -r requirements.txt
-echo "✓ Dependencies installed"
+echo "checkmark Dependencies installed"
 echo ""
 
 # Generate sample data
 echo "Generating sample data..."
 python3 scripts/generate_sample_data.py
-echo "✓ Sample data generated"
+echo "checkmark Sample data generated"
 echo ""
 
 # Train models
 echo "Training models (this may take a few minutes)..."
 python3 scripts/train_models.py --all
-echo "✓ Models trained"
+echo "checkmark Models trained"
 echo ""
 
 # Success message
 echo "========================================"
-echo "✓ Setup Complete!"
+echo "checkmark Setup Complete!"
 echo "========================================"
 echo ""
 echo "To start the dashboard, run:"
@@ -62,4 +62,4 @@ echo ""
 echo "Or simply:"
 echo "  make dashboard"
 echo ""
-echo "Happy predicting! 🏀"
+echo "Happy predicting! basketball.fill"

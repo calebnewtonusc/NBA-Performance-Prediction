@@ -53,7 +53,7 @@ jobs:
           git config user.name "NBA Model Bot"
           git config user.email "bot@nba-predictions.com"
           git add models/ data/raw/nba_games_real.csv
-          git commit -m "🤖 Auto-update: Weekly model retrain with latest NBA data
+          git commit -m "gearshape.fill Auto-update: Weekly model retrain with latest NBA data
 
           Trained on $(date '+%Y-%m-%d')
           Models updated automatically via GitHub Actions"
@@ -62,7 +62,7 @@ jobs:
       - name: Create deployment summary
         if: steps.check_changes.outputs.changed == 'true'
         run: |
-          echo "# 🏀 Models Updated!" >> $GITHUB_STEP_SUMMARY
+          echo "# basketball.fill Models Updated!" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Models have been retrained with the latest NBA data." >> $GITHUB_STEP_SUMMARY
           echo "Railway will automatically redeploy in ~3 minutes." >> $GITHUB_STEP_SUMMARY

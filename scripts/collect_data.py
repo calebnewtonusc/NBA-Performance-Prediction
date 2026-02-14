@@ -110,7 +110,7 @@ def main():
 
     try:
         collect_all_data(args.seasons, args.quick)
-        logger.info("✓ Data collection successful!")
+        logger.info("checkmark Data collection successful!")
 
     except Exception as e:
         logger.error(f"Data collection failed: {str(e)}")

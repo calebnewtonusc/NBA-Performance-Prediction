@@ -45,7 +45,7 @@ jobs:
     - name: Check code formatting with black
       continue-on-error: true
       run: |
-        black --check src tests || echo "⚠️ Code formatting issues found (non-blocking)"
+        black --check src tests || echo "exclamationmark.triangle.fill Code formatting issues found (non-blocking)"
 
     - name: Type check with mypy
       continue-on-error: true
@@ -55,7 +55,7 @@ jobs:
     - name: Run tests with pytest
       continue-on-error: true
       run: |
-        pytest tests/ -v --cov=src --cov-report=xml --cov-report=term || echo "⚠️ Some tests failed (non-blocking for now)"
+        pytest tests/ -v --cov=src --cov-report=xml --cov-report=term || echo "exclamationmark.triangle.fill Some tests failed (non-blocking for now)"
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
@@ -107,9 +107,9 @@ jobs:
 
     - name: Test imports
       run: |
-        python -c "from src.data_collection.base_client import BaseAPIClient; print('✓ Imports successful')"
-        python -c "from src.models.logistic_regression_model import GameLogisticRegression; print('✓ Models import successful')"
+        python -c "from src.data_collection.base_client import BaseAPIClient; print('checkmark Imports successful')"
+        python -c "from src.models.logistic_regression_model import GameLogisticRegression; print('checkmark Models import successful')"
 
     - name: Build package
       run: |
-        echo "✓ Build successful"
+        echo "checkmark Build successful"

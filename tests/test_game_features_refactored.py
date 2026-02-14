@@ -238,4 +238,4 @@ class TestGameFeaturesRefactored:
 if __name__ == "__main__":
     print("Running refactored game features tests...")
     print("Note: Run with pytest for full test suite")
-    print("\n✓ Test file created successfully")
+    print("\ncheckmark Test file created successfully")

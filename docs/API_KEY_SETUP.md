@@ -110,25 +110,25 @@ load_dotenv()
 api_key = os.getenv('BALLDONTLIE_API_KEY')
 
 if not api_key:
-    print('❌ API key not found in .env file')
+    print('xmark.circle.fill API key not found in .env file')
 else:
-    print(f'✅ API key found: {api_key[:10]}...')
+    print(f'checkmark.circle.fill API key found: {api_key[:10]}...')
     try:
         collector = PlayerDataCollector(api_key=api_key)
         result = collector.search_players('LeBron James')
         if result['players']:
-            print(f'✅ API key works! Found {len(result[\"players\"])} players')
+            print(f'checkmark.circle.fill API key works! Found {len(result[\"players\"])} players')
         else:
-            print('⚠️  API key works but no results returned')
+            print('exclamationmark.triangle.fill  API key works but no results returned')
     except Exception as e:
-        print(f'❌ API test failed: {e}')
+        print(f'xmark.circle.fill API test failed: {e}')
 "
 ```
 
 Expected output for a valid API key:
 ```
-✅ API key found: sk_abc1234...
-✅ API key works! Found 1 players
+checkmark.circle.fill API key found: sk_abc1234...
+checkmark.circle.fill API key works! Found 1 players
 ```
 
 ## Security Best Practices
