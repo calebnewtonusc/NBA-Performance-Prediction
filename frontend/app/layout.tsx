@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import './globals.css'
 import Navigation from '@/components/Navigation'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
@@ -36,10 +37,12 @@ export default function RootLayout({
                 className="flex items-center gap-4 px-8 py-6 bg-secondary/60 backdrop-blur-sm rounded-full border-2 border-primary/30 shadow-md hover:shadow-xl hover:-translate-y-0.5 hover:border-primary/60 transition-all duration-300 no-underline"
                 style={{ backgroundColor: 'rgba(38, 39, 48, 0.6)' }}
               >
-                <img
+                <Image
                   src="/caleb-usc.jpg"
                   alt="Caleb Newton at USC"
-                  className="w-12 h-12 rounded-full object-cover shadow-lg"
+                  width={48}
+                  height={48}
+                  className="rounded-full object-cover shadow-lg"
                   style={{
                     objectPosition: 'center 30%',
                     border: '2px solid #FF6B6B'
