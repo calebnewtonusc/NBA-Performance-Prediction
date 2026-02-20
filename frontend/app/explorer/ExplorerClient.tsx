@@ -203,7 +203,7 @@ export default function ExplorerClient() {
   return (
     <div className="max-w-6xl mx-auto space-y-8" role="main" aria-labelledby="page-title">
       <div>
-        <h1 className="text-4xl font-bold" id="page-title">Data Explorer</h1>
+        <h1 className="text-4xl font-black text-white" id="page-title">Data Explorer</h1>
         <p className="text-gray-400 mt-2">
           Explore historical NBA game data and team statistics
         </p>
@@ -219,15 +219,23 @@ export default function ExplorerClient() {
       />
 
       {error && (
-        <div className="bg-red-900/20 border border-red-500 rounded-lg p-4" role="alert">
-          <p className="text-red-400">{error}</p>
+        <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4" role="alert">
+          <p className="text-red-400 font-medium text-sm">{error}</p>
+        </div>
+      )}
+
+      {loading && games.length === 0 && (
+        <div className="space-y-4">
+          {(['sk-row-1', 'sk-row-2', 'sk-row-3']).map((id) => (
+            <div key={id} className="h-14 bg-gray-700/40 rounded-xl animate-pulse" />
+          ))}
         </div>
       )}
 
       {teamStats && <ExplorerTeamStats teamStats={teamStats} />}
 
       {games.length > 0 && (
-        <div className="bg-secondary rounded-lg border border-gray-700 overflow-hidden">
+        <div className="bg-secondary rounded-2xl border border-gray-700/50 overflow-hidden">
           <ExplorerGamesTable
             sortedGames={sortedGames}
             sortColumn={sortColumn}
@@ -249,10 +257,17 @@ export default function ExplorerClient() {
       )}
 
       {!loading && games.length === 0 && !error && (
-        <div className="bg-secondary p-12 rounded-lg border border-gray-700 text-center">
-          <p className="text-xl text-gray-400">
-            Select filters and click "Load Data" to explore games
-          </p>
+        <div
+          className="p-12 rounded-2xl border text-center"
+          style={{ backgroundColor: 'rgba(17,24,39,0.4)', borderColor: 'rgba(55,65,81,0.4)' }}
+        >
+          <div className="w-16 h-16 bg-gray-700/50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+            </svg>
+          </div>
+          <p className="text-gray-300 font-semibold mb-1">No data loaded yet</p>
+          <p className="text-sm text-gray-500">Select filters above and click "Load Data" to explore games</p>
         </div>
       )}
     </div>

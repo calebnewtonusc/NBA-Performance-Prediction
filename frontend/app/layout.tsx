@@ -21,14 +21,14 @@ export default function RootLayout({
       <body>
         <KeyboardShortcutsProvider>
           <ErrorBoundary>
-            <div className="min-h-screen bg-background">
+            <div className="min-h-screen" style={{ backgroundColor: '#0A0E1A' }}>
               <Navigation />
               <main className="container mx-auto px-4 py-8">
                 {children}
               </main>
 
           {/* Footer */}
-          <footer className="mt-20 pt-12 pb-12 bg-gradient-to-br from-gray-800/30 to-gray-900/30 border-t-2 border-gray-700 rounded-t-3xl">
+          <footer className="mt-20 pt-12 pb-12 border-t rounded-t-3xl" style={{ background: 'linear-gradient(135deg, rgba(17,24,39,0.8), rgba(10,14,26,0.9))', borderColor: 'rgba(55,65,81,0.4)' }}>
             <div className="container mx-auto px-4 flex flex-col items-center gap-6">
               <a
                 href="https://calebnewton.me"

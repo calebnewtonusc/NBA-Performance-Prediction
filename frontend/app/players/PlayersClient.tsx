@@ -280,7 +280,10 @@ export default function PlayersClient() {
       )}
 
       {selectedPlayer && playerStats && playerStats.games_played > 0 && (
-        <PlayerStatsChart playerStats={playerStats} />
+        <PlayerStatsChart
+          playerStats={playerStats}
+          teamAbbr={selectedPlayer.team?.abbreviation}
+        />
       )}
     </div>
   )
