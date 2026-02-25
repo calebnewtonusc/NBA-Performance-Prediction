@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import { apiClient, HealthResponse } from '@/lib/api-client'
 import { BarChart3, Activity, TrendingUp, Database, Zap, Target, Users, ArrowRight } from 'lucide-react'
 import { AnimatedCounter } from '@/components/AnimatedCounter'
@@ -8,6 +9,22 @@ import { PickOfTheDay } from '@/components/PickOfTheDay'
 import { ModelAccuracyWidget } from '@/components/ModelAccuracyWidget'
 import { StatCardSkeleton } from '@/components/SkeletonLoader'
 import Link from 'next/link'
+
+const SF_DISPLAY = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif"
+const SF_TEXT = "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif"
+
+const EASE = [0.25, 0.46, 0.45, 0.94] as const
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 32 },
+  visible: { opacity: 1, y: 0 },
+}
+
+const stagger = (i: number) => ({
+  duration: 0.6,
+  delay: i * 0.08,
+  ease: EASE,
+})
 
 export default function HomeClient() {
   const [health, setHealth] = useState<HealthResponse | null>(null)
@@ -28,61 +45,73 @@ export default function HomeClient() {
   }, [])
 
   return (
-    <div style={{ maxWidth: '1152px', margin: '0 auto' }} className="space-y-12">
+    <div style={{ maxWidth: '1152px', margin: '0 auto' }}>
 
-      {/* Hero Section */}
-      <div style={{ textAlign: 'center', paddingTop: '24px' }} className="space-y-5">
-
-        {/* Status badge */}
+      {/* ── HERO ────────────────────────────────────────────────────── */}
+      <section
+        style={{
+          minHeight: '90vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center',
+          position: 'relative',
+          padding: '80px 20px 60px',
+        }}
+      >
+        {/* Radial gradient ambience */}
         <div
+          aria-hidden
           style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '7px',
-            padding: '6px 14px',
-            borderRadius: '100px',
-            background: 'rgba(255,59,48,0.1)',
-            border: '0.5px solid rgba(255,59,48,0.3)',
-            marginBottom: '8px',
+            position: 'absolute',
+            top: 0,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: '800px',
+            height: '500px',
+            background: 'radial-gradient(ellipse at top, rgba(255,59,48,0.07) 0%, transparent 70%)',
+            pointerEvents: 'none',
+          }}
+        />
+
+        {/* ML label */}
+        <motion.p
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          transition={stagger(0)}
+          style={{
+            fontFamily: SF_TEXT,
+            fontSize: '12px',
+            fontWeight: 600,
+            letterSpacing: '1.5px',
+            textTransform: 'uppercase',
+            color: 'rgba(255,255,255,0.45)',
+            marginBottom: '20px',
           }}
         >
-          <div
-            style={{
-              width: '6px',
-              height: '6px',
-              borderRadius: '50%',
-              backgroundColor: '#FF3B30',
-              animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-            }}
-          />
-          <span
-            style={{
-              fontSize: '11px',
-              fontWeight: 700,
-              color: '#FF3B30',
-              textTransform: 'uppercase',
-              letterSpacing: '0.8px',
-              fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-            }}
-          >
-            ML-Powered Predictions
-          </span>
-        </div>
+          Machine Learning
+        </motion.p>
 
-        {/* Title */}
-        <h1
+        {/* Hero title */}
+        <motion.h1
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          transition={stagger(1)}
           style={{
-            fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+            fontFamily: SF_DISPLAY,
             fontWeight: 900,
-            letterSpacing: '-0.6px',
-            lineHeight: 1.08,
-            margin: 0,
+            letterSpacing: '-3px',
+            lineHeight: 0.95,
+            margin: '0 0 28px',
           }}
         >
           <span
             style={{
               display: 'block',
-              fontSize: 'clamp(42px, 7vw, 64px)',
+              fontSize: 'clamp(54px, 8vw, 80px)',
               color: '#ffffff',
             }}
           >
@@ -91,182 +120,299 @@ export default function HomeClient() {
           <span
             style={{
               display: 'block',
-              fontSize: 'clamp(42px, 7vw, 64px)',
-              color: '#FF3B30',
+              fontSize: 'clamp(54px, 8vw, 80px)',
+              background: 'linear-gradient(90deg, #FF3B30 0%, #FF6B35 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
             }}
           >
             Prediction
           </span>
-        </h1>
+        </motion.h1>
 
-        <p
+        {/* Subtitle */}
+        <motion.p
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          transition={stagger(2)}
           style={{
-            fontSize: '17px',
+            fontFamily: SF_TEXT,
+            fontSize: '18px',
+            fontWeight: 400,
+            lineHeight: 1.6,
             color: 'rgba(255,255,255,0.6)',
-            maxWidth: '520px',
-            margin: '0 auto',
-            lineHeight: 1.55,
-            fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
+            maxWidth: '480px',
+            margin: '0 0 36px',
           }}
         >
-          Machine learning models trained on real NBA data — predict game outcomes, analyze players, and track model accuracy in real time.
-        </p>
+          6 trained models. Real NBA data. 72.3% accuracy.
+        </motion.p>
 
         {/* CTA Buttons */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center', paddingTop: '8px' }}>
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          transition={stagger(3)}
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '12px',
+            justifyContent: 'center',
+            marginBottom: '28px',
+          }}
+        >
           <Link
             href="/predictions"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '7px',
-              padding: '12px 22px',
+              gap: '8px',
+              height: '56px',
+              padding: '0 28px',
               backgroundColor: '#FF3B30',
               color: '#ffffff',
+              fontFamily: SF_DISPLAY,
               fontWeight: 700,
-              fontSize: '15px',
-              borderRadius: '12px',
+              fontSize: '16px',
+              letterSpacing: '-0.3px',
+              borderRadius: '100px',
               textDecoration: 'none',
-              letterSpacing: '-0.2px',
-              fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-              transition: 'all 150ms ease',
-              boxShadow: '0 1px 12px rgba(255,59,48,0.3)',
+              boxShadow: '0 4px 24px rgba(255,59,48,0.35)',
+              transition: 'all 180ms ease',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = '#e0342a'
-              e.currentTarget.style.transform = 'translateY(-1px)'
-              e.currentTarget.style.boxShadow = '0 4px 20px rgba(255,59,48,0.4)'
+              e.currentTarget.style.transform = 'translateY(-2px)'
+              e.currentTarget.style.boxShadow = '0 8px 32px rgba(255,59,48,0.45)'
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = '#FF3B30'
               e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = '0 1px 12px rgba(255,59,48,0.3)'
+              e.currentTarget.style.boxShadow = '0 4px 24px rgba(255,59,48,0.35)'
             }}
           >
-            <Zap style={{ width: '15px', height: '15px' }} />
-            Get a Prediction
-            <ArrowRight style={{ width: '15px', height: '15px' }} />
+            <Zap style={{ width: '16px', height: '16px' }} />
+            Make a Prediction
+            <ArrowRight style={{ width: '16px', height: '16px' }} />
           </Link>
+
           <Link
             href="/players"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '7px',
-              padding: '12px 22px',
-              backgroundColor: '#2c2c2e',
+              gap: '8px',
+              height: '56px',
+              padding: '0 28px',
+              backgroundColor: 'rgba(255,255,255,0.08)',
               color: '#ffffff',
-              fontWeight: 700,
-              fontSize: '15px',
-              borderRadius: '12px',
+              fontFamily: SF_DISPLAY,
+              fontWeight: 600,
+              fontSize: '16px',
+              letterSpacing: '-0.3px',
+              borderRadius: '100px',
               textDecoration: 'none',
-              letterSpacing: '-0.2px',
-              fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-              border: '0.5px solid rgba(255,255,255,0.1)',
-              transition: 'all 150ms ease',
-              boxShadow: '0 1px 12px rgba(0,0,0,0.3)',
+              border: '0.5px solid rgba(255,255,255,0.18)',
+              transition: 'all 180ms ease',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#3a3a3c'
-              e.currentTarget.style.transform = 'translateY(-1px)'
+              e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.13)'
+              e.currentTarget.style.transform = 'translateY(-2px)'
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#2c2c2e'
+              e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.08)'
               e.currentTarget.style.transform = 'translateY(0)'
             }}
           >
-            <Users style={{ width: '15px', height: '15px' }} />
+            <Users style={{ width: '16px', height: '16px' }} />
             Player Stats
           </Link>
-        </div>
-      </div>
+        </motion.div>
 
-      {/* API Status Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-        {loading ? (
-          <>
-            <StatCardSkeleton />
-            <StatCardSkeleton />
-            <StatCardSkeleton />
-            <StatCardSkeleton />
-          </>
-        ) : health ? (
-          <>
-            <StatCard
-              title="API Status"
-              value={health.status.toUpperCase()}
-              subtitle="All systems go"
-              icon={Activity}
-              accentColor="#30D158"
-              isText
-            />
-            <StatCard
-              title="Uptime"
-              value={Math.floor(health.uptime_seconds / 60)}
-              suffix=" min"
-              subtitle="Continuous operation"
-              icon={TrendingUp}
-              accentColor="#0A84FF"
-              animated
-            />
-            <StatCard
-              title="Models Loaded"
-              value={health.models_loaded}
-              subtitle="Ready to predict"
-              icon={Database}
-              accentColor="#BF5AF2"
-              animated
-            />
-            <StatCard
-              title="Version"
-              value={health.version}
-              subtitle="Current build"
-              icon={BarChart3}
-              accentColor="#FF9F0A"
-              isText
-            />
-          </>
-        ) : (
+        {/* Accuracy badge */}
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          animate="visible"
+          transition={stagger(4)}
+        >
           <div
-            className="col-span-4"
             style={{
-              textAlign: 'center',
-              padding: '24px',
-              color: '#FF3B30',
-              background: 'rgba(255,59,48,0.08)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '8px 16px',
+              borderRadius: '100px',
+              backgroundColor: 'rgba(255,59,48,0.1)',
               border: '0.5px solid rgba(255,59,48,0.25)',
-              borderRadius: '16px',
-              fontSize: '14px',
-              fontWeight: 500,
             }}
           >
-            Unable to connect to API — backend may be starting up
+            <motion.div
+              animate={{ opacity: [1, 0.4, 1] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+              style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                backgroundColor: '#FF3B30',
+              }}
+            />
+            <span
+              style={{
+                fontFamily: SF_TEXT,
+                fontSize: '13px',
+                fontWeight: 600,
+                color: '#FF3B30',
+                letterSpacing: '0.2px',
+              }}
+            >
+              72.3% Model Accuracy
+            </span>
           </div>
-        )}
-      </div>
+        </motion.div>
+      </section>
 
-      {/* Pick of the Day + Model Accuracy */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <div>
-          <SectionHeader icon={Target} iconColor="#FF3B30" label="Featured Matchup" />
-          <PickOfTheDay />
+      {/* ── STAT CARDS ─────────────────────────────────────────────── */}
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, ease: EASE }}
+        style={{ marginBottom: '64px' }}
+      >
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gap: '12px',
+          }}
+        >
+          {loading ? (
+            <>
+              <StatCardSkeleton />
+              <StatCardSkeleton />
+              <StatCardSkeleton />
+              <StatCardSkeleton />
+            </>
+          ) : health ? (
+            <>
+              <StatCard
+                title="API Status"
+                value={health.status.toUpperCase()}
+                subtitle="All systems operational"
+                icon={Activity}
+                accentColor="#30D158"
+                isText
+                index={0}
+              />
+              <StatCard
+                title="Uptime"
+                value={Math.floor(health.uptime_seconds / 60)}
+                suffix=" min"
+                subtitle="Continuous operation"
+                icon={TrendingUp}
+                accentColor="#0A84FF"
+                animated
+                index={1}
+              />
+              <StatCard
+                title="Models Loaded"
+                value={health.models_loaded}
+                subtitle="Ready to predict"
+                icon={Database}
+                accentColor="#BF5AF2"
+                animated
+                index={2}
+              />
+              <StatCard
+                title="Version"
+                value={health.version}
+                subtitle="Current build"
+                icon={BarChart3}
+                accentColor="#FF9F0A"
+                isText
+                index={3}
+              />
+            </>
+          ) : (
+            <div
+              style={{
+                gridColumn: '1 / -1',
+                textAlign: 'center',
+                padding: '28px',
+                color: '#FF3B30',
+                background: 'rgba(255,59,48,0.06)',
+                border: '0.5px solid rgba(255,59,48,0.2)',
+                borderRadius: '16px',
+                fontFamily: SF_TEXT,
+                fontSize: '14px',
+                fontWeight: 500,
+              }}
+            >
+              Unable to connect to API — backend may be starting up
+            </div>
+          )}
         </div>
-        <div>
-          <SectionHeader icon={BarChart3} iconColor="#0A84FF" label="Model Performance" />
-          <ModelAccuracyWidget />
-        </div>
-      </div>
+      </motion.section>
 
-      {/* Feature Cards */}
-      <div>
-        <SectionHeader label="Explore the Platform" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+      {/* ── FEATURED + MODEL ACCURACY ──────────────────────────────── */}
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, ease: EASE }}
+        style={{ marginBottom: '64px' }}
+      >
+        <SectionLabel>Live Intelligence</SectionLabel>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+            gap: '16px',
+            marginTop: '16px',
+          }}
+        >
+          <div>
+            <SectionHeader icon={Target} iconColor="#FF3B30" label="Featured Matchup" />
+            <PickOfTheDay />
+          </div>
+          <div>
+            <SectionHeader icon={BarChart3} iconColor="#0A84FF" label="Model Performance" />
+            <ModelAccuracyWidget />
+          </div>
+        </div>
+      </motion.section>
+
+      {/* ── FEATURE CARDS ──────────────────────────────────────────── */}
+      <motion.section
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, ease: EASE }}
+        style={{ marginBottom: '64px' }}
+      >
+        <SectionLabel>Explore the Platform</SectionLabel>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+            gap: '12px',
+            marginTop: '16px',
+          }}
+        >
           <FeatureCard
             title="Game Predictions"
             description="Pick any two NBA teams and get ML-powered win probabilities with confidence scores across multiple models."
             href="/predictions"
             icon={Zap}
             accentColor="#FF3B30"
+            index={0}
           />
           <FeatureCard
             title="Player Analysis"
@@ -274,6 +420,7 @@ export default function HomeClient() {
             href="/players"
             icon={Users}
             accentColor="#0A84FF"
+            index={1}
           />
           <FeatureCard
             title="Model Performance"
@@ -281,6 +428,7 @@ export default function HomeClient() {
             href="/performance"
             icon={TrendingUp}
             accentColor="#BF5AF2"
+            index={2}
           />
           <FeatureCard
             title="Data Explorer"
@@ -288,14 +436,33 @@ export default function HomeClient() {
             href="/explorer"
             icon={Database}
             accentColor="#30D158"
+            index={3}
           />
         </div>
-      </div>
+      </motion.section>
     </div>
   )
 }
 
-// ---- Sub-components ----
+// ── Sub-components ──────────────────────────────────────────────────────────
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p
+      style={{
+        fontFamily: SF_TEXT,
+        fontSize: '12px',
+        fontWeight: 600,
+        letterSpacing: '1px',
+        textTransform: 'uppercase',
+        color: 'rgba(255,255,255,0.45)',
+        margin: '0 0 4px',
+      }}
+    >
+      {children}
+    </p>
+  )
+}
 
 function SectionHeader({
   icon: Icon,
@@ -309,15 +476,29 @@ function SectionHeader({
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
       {Icon && iconColor && (
-        <Icon style={{ width: '15px', height: '15px', color: iconColor, flexShrink: 0 }} />
+        <div
+          style={{
+            width: '28px',
+            height: '28px',
+            borderRadius: '8px',
+            backgroundColor: `${iconColor}18`,
+            border: `0.5px solid ${iconColor}30`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}
+        >
+          <Icon style={{ width: '14px', height: '14px', color: iconColor }} />
+        </div>
       )}
       <span
         style={{
-          fontSize: '16px',
-          fontWeight: 700,
+          fontFamily: SF_DISPLAY,
+          fontSize: '20px',
+          fontWeight: 800,
           color: '#ffffff',
-          letterSpacing: '-0.3px',
-          fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+          letterSpacing: '-0.5px',
         }}
       >
         {label}
@@ -325,6 +506,8 @@ function SectionHeader({
     </div>
   )
 }
+
+// Stat Card
 
 interface StatCardProps {
   title: string
@@ -335,6 +518,7 @@ interface StatCardProps {
   accentColor: string
   isText?: boolean
   animated?: boolean
+  index: number
 }
 
 function StatCard({
@@ -346,67 +530,81 @@ function StatCard({
   accentColor,
   isText = false,
   animated = false,
+  index,
 }: StatCardProps) {
   return (
-    <div
+    <motion.div
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.08, ease: EASE }}
+      whileHover={{ y: -2, borderColor: 'rgba(255,255,255,0.14)' }}
       style={{
         background: '#1c1c1e',
         borderRadius: '16px',
         border: '0.5px solid rgba(255,255,255,0.08)',
-        padding: '18px',
-        boxShadow: '0 1px 12px rgba(0,0,0,0.4)',
-        transition: 'border-color 150ms ease',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+        padding: '20px',
+        boxShadow: '0 2px 20px rgba(0,0,0,0.5)',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '14px' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          marginBottom: '16px',
+        }}
+      >
         <div
           style={{
-            padding: '8px',
+            width: '36px',
+            height: '36px',
             borderRadius: '10px',
             backgroundColor: `${accentColor}18`,
-            border: `0.5px solid ${accentColor}30`,
+            border: `0.5px solid ${accentColor}28`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
           <Icon style={{ width: '18px', height: '18px', color: accentColor }} />
         </div>
-        <div
+        <motion.div
+          animate={{ opacity: [1, 0.35, 1] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: index * 0.3 }}
           style={{
             width: '6px',
             height: '6px',
             borderRadius: '50%',
             backgroundColor: accentColor,
-            marginTop: '2px',
             boxShadow: `0 0 6px ${accentColor}80`,
           }}
         />
       </div>
+
       <p
         style={{
+          fontFamily: SF_TEXT,
           fontSize: '11px',
           fontWeight: 600,
           color: 'rgba(255,255,255,0.45)',
           textTransform: 'uppercase',
-          letterSpacing: '0.5px',
+          letterSpacing: '1px',
           marginBottom: '4px',
-          fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
         }}
       >
         {title}
       </p>
       <p
         style={{
-          fontSize: '24px',
+          fontFamily: SF_DISPLAY,
+          fontSize: '28px',
           fontWeight: 800,
           color: '#ffffff',
-          letterSpacing: '-0.4px',
+          letterSpacing: '-0.5px',
           lineHeight: 1.1,
-          fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+          marginBottom: subtitle ? '4px' : '0',
         }}
       >
         {animated && typeof value === 'number' ? (
@@ -421,18 +619,20 @@ function StatCard({
       {subtitle && (
         <p
           style={{
+            fontFamily: SF_TEXT,
             fontSize: '12px',
             color: 'rgba(255,255,255,0.4)',
-            marginTop: '4px',
             fontWeight: 500,
           }}
         >
           {subtitle}
         </p>
       )}
-    </div>
+    </motion.div>
   )
 }
+
+// Feature Card
 
 interface FeatureCardProps {
   title: string
@@ -440,82 +640,92 @@ interface FeatureCardProps {
   href: string
   icon: React.ComponentType<{ style?: React.CSSProperties }>
   accentColor: string
+  index: number
 }
 
-function FeatureCard({ title, description, href, icon: Icon, accentColor }: FeatureCardProps) {
+function FeatureCard({ title, description, href, icon: Icon, accentColor, index }: FeatureCardProps) {
   return (
-    <Link
-      href={href}
+    <motion.div
+      variants={fadeUp}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.08, ease: EASE }}
+      whileHover={{ y: -2, borderColor: `rgba(255,59,48,0.25)` }}
       style={{
-        display: 'block',
         background: '#1c1c1e',
-        borderRadius: '16px',
+        borderRadius: '20px',
         border: '0.5px solid rgba(255,255,255,0.08)',
-        padding: '22px',
-        textDecoration: 'none',
-        boxShadow: '0 1px 12px rgba(0,0,0,0.4)',
-        transition: 'all 200ms ease',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'
-        e.currentTarget.style.transform = 'translateY(-2px)'
-        e.currentTarget.style.boxShadow = '0 6px 24px rgba(0,0,0,0.5)'
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
-        e.currentTarget.style.transform = 'translateY(0)'
-        e.currentTarget.style.boxShadow = '0 1px 12px rgba(0,0,0,0.4)'
+        boxShadow: '0 2px 20px rgba(0,0,0,0.5)',
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+      <Link
+        href={href}
+        style={{
+          display: 'block',
+          padding: '24px',
+          textDecoration: 'none',
+          height: '100%',
+        }}
+      >
+        {/* Icon circle */}
         <div
           style={{
-            padding: '10px',
-            borderRadius: '12px',
-            backgroundColor: `${accentColor}14`,
+            width: '48px',
+            height: '48px',
+            borderRadius: '14px',
+            backgroundColor: `${accentColor}18`,
             border: `0.5px solid ${accentColor}28`,
-            flexShrink: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: '16px',
           }}
         >
           <Icon style={{ width: '22px', height: '22px', color: accentColor }} />
         </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
-            <h3
-              style={{
-                fontSize: '15px',
-                fontWeight: 700,
-                color: '#ffffff',
-                letterSpacing: '-0.2px',
-                margin: 0,
-                fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
-              }}
-            >
-              {title}
-            </h3>
-            <ArrowRight
-              style={{
-                width: '13px',
-                height: '13px',
-                color: 'rgba(255,255,255,0.3)',
-                flexShrink: 0,
-                transition: 'all 150ms ease',
-              }}
-            />
-          </div>
-          <p
-            style={{
-              fontSize: '13px',
-              color: 'rgba(255,255,255,0.5)',
-              lineHeight: 1.5,
-              margin: 0,
-              fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif",
-            }}
-          >
-            {description}
-          </p>
+
+        <h3
+          style={{
+            fontFamily: SF_DISPLAY,
+            fontSize: '18px',
+            fontWeight: 700,
+            color: '#ffffff',
+            letterSpacing: '-0.3px',
+            margin: '0 0 8px',
+          }}
+        >
+          {title}
+        </h3>
+
+        <p
+          style={{
+            fontFamily: SF_TEXT,
+            fontSize: '14px',
+            color: 'rgba(255,255,255,0.55)',
+            lineHeight: 1.55,
+            margin: '0 0 20px',
+          }}
+        >
+          {description}
+        </p>
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            fontFamily: SF_TEXT,
+            fontSize: '14px',
+            fontWeight: 600,
+            color: accentColor,
+            letterSpacing: '-0.1px',
+          }}
+        >
+          Explore
+          <ArrowRight style={{ width: '14px', height: '14px' }} />
         </div>
-      </div>
-    </Link>
+      </Link>
+    </motion.div>
   )
 }
