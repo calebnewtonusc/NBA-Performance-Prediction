@@ -21,38 +21,58 @@ export default function Navigation() {
 
   return (
     <nav
-      className="sticky top-0 z-50 border-b"
+      className="sticky top-0 z-50"
       style={{
-        backgroundColor: 'rgba(10, 14, 26, 0.90)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
-        borderColor: 'rgba(55, 65, 81, 0.4)',
+        backgroundColor: 'rgba(0,0,0,0.85)',
+        backdropFilter: 'blur(20px) saturate(1.8)',
+        WebkitBackdropFilter: 'blur(20px) saturate(1.8)',
+        borderBottom: '0.5px solid rgba(255,255,255,0.08)',
       }}
     >
       <div className="container mx-auto px-4">
         {/* Desktop Navigation */}
         <div className="flex items-center justify-between h-14">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative">
+            <div className="relative flex-shrink-0">
               <Image
                 src="/nba-logo.png"
                 alt="NBA Predictions Logo"
-                width={32}
-                height={32}
+                width={28}
+                height={28}
                 className="rounded-lg"
                 priority
                 unoptimized
               />
-              <div className="absolute inset-0 rounded-lg bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             <div className="hidden sm:block">
-              <span className="text-sm font-black text-white tracking-tight">NBA</span>
-              <span className="text-sm font-bold text-primary ml-1 tracking-tight">Prediction</span>
+              <span
+                style={{
+                  fontSize: '15px',
+                  fontWeight: 800,
+                  color: '#ffffff',
+                  letterSpacing: '-0.3px',
+                  fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+                }}
+              >
+                NBA
+              </span>
+              <span
+                style={{
+                  fontSize: '15px',
+                  fontWeight: 800,
+                  color: '#FF3B30',
+                  letterSpacing: '-0.3px',
+                  marginLeft: '5px',
+                  fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif",
+                }}
+              >
+                Prediction
+              </span>
             </div>
           </Link>
 
           {/* Desktop Menu */}
-          <div className="hidden lg:flex items-center gap-1">
+          <div className="hidden lg:flex items-center gap-0.5">
             {navItems.map((item) => {
               const Icon = item.icon
               const isActive = pathname === item.href
@@ -60,18 +80,49 @@ export default function Navigation() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-semibold transition-all duration-150 ${
+                  style={
                     isActive
-                      ? 'text-white'
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
-                  style={isActive ? {
-                    backgroundColor: 'rgba(255,107,107,0.12)',
-                    color: '#FF6B6B',
-                    border: '1px solid rgba(255,107,107,0.2)',
-                  } : {}}
+                      ? {
+                          backgroundColor: 'rgba(255,59,48,0.12)',
+                          color: '#ffffff',
+                          border: '0.5px solid rgba(255,59,48,0.25)',
+                          borderRadius: '10px',
+                          padding: '6px 12px',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '5px',
+                          transition: 'all 150ms ease',
+                          textDecoration: 'none',
+                        }
+                      : {
+                          color: 'rgba(255,255,255,0.55)',
+                          borderRadius: '10px',
+                          padding: '6px 12px',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '5px',
+                          transition: 'all 150ms ease',
+                          textDecoration: 'none',
+                        }
+                  }
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.color = '#ffffff'
+                      e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.06)'
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.55)'
+                      e.currentTarget.style.backgroundColor = 'transparent'
+                    }
+                  }}
                 >
-                  <Icon className="h-3.5 w-3.5" />
+                  <Icon style={{ width: '13px', height: '13px', flexShrink: 0 }} />
                   <span>{item.label}</span>
                 </Link>
               )
@@ -89,13 +140,29 @@ export default function Navigation() {
               <HealthIndicator />
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+                style={{
+                  padding: '6px',
+                  borderRadius: '8px',
+                  color: 'rgba(255,255,255,0.55)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 150ms ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.color = '#ffffff'
+                  e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.06)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.color = 'rgba(255,255,255,0.55)'
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                }}
                 aria-label="Toggle mobile menu"
               >
                 {mobileMenuOpen ? (
-                  <X className="h-5 w-5" />
+                  <X style={{ width: '18px', height: '18px' }} />
                 ) : (
-                  <Menu className="h-5 w-5" />
+                  <Menu style={{ width: '18px', height: '18px' }} />
                 )}
               </button>
             </div>
@@ -105,8 +172,8 @@ export default function Navigation() {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div
-            className="lg:hidden py-3 space-y-1 border-t"
-            style={{ borderColor: 'rgba(55,65,81,0.4)' }}
+            className="lg:hidden py-3 space-y-0.5"
+            style={{ borderTop: '0.5px solid rgba(255,255,255,0.08)' }}
           >
             {navItems.map((item) => {
               const Icon = item.icon
@@ -116,13 +183,21 @@ export default function Navigation() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${
-                    isActive
-                      ? 'text-primary bg-primary/10'
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
-                  }`}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    padding: '10px 12px',
+                    borderRadius: '10px',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: isActive ? '#ffffff' : 'rgba(255,255,255,0.55)',
+                    backgroundColor: isActive ? 'rgba(255,59,48,0.12)' : 'transparent',
+                    transition: 'all 150ms ease',
+                    textDecoration: 'none',
+                  }}
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon style={{ width: '15px', height: '15px', flexShrink: 0 }} />
                   <span>{item.label}</span>
                 </Link>
               )

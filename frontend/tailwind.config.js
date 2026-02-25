@@ -8,11 +8,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#FF6B6B',
-        background: '#0A0E1A',
-        secondary: '#111827',
-        surface: '#1a1f2e',
-        text: '#F1F5F9',
+        primary: '#FF3B30',
+        background: '#000000',
+        secondary: '#1c1c1e',
+        surface: '#2c2c2e',
+        'surface-elevated': '#3a3a3c',
+        // iOS system colors (for accent consistency)
+        'ios-blue': '#0A84FF',
+        'ios-green': '#30D158',
+        'ios-purple': '#BF5AF2',
+        'ios-yellow': '#FF9F0A',
         // NBA team color utilities
         'nba-gold': '#FDB927',
         'nba-green': '#007A33',
@@ -24,9 +29,9 @@ module.exports = {
         sans: [
           '-apple-system',
           'BlinkMacSystemFont',
-          '"Segoe UI"',
-          'Roboto',
-          '"Helvetica Neue"',
+          'SF Pro Display',
+          'SF Pro Text',
+          'Helvetica Neue',
           'Arial',
           'sans-serif',
         ],
@@ -47,12 +52,11 @@ module.exports = {
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
       boxShadow: {
-        'nba': '0 4px 24px rgba(255, 107, 107, 0.2)',
-        'glow-sm': '0 0 8px rgba(255, 107, 107, 0.3)',
-        'glow': '0 0 16px rgba(255, 107, 107, 0.3)',
-        'glow-lg': '0 0 32px rgba(255, 107, 107, 0.25)',
-        'card': '0 4px 20px rgba(0, 0, 0, 0.3)',
-        'card-hover': '0 8px 32px rgba(0, 0, 0, 0.5)',
+        'apple': '0 1px 12px rgba(0,0,0,0.4)',
+        'apple-lg': '0 6px 24px rgba(0,0,0,0.5)',
+        'nba': '0 1px 12px rgba(255,59,48,0.25)',
+        'card': '0 1px 12px rgba(0,0,0,0.4)',
+        'card-hover': '0 6px 24px rgba(0,0,0,0.5)',
       },
       borderRadius: {
         '2xl': '1rem',
