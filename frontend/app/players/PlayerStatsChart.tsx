@@ -27,8 +27,8 @@ const STAT_DESCRIPTIONS: Record<string, string> = {
   Points: 'Points per game average this season',
   Rebounds: 'Total rebounds (offensive + defensive) per game',
   Assists: 'Assists per game',
-  Steals: 'Steals per game — defensive impact',
-  Blocks: 'Blocks per game — rim protection',
+  Steals: 'Steals per game, defensive impact',
+  Blocks: 'Blocks per game, rim protection',
 }
 
 function CustomTooltip({ active, payload, label }: any) {

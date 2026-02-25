@@ -40,7 +40,7 @@ export function MatchupForm({
           Select Matchup
         </h2>
         <p className="text-sm text-gray-400 mt-0.5">
-          Choose home and away teams — live stats fetched automatically
+          Choose home and away teams. Live stats fetched automatically
         </p>
       </div>
 

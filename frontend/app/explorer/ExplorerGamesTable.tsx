@@ -69,7 +69,7 @@ export function ExplorerGamesTable({
         <div>
           <h2 className="text-base font-bold text-white">Games</h2>
           <p className="text-xs text-gray-500 mt-0.5">
-            {totalGames > 0 ? `Showing ${start}–${end} of ${totalGames}` : 'No results'}
+            {totalGames > 0 ? `Showing ${start}-${end} of ${totalGames}` : 'No results'}
           </p>
         </div>
         <select
@@ -139,7 +139,7 @@ export function ExplorerGamesTable({
                     >
                       {game.home_team_score}
                     </span>
-                    <span className="text-gray-600 mx-1.5 font-medium">—</span>
+                    <span className="text-gray-600 mx-1.5 font-medium">-</span>
                     <span
                       className="font-black text-base"
                       style={{ color: !homeWon ? awayColors.primary : '#9CA3AF' }}
@@ -234,7 +234,7 @@ export function ExplorerGamesTable({
                     <span style={{ color: homeWon ? homeColors.primary : '#9CA3AF' }}>
                       {game.home_team_score}
                     </span>
-                    <span className="text-gray-600 mx-1.5">—</span>
+                    <span className="text-gray-600 mx-1.5">-</span>
                     <span style={{ color: !homeWon ? awayColors.primary : '#9CA3AF' }}>
                       {game.visitor_team_score}
                     </span>

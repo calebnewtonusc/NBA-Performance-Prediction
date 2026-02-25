@@ -353,7 +353,7 @@ export default function HomeClient() {
                 fontWeight: 500,
               }}
             >
-              Unable to connect to API — backend may be starting up
+              Unable to connect to API. Backend may be starting up
             </div>
           )}
         </div>
@@ -424,7 +424,7 @@ export default function HomeClient() {
           />
           <FeatureCard
             title="Model Performance"
-            description="Track the accuracy, precision, and F1 scores of each ML model in real time — full transparency."
+            description="Track the accuracy, precision, and F1 scores of each ML model in real time. Full transparency."
             href="/performance"
             icon={TrendingUp}
             accentColor="#BF5AF2"
