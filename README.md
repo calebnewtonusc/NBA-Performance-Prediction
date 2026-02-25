@@ -1,476 +1,107 @@
 # NBA Performance Prediction
 
-[![CI/CD Pipeline](https://img.shields.io/badge/CI%2FCD-automated-brightgreen)](https://github.com)
-[![Python Version](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org)
-[![Code Quality](https://img.shields.io/badge/code%20quality-A+-success)](https://github.com)
-[![Performance](https://img.shields.io/badge/performance-40x%20faster-orange)](docs/PERFORMANCE_OPTIMIZATIONS.md)
-[![Enterprise Ready](https://img.shields.io/badge/status-enterprise%20ready-brightgreen)](docs/DEPLOYMENT_GUIDE.md)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+![Next.js](https://img.shields.io/badge/Next.js-14-000000?logo=nextdotjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-backend-009688?logo=fastapi&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-models-F7931E?logo=scikitlearn&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Railway-2496ED?logo=docker&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-yellow)
 
-**Enterprise-grade machine learning system for predicting NBA game outcomes and player statistics with production-ready infrastructure and modern full-stack web application.**
+NBA game outcome and player statistics prediction dashboard — six trained ML models, a Next.js frontend with an Apple TV dark aesthetic, and a FastAPI backend deployed on Railway.
 
-A comprehensive ML project featuring advanced performance optimizations (10-100x speedup), interactive web dashboard, model comparison tools, real-time predictions, and production-ready deployment.
+**Live app:** [nba-performance-prediction.vercel.app](https://nba-performance-prediction.vercel.app) &nbsp;|&nbsp; **API:** [Railway](https://nba-performance-prediction-production.up.railway.app/api/docs)
 
-## Live Demo
+> Screenshot
 
-> **Status**: ✓ **LIVE IN PRODUCTION!**
+## Features
 
-**Production Deployment**:
-- **Web App**: [nba-performance-prediction.vercel.app](https://nba-performance-prediction.vercel.app)
-- **API**: [nba-performance-prediction-production.up.railway.app](https://nba-performance-prediction-production.up.railway.app)
-- **API Docs**: [API Documentation](https://nba-performance-prediction-production.up.railway.app/api/docs) (Swagger UI)
-- **Health Check**: [API Health](https://nba-performance-prediction-production.up.railway.app/api/health)
+- **Game outcome predictions** — compare win probabilities from Logistic Regression (69.6%), Decision Tree (61.6%), and Random Forest (67.3%) side-by-side
+- **Player statistics forecasts** — points, rebounds, and assists regression using Linear, Ridge, and Lasso models trained on 2,788 real NBA games
+- **Data Explorer** — browse and filter historical game data with paginated tables and advanced search
+- **Player search** — fuzzy-matched autocomplete across 200+ NBA players with recent search history persisted in localStorage
+- **Model performance monitor** — live accuracy, precision, recall, and F1 metrics with data freshness indicators
+- **40x faster feature engineering** — vectorized Pandas 3.0-compatible operations for team form, streaks, and head-to-head stats
 
-**Production Stack**:
-- **Frontend**: Next.js 14 on Vercel (Auto-deployment from GitHub)
-- **Backend**: FastAPI on Railway (Docker-based deployment)
-- **Models**: 6 trained ML models (3 game + 3 player prediction models)
-- **Data**: 2,788 real NBA games from nba_api integration
-- **Auth**: JWT-based authentication with secure password hashing
+## Tech Stack
 
-See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for step-by-step deployment instructions.
-
-## Web Application Features
-
-**Modern, Production-Ready Dashboard:**
-- **Real-Time Predictions**: Get instant win probability predictions for any NBA matchup
-- **Model Comparison**: Compare predictions from 4 different ML models side-by-side
-- **Player Statistics**: Search 200+ NBA players with fuzzy matching and autocomplete
-- **Data Explorer**: Analyze 2,788+ historical games with advanced filtering and pagination
-- **Model Performance**: Monitor accuracy, precision, recall, F1 scores, and data drift detection
-- **Mobile-First Design**: Fully responsive with touch-optimized navigation and card views
-- **Smart UX Features**:
-  - Featured players for quick access
-  - Recent search history (localStorage persistence)
-  - Shareable prediction links with URL parameters
-  - Toast notifications for user feedback
-  - Loading skeletons for smooth transitions
-  - Keyboard shortcuts (Cmd+K, Cmd+Enter, ESC)
-  - Contextual help tooltips throughout
-  - API health monitoring with live status indicators
-  - Data freshness indicators showing cache vs live data
-
-**Technical Stack:**
-- **Frontend**: Next.js 14, TypeScript, Tailwind CSS, Recharts
-- **Backend**: FastAPI, SQLAlchemy, Pydantic
-- **Authentication**: JWT with bcrypt password hashing
-- **Caching**: 5-minute in-memory cache with automatic invalidation
-- **API Integration**: Real-time NBA data from balldontlie.io
-
-## Key Features
-
-- **Performance Optimized**: 10-100x speedup through vectorized operations (see [Performance Guide](docs/PERFORMANCE_OPTIMIZATIONS.md))
-- **Enterprise Infrastructure**: Full CI/CD pipeline with multi-OS testing across Python 3.9-3.12
-- **Comprehensive Testing**: 90%+ test coverage with unit, integration, and performance benchmarks
-- **Production Ready**: Docker deployment with cloud-ready architecture (Kubernetes support planned)
-- **Memory Efficient**: Line-by-line memory profiling and optimization tools
-- **Modern Codebase**: Pandas 3.0 compatible, pre-commit hooks, automated quality checks
-- **Complete Documentation**: Testing guides, deployment guides, API references, and examples
-
-## Team Project
-
-This is a collaborative project designed to be worked on with friends throughout the semester. Feel free to claim tasks, create branches, and contribute!
-
-## Project Overview
-
-### Why This Project?
-
-- **Approachable Concept**: Focus on building good models instead of wrestling with overly complex data
-- **Live NBA Stats**: Keep the project dynamic with fresh material and get instant feedback for predictions
-- **Real-World Application**: Apply machine learning to a domain that's engaging and easy to understand
-
-### Goals
-
-1. **Predict NBA Game Win/Loss outcomes**
-2. **Predict Individual Player Statistics** (points, rebounds, assists, etc.)
-3. **Use Live Data** throughout the semester to fine-tune and improve models
-
-### Key Learning Objectives
-
-- Data gathering and cleaning
-- Making API requests to sports data providers
-- Working with JSON library and JSON-formatted data
-- **Machine Learning Models**:
-  - Linear Regression
-  - Lasso Regression
-  - Ridge Regression
-  - Decision Trees
-  - Logistic Regression
-
-## Project Structure
-
-```
-NBA-Performance-Prediction/
-├── data/
-│   ├── raw/              # Raw data from APIs
-│   ├── processed/        # Cleaned and processed data
-│   └── external/         # Additional datasets (team stats, player info, etc.)
-├── notebooks/            # Jupyter notebooks for exploration and experimentation
-├── src/
-│   ├── data_collection/  # API clients and data fetching scripts
-│   ├── data_processing/  # Data cleaning and feature engineering
-│   ├── models/           # ML model implementations
-│   ├── evaluation/       # Model evaluation and metrics
-│   └── utils/            # Helper functions and utilities
-├── tests/                # Unit tests
-├── docs/                 # Additional documentation
-├── requirements.txt      # Python dependencies
-└── README.md            # This file
-```
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js 14, TypeScript, Tailwind CSS, Recharts, Framer Motion |
+| Backend | FastAPI, SQLAlchemy, Pydantic, JWT auth (bcrypt) |
+| ML Models | scikit-learn — Logistic Regression, Decision Tree, Random Forest, Linear/Ridge/Lasso |
+| Data | nba_api (2,788 games), balldontlie.io live stats |
+| Caching | 5-minute in-memory cache with automatic invalidation |
+| Deployment | Vercel (frontend), Railway Docker (backend) |
 
 ## Getting Started
 
-### Quick Start (1 Command!)
+### Prerequisites
+
+- Python 3.9+
+- Node.js 18+
+- Free API key from [balldontlie.io](https://app.balldontlie.io)
+
+### Setup
+
+```bash
+git clone https://github.com/calebnewtonusc/NBA-Performance-Prediction.git
+cd NBA-Performance-Prediction
+
+# Configure API key
+cp .env.example .env
+# Add: BALLDONTLIE_API_KEY=your_key_here
+
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Generate data and train models
+make sample-data
+make train
+
+# Start FastAPI backend
+uvicorn src.api.main:app --reload
+
+# Start Next.js frontend (new terminal)
+cd frontend
+npm install
+npm run dev
+# App: http://localhost:3000
+```
+
+Or use the quickstart script:
 
 ```bash
 ./scripts/quickstart.sh
 ```
 
-This automated script will set up everything! See [QUICKSTART.md](QUICKSTART.md) for full details.
+## Project Structure
 
-### Prerequisites
-
-- Python 3.9+ (tested on 3.9, 3.10, 3.11, 3.12)
-- pip
-- Git
-
-### Manual Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/joelnewton/NBA-Performance-Prediction.git
-cd NBA-Performance-Prediction
+```
+NBA-Performance-Prediction/
+├── src/
+│   ├── data_collection/   # NBA API clients, rate limiting, data fetching
+│   ├── data_processing/   # Feature engineering (40x vectorized speedup)
+│   ├── models/            # Logistic regression, decision tree, random forest, regression
+│   ├── evaluation/        # Metrics, cross-validation, model comparison
+│   └── api/               # FastAPI server with JWT auth
+├── frontend/              # Next.js 14 app (predictions, players, explorer, performance)
+├── notebooks/             # Jupyter exploration (data collection → model comparison)
+├── data/                  # Raw, processed, and external datasets
+└── tests/                 # 90%+ coverage — unit, integration, benchmarks
 ```
 
-2. Create a virtual environment:
-```bash
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. Install dependencies:
-```bash
-pip install -r requirements.txt
-# or use make
-make install
-```
-
-4. **Configure NBA API Key (REQUIRED)**:
-```bash
-# Copy environment template
-cp .env.example .env
-
-# Get a free API key at https://app.balldontlie.io
-# Then edit .env and add:
-# BALLDONTLIE_API_KEY=your_api_key_here
-```
-
-See [API Key Setup Guide](docs/API_KEY_SETUP.md) for detailed instructions.
-
-5. Generate sample data and train models:
-```bash
-make sample-data  # Generate test data
-make train        # Train all models
-make dashboard    # Run dashboard
-```
-
-### Detailed Quick Start
-
-See [PROJECT_PLAN.md](docs/PROJECT_PLAN.md) for a detailed breakdown of milestones and tasks.
-
-## Enterprise Infrastructure
-
-### Testing & Validation
-
-**Run Tests:**
-```bash
-# Unit tests
-pytest tests/ -v --cov=src --cov-report=html
-
-# Integration tests
-python3 tests/test_integration.py
-
-# Validate refactored code
-python3 scripts/validate_refactored_code.py
-
-# Performance benchmarks
-python3 scripts/benchmark_performance.py
-
-# Memory profiling
-python3 scripts/profile_memory.py
-```
-
-See [TESTING_GUIDE.md](docs/TESTING_GUIDE.md) for complete testing documentation.
-
-### CI/CD Pipeline
-
-Automated testing runs on every push:
-- Multi-OS testing (Ubuntu, macOS, Windows)
-- Multi-Python version (3.9, 3.10, 3.11, 3.12)
-- Code quality checks (black, isort, flake8, bandit)
-- Security scanning (dependency vulnerabilities)
-- Performance benchmarks
-- Integration tests
-- Coverage reporting
-
-See [.github/workflows/ci-cd.yml](.github/workflows/ci-cd.yml) for pipeline configuration.
-
-### Production Deployment
-
-Deploy to production environments:
-```bash
-# Docker
-docker build -t nba-prediction:latest .
-docker run -p 8000:8000 nba-prediction:latest
-
-# Kubernetes (Coming Soon)
-# Kubernetes deployment files planned for future release
-
-# Cloud platforms (AWS, GCP, Azure)
-# See deployment guide for detailed instructions
-```
-
-See [DEPLOYMENT_GUIDE.md](docs/DEPLOYMENT_GUIDE.md) for complete deployment documentation.
-
-### Performance Optimizations
-
-The codebase is optimized for large-scale data processing:
-- **40x faster** feature engineering (vectorized operations)
-- **Pandas 3.0 compatible** (no deprecated patterns)
-- **Memory efficient** (optimized DataFrame operations)
-- **Tested at scale** (benchmarked with 10,000+ games)
-
-See [PERFORMANCE_OPTIMIZATIONS.md](docs/PERFORMANCE_OPTIMIZATIONS.md) for optimization details.
-
-## Data Sources
-
-- NBA API (free tier available)
-- balldontlie.io API
-- ESPN API
-- Basketball Reference (web scraping as needed)
-
-## Contributing
-
-Since this is a team project:
-
-1. Create a branch for your feature: `git checkout -b feature/your-feature-name`
-2. Make your changes and commit: `git commit -m "Description of changes"`
-3. Push to your branch: `git push origin feature/your-feature-name`
-4. Create a Pull Request for review
-
-## Examples & Usage
-
-### Quick Prediction Example
-```bash
-python3 examples/quick_prediction_example.py
-```
-
-This example demonstrates:
-- Loading a trained model
-- Preparing game features
-- Making predictions
-- Analyzing feature importance
-- Understanding confidence scores
-
-### Jupyter Notebooks
-Explore interactive tutorials in the `notebooks/` directory:
-- **00_getting_started.ipynb**: Introduction and project setup
-- **01_data_collection_demo.ipynb**: NBA API integration and data fetching
-- **02_data_processing_demo.ipynb**: Cleaning and feature engineering
-- **03_logistic_regression_baseline.ipynb**: Baseline classification model
-- **04_decision_tree_model.ipynb**: Interpretable tree-based model
-- **05_random_forest_model.ipynb**: Ensemble learning with Random Forest
-- **06_model_comparison.ipynb**: Comprehensive model evaluation
-- **07_linear_regression_points.ipynb**: Regression models for player stats
-
-## Current Status
-
-✓ **ENTERPRISE READY!** The project features production-grade infrastructure with:
-- ✓ Complete data collection pipeline (5+ seasons)
-- ✓ Advanced feature engineering (40x faster, vectorized operations)
-- ✓ Multiple ML models (classification and regression)
-- ✓ Model management and automated retraining
-- ✓ Interactive dashboard with real-time predictions
-- ✓ Comprehensive testing (90%+ coverage)
-- ✓ Full CI/CD pipeline (multi-OS, multi-Python)
-- ✓ Production deployment with Docker (Kubernetes planned)
-- ✓ Memory profiling and performance optimization
-- ✓ Complete documentation and examples
-
-See [PROJECT_PLAN.md](docs/PROJECT_PLAN.md) for detailed documentation.
-
-## Quick Start Guide
-
-### 1. Run the Dashboard
-
-```bash
-streamlit run src/visualization/dashboard.py
-```
-
-### 2. Train a Model
-
-```python
-from src.models.logistic_regression_model import GameLogisticRegression
-from src.data_processing.dataset_builder import DatasetBuilder
-
-# Load and prepare data
-builder = DatasetBuilder()
-dataset = builder.load_dataset('game_predictions', 'v1')
-
-# Train model
-model = GameLogisticRegression()
-model.train(dataset['X_train'], dataset['y_train'])
-
-# Evaluate
-metrics = model.evaluate(dataset['X_test'], dataset['y_test'])
-print(f"Accuracy: {metrics['accuracy']:.2%}")
-```
-
-### 3. Explore Data
-
-Check out the Jupyter notebooks in the `notebooks/` directory:
-- `00_getting_started.ipynb` - API connectivity and basics
-- `01_data_collection_demo.ipynb` - Data collection examples
-- `02_data_processing_demo.ipynb` - Feature engineering examples
-
-## Features
-
-### Data Collection
-- Automated NBA API integration
-- Game data (5 seasons of historical data)
-- Player statistics
-- Team information and standings
-- Robust error handling and rate limiting
-
-### Data Processing (40x Faster!)
-- **Vectorized operations** (10-100x speedup over row-by-row processing)
-- **Pandas 3.0 compatible** (future-proof implementation)
-- Data cleaning and validation
-- Missing value handling with statistical methods
-- Outlier detection and removal
-- Advanced feature engineering:
-  - Rolling averages and momentum indicators
-  - Team form metrics (win percentage, streaks)
-  - Player efficiency ratings
-  - Head-to-head history analysis
-  - Rest days and back-to-back game tracking
-  - Home/away performance splits
-
-### Machine Learning Models
-
-**Game Predictions (Classification):**
-- Logistic Regression with hyperparameter tuning
-- Decision Trees with pruning
-- Random Forest with feature importance
-- Comprehensive model comparison framework
-- Cross-validation and ensemble methods
-
-**Player Statistics (Regression):**
-- Linear Regression with regularization
-- Ridge Regression (L2 penalty)
-- Lasso Regression (L1 penalty)
-- Multi-output regression for multiple stats
-
-### Model Management
-- Version-controlled model storage
-- Automated retraining pipeline
-- Production model deployment
-- A/B testing framework
-- Model performance monitoring
-- Experiment tracking
-
-### Visualization
-- Interactive Streamlit dashboard
-- Real-time predictions with confidence intervals
-- Model performance analytics and comparisons
-- Data exploration and insights
-- Feature importance visualization
-
-### Enterprise Infrastructure
-- **CI/CD Pipeline**: Automated testing on every commit
-- **Multi-OS Support**: Ubuntu, macOS, Windows
-- **Multi-Python**: 3.9, 3.10, 3.11, 3.12
-- **Code Quality**: Black, isort, flake8, bandit
-- **Security**: Dependency scanning, vulnerability checks
-- **Testing**: 90%+ coverage, unit + integration tests
-- **Performance**: Automated benchmarking and profiling
-- **Deployment**: Docker Compose stack, cloud-ready architecture
-
-### Documentation
-- [Testing Guide](docs/TESTING_GUIDE.md) - Comprehensive testing documentation
-- [Performance Optimizations](docs/PERFORMANCE_OPTIMIZATIONS.md) - 40x speedup details
-- [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) - Production deployment instructions
-- [Project Plan](docs/PROJECT_PLAN.md) - Milestones and roadmap
-- [Quickstart Guide](QUICKSTART.md) - Get started in minutes
-- [API Examples](examples/) - Usage examples and tutorials
-
-## Project Phases
-
-✓ **Phase 1**: Data Collection & API Integration - Code Complete
-✓ **Phase 2**: Data Processing & Feature Engineering - Code Complete
-✓ **Phase 3**: Game Prediction Models - Code Complete
-✓ **Phase 4**: Player Statistics Models - Code Complete
-✓ **Phase 5**: Live Data Integration & Retraining - Code Complete
-✓ **Phase 6**: Visualization & Reporting - Code Complete
-
-**All Deliverables: 6/6 phases complete (100%)**
-
-
-## License
-
-This is an educational project. Feel free to use and modify as needed.
-
-## Performance Metrics
-
-### Speed Improvements
-| Operation | Before | After | Speedup |
-|-----------|--------|-------|---------|
-| `calculate_team_form` | 2000ms | 50ms | **40x faster** |
-| `calculate_head_to_head` | 1500ms | 40ms | **37x faster** |
-| `calculate_win_streak` | 800ms | 30ms | **26x faster** |
-| `create_game_features` | 120s | 3-5s | **24-40x faster** |
-
-### Real-World Performance
-- **Full NBA Season** (1,230 games): 15s → 0.4s (**37x faster**)
-- **10 Years of Data** (12,300 games): 150s → 4s (**37x faster**)
-
-### Code Quality
-- **Test Coverage**: 90%+
-- **Code Style**: Black, isort, flake8 compliant
-- **Security**: Bandit scanning, no vulnerabilities
-- **Compatibility**: Python 3.9-3.12, Pandas 3.0 ready
-
-## Production Achievements
-
-### Deployed Models
-- ✓ **Game Prediction Models** (3 models):
-  - Logistic Regression: 69.6% accuracy
-  - Decision Tree: 61.6% accuracy
-  - Random Forest: 67.3% accuracy
-
-- ✓ **Player Statistics Models** (3 models):
-  - Linear Regression: 2.49 MAE
-  - Ridge Regression: 2.49 MAE
-  - Lasso Regression: 2.50 MAE
-
-### Data Collection
-- ✓ 2,788 real NBA games collected via nba_api
-- ✓ Full integration with live NBA stats API
-- ✓ Automated data fetching and processing pipeline
-
-### Production Deployment
-- ✓ FastAPI backend with JWT authentication and bcrypt hashing
-- ✓ Next.js 14 frontend with TypeScript and modern React patterns
-- ✓ Railway deployment (Docker-based with health checks)
-- ✓ Vercel deployment (auto-deploy from GitHub with zero downtime)
-- ✓ All 6 models deployed and accessible via REST API
-- ✓ Comprehensive error handling with retry mechanisms
-- ✓ Production-grade caching with 5-minute TTL
-- ✓ Mobile-optimized responsive design
-- ✓ Real-time API health monitoring
-
-## Built By
-
-**Caleb Newton** - [calebnewton.me](https://calebnewton.me)
-
-Educational project for demonstrating machine learning concepts and production deployment practices.
+## Model Results
+
+| Model | Task | Metric |
+|---|---|---|
+| Logistic Regression | Game outcome | 69.6% accuracy |
+| Random Forest | Game outcome | 67.3% accuracy |
+| Decision Tree | Game outcome | 61.6% accuracy |
+| Linear Regression | Player points | 2.49 MAE |
+| Ridge Regression | Player points | 2.49 MAE |
+| Lasso Regression | Player points | 2.50 MAE |
+
+## Author
+
+**Caleb Newton** — [calebnewton.me](https://calebnewton.me) | [GitHub](https://github.com/calebnewtonusc)
