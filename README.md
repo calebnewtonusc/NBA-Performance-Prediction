@@ -8,7 +8,7 @@
 ![Docker](https://img.shields.io/badge/Docker-Railway-2496ED?logo=docker&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-yellow)
 
-NBA game outcome and player statistics prediction dashboard — six trained ML models, a Next.js frontend with an Apple TV dark aesthetic, and a FastAPI backend deployed on Railway.
+NBA game outcome and player statistics prediction dashboard. Six trained ML models, a Next.js frontend with an Apple TV dark aesthetic, and a FastAPI backend deployed on Railway.
 
 **Live app:** [nba-performance-prediction.vercel.app](https://nba-performance-prediction.vercel.app) &nbsp;|&nbsp; **API:** [Railway](https://nba-performance-prediction-production.up.railway.app/api/docs)
 
@@ -16,12 +16,12 @@ NBA game outcome and player statistics prediction dashboard — six trained ML m
 
 ## Features
 
-- **Game outcome predictions** — compare win probabilities from Logistic Regression (69.6%), Decision Tree (61.6%), and Random Forest (67.3%) side-by-side
-- **Player statistics forecasts** — points, rebounds, and assists regression using Linear, Ridge, and Lasso models trained on 2,788 real NBA games
-- **Data Explorer** — browse and filter historical game data with paginated tables and advanced search
-- **Player search** — fuzzy-matched autocomplete across 200+ NBA players with recent search history persisted in localStorage
-- **Model performance monitor** — live accuracy, precision, recall, and F1 metrics with data freshness indicators
-- **40x faster feature engineering** — vectorized Pandas 3.0-compatible operations for team form, streaks, and head-to-head stats
+- **Game outcome predictions**: compare win probabilities from Logistic Regression (69.6%), Decision Tree (61.6%), and Random Forest (67.3%) side-by-side
+- **Player statistics forecasts**: points, rebounds, and assists regression using Linear, Ridge, and Lasso models trained on 2,788 real NBA games
+- **Data Explorer**: browse and filter historical game data with paginated tables and advanced search
+- **Player search**: fuzzy-matched autocomplete across 200+ NBA players with recent search history persisted in localStorage
+- **Model performance monitor**: live accuracy, precision, recall, and F1 metrics with data freshness indicators
+- **40x faster feature engineering**: vectorized Pandas 3.0-compatible operations for team form, streaks, and head-to-head stats
 
 ## Tech Stack
 
@@ -29,7 +29,7 @@ NBA game outcome and player statistics prediction dashboard — six trained ML m
 |---|---|
 | Frontend | Next.js 14, TypeScript, Tailwind CSS, Recharts, Framer Motion |
 | Backend | FastAPI, SQLAlchemy, Pydantic, JWT auth (bcrypt) |
-| ML Models | scikit-learn — Logistic Regression, Decision Tree, Random Forest, Linear/Ridge/Lasso |
+| ML Models | scikit-learn: Logistic Regression, Decision Tree, Random Forest, Linear/Ridge/Lasso |
 | Data | nba_api (2,788 games), balldontlie.io live stats |
 | Caching | 5-minute in-memory cache with automatic invalidation |
 | Deployment | Vercel (frontend), Railway Docker (backend) |
@@ -88,7 +88,7 @@ NBA-Performance-Prediction/
 ├── frontend/              # Next.js 14 app (predictions, players, explorer, performance)
 ├── notebooks/             # Jupyter exploration (data collection → model comparison)
 ├── data/                  # Raw, processed, and external datasets
-└── tests/                 # 90%+ coverage — unit, integration, benchmarks
+└── tests/                 # 90%+ coverage (unit, integration, benchmarks)
 ```
 
 ## Model Results
@@ -104,4 +104,4 @@ NBA-Performance-Prediction/
 
 ## Author
 
-**Caleb Newton** — [calebnewton.me](https://calebnewton.me) | [GitHub](https://github.com/calebnewtonusc)
+**Caleb Newton** | [calebnewton.me](https://calebnewton.me) | [GitHub](https://github.com/calebnewtonusc)
