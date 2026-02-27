@@ -9,6 +9,12 @@ import { Toaster } from 'sonner'
 export const metadata: Metadata = {
   title: 'NBA Performance Prediction',
   description: 'Machine learning-powered NBA game predictions',
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico' },
+    ],
+  },
 }
 
 const SF = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', sans-serif"
