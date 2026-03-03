@@ -8,6 +8,7 @@ import { AnimatedCounter } from '@/components/AnimatedCounter'
 import { PickOfTheDay } from '@/components/PickOfTheDay'
 import { ModelAccuracyWidget } from '@/components/ModelAccuracyWidget'
 import { StatCardSkeleton } from '@/components/SkeletonLoader'
+import TypedHero from '@/components/TypedHero'
 import Link from 'next/link'
 
 const SF_DISPLAY = "-apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif"
@@ -131,24 +132,28 @@ export default function HomeClient() {
           </span>
         </motion.h1>
 
-        {/* Subtitle */}
-        <motion.p
+        {/* Typed.js hero subtitle */}
+        <motion.div
           variants={fadeUp}
           initial="hidden"
           animate="visible"
           transition={stagger(2)}
-          style={{
-            fontFamily: SF_TEXT,
-            fontSize: '18px',
-            fontWeight: 400,
-            lineHeight: 1.6,
-            color: 'rgba(255,255,255,0.6)',
-            maxWidth: '480px',
-            margin: '0 0 36px',
-          }}
+          style={{ margin: '0 0 36px' }}
         >
-          6 trained models. Real NBA data. 72.3% accuracy.
-        </motion.p>
+          <TypedHero />
+          <p
+            style={{
+              fontFamily: SF_TEXT,
+              fontSize: '15px',
+              fontWeight: 400,
+              color: 'rgba(255,255,255,0.4)',
+              maxWidth: '480px',
+              margin: 0,
+            }}
+          >
+            6 trained models. Real NBA data. 72.3% accuracy.
+          </p>
+        </motion.div>
 
         {/* CTA Buttons */}
         <motion.div
@@ -406,38 +411,46 @@ export default function HomeClient() {
             marginTop: '16px',
           }}
         >
-          <FeatureCard
-            title="Game Predictions"
-            description="Pick any two NBA teams and get ML-powered win probabilities with confidence scores across multiple models."
-            href="/predictions"
-            icon={Zap}
-            accentColor="#FF3B30"
-            index={0}
-          />
-          <FeatureCard
-            title="Player Analysis"
-            description="Search any NBA player and dive into season stats, shooting splits, and year-over-year comparisons."
-            href="/players"
-            icon={Users}
-            accentColor="#0A84FF"
-            index={1}
-          />
-          <FeatureCard
-            title="Model Performance"
-            description="Track the accuracy, precision, and F1 scores of each ML model in real time. Full transparency."
-            href="/performance"
-            icon={TrendingUp}
-            accentColor="#BF5AF2"
-            index={2}
-          />
-          <FeatureCard
-            title="Data Explorer"
-            description="Browse historical game data with filters by team, date, and season to find patterns and trends."
-            href="/explorer"
-            icon={Database}
-            accentColor="#30D158"
-            index={3}
-          />
+          <div data-aos="zoom-in" data-aos-delay="0">
+            <FeatureCard
+              title="Game Predictions"
+              description="Pick any two NBA teams and get ML-powered win probabilities with confidence scores across multiple models."
+              href="/predictions"
+              icon={Zap}
+              accentColor="#FF3B30"
+              index={0}
+            />
+          </div>
+          <div data-aos="zoom-in" data-aos-delay="80">
+            <FeatureCard
+              title="Player Analysis"
+              description="Search any NBA player and dive into season stats, shooting splits, and year-over-year comparisons."
+              href="/players"
+              icon={Users}
+              accentColor="#0A84FF"
+              index={1}
+            />
+          </div>
+          <div data-aos="zoom-in" data-aos-delay="160">
+            <FeatureCard
+              title="Model Performance"
+              description="Track the accuracy, precision, and F1 scores of each ML model in real time. Full transparency."
+              href="/performance"
+              icon={TrendingUp}
+              accentColor="#BF5AF2"
+              index={2}
+            />
+          </div>
+          <div data-aos="zoom-in" data-aos-delay="240">
+            <FeatureCard
+              title="Data Explorer"
+              description="Browse historical game data with filters by team, date, and season to find patterns and trends."
+              href="/explorer"
+              icon={Database}
+              accentColor="#30D158"
+              index={3}
+            />
+          </div>
         </div>
       </motion.section>
     </div>

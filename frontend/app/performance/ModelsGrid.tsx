@@ -79,13 +79,15 @@ export default function ModelsGrid({ models, formatTimestamp }: ModelsGridProps)
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {models.map((model) => {
+        {models.map((model, idx) => {
           const style = getModelStyle(model.name)
           const accuracy = model.metrics?.accuracy
 
           return (
             <div
               key={`${model.name}-${model.version}`}
+              data-aos="zoom-in"
+              data-aos-delay={String(idx * 80)}
               className="rounded-xl border overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
               style={{
                 backgroundColor: style.bg,

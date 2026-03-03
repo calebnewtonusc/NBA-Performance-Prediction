@@ -50,7 +50,7 @@ export function PlayerResults({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 p-4 max-h-96 overflow-y-auto">
-        {searchResults.map((player) => {
+        {searchResults.map((player, idx) => {
           const isSelected = selectedPlayer?.id === player.id
           const teamAbbr = player.team?.abbreviation
           const colors = teamAbbr ? getTeamColors(teamAbbr) : null
@@ -58,6 +58,8 @@ export function PlayerResults({
 
           return (
             <button
+              data-aos="fade-up"
+              data-aos-delay={String(idx * 50)}
               key={player.id}
               onClick={() => onSelectPlayer(player)}
               className="text-left p-4 rounded-xl border transition-all duration-200 hover:-translate-y-0.5 relative"

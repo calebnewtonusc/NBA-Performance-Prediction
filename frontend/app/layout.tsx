@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import 'aos/dist/aos.css'
+import AOSInit from '@/components/AOSInit'
 import Navigation from '@/components/Navigation'
 import { FooterBuiltBy } from '@/components/FooterBuiltBy'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
@@ -27,6 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body style={{ backgroundColor: '#000000', margin: 0 }}>
+        <AOSInit />
         <KeyboardShortcutsProvider>
           <ErrorBoundary>
             <div className="min-h-screen" style={{ backgroundColor: '#000000' }}>

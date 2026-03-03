@@ -15,7 +15,7 @@ export function ModelComparisonPanel({
   awayTeam,
 }: ModelComparisonPanelProps) {
   return (
-    <div className="bg-secondary p-4 sm:p-6 rounded-lg border border-gray-700">
+    <div data-aos="fade-up" className="bg-secondary p-4 sm:p-6 rounded-lg border border-gray-700">
       <div className="flex items-center gap-2 mb-4 sm:mb-6">
         <h2 className="text-xl sm:text-2xl font-bold">Model Comparison</h2>
         <InfoTooltip content="Compare predictions from all available machine learning models to see consensus and variance in confidence levels." />
