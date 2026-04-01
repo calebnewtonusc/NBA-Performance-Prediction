@@ -105,3 +105,5 @@ NBA-Performance-Prediction/
 ## Author
 
 **Caleb Newton** | [calebnewton.me](https://calebnewton.me) | [GitHub](https://github.com/calebnewtonusc)
+
+All glory to God! ✝️❤️
